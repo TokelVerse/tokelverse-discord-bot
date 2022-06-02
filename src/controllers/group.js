@@ -25,7 +25,7 @@ export const updateDiscordGroup = async (
       group = await db.group.findOne(
         {
           where: {
-            groupId: `discord-${guildId}`,
+            groupId: `${guildId}`,
           },
           transaction: t,
           lock: t.LOCK.UPDATE,
@@ -33,7 +33,7 @@ export const updateDiscordGroup = async (
       );
       if (!group) {
         group = await db.group.create({
-          groupId: `discord-${guildId}`,
+          groupId: `${guildId}`,
           groupName: guild.name,
           lastActive: Date.now(),
         }, {

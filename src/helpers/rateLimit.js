@@ -21,6 +21,20 @@ const rateLimiterHelp = new RateLimiterFlexible.default.RateLimiterMemory({
   duration: 30,
 });
 
+const rateLimiterLink = new RateLimiterFlexible.default.RateLimiterMemory({
+  points: 2,
+  duration: 30,
+});
+
+const rateLimiterUnlink = new RateLimiterFlexible.default.RateLimiterMemory({
+  points: 2,
+  duration: 30,
+});
+
+const rateLimiterAccount = new RateLimiterFlexible.default.RateLimiterMemory({
+  points: 2,
+  duration: 30,
+});
 
 export const myRateLimiter = async (
   client,
@@ -39,7 +53,6 @@ export const myRateLimiter = async (
       discordChannelId = message.channelId;
     }
 
-
     if (!userId) return true;
     try {
       if (title.toLowerCase() === 'help') {
@@ -47,12 +60,16 @@ export const myRateLimiter = async (
         console.log('return false');
         return false;
       }
-      if (title.toLowerCase() === 'mining') {
-        await rateLimiterMining.consume(userId, 1);
+      if (title.toLowerCase() === 'account') {
+        await rateLimiterAccount.consume(userId, 1);
         return false;
       }
-      if (title.toLowerCase() === 'halving') {
-        await rateLimiterHalving.consume(userId, 1);
+      if (title.toLowerCase() === 'link') {
+        await rateLimiterLink.consume(userId, 1);
+        return false;
+      }
+      if (title.toLowerCase() === 'unlink') {
+        await rateLimiterUnlink.consume(userId, 1);
         return false;
       }
 

@@ -150,6 +150,10 @@ class Tokel {
     return this.provider.rawCall('gettransaction', [txid]);
   }
 
+  getRawTransaction(txid) {
+    return this.provider.rawCall('getrawtransaction', [txid, 1]);
+  }
+
   /**
    * Gets the wallet info
    * @return {Promise} Promise containing result object or Error

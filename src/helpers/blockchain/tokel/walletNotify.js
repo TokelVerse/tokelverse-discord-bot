@@ -13,6 +13,12 @@ const walletNotifyKomodo = async (req, res, next) => {
   res.locals.activity = [];
   const txId = req.body.payload;
   const transaction = await getInstance().getTransaction(txId);
+  const rawTransaction = await getInstance().getRawTransaction(txId);
+
+  const userValidationAddress = rawTransaction.vin[0].address;
+  const userPubkey = rawTransaction.vin[0].scriptSig.hex.slice(-66);
+  console.log(userValidationAddress);
+  console.log(userPubkey);
 
   await db.sequelize.transaction({
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,

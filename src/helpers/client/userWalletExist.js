@@ -29,7 +29,7 @@ export const userWalletExist = async (
         include: [
           {
             model: db.address,
-            as: 'addresses',
+            as: 'address',
             required: true,
           },
         ],
@@ -54,6 +54,7 @@ export const userWalletExist = async (
       ],
     });
   }
+  console.log(user);
   return [
     user,
     activity,

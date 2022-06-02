@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
 
   WalletModel.associate = (model) => {
     WalletModel.belongsTo(model.user, { as: 'user' });
-    WalletModel.hasMany(model.address);
+    WalletModel.hasOne(model.address);
     WalletModel.belongsTo(model.token);
   };
 

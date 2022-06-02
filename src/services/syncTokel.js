@@ -6,8 +6,8 @@ import { Transaction } from "sequelize";
 import db from '../models';
 import settings from '../config/settings';
 import { getInstance } from "./rclient";
-//import { waterFaucet } from "../helpers/waterFaucet";
-//import { isDepositOrWithdrawalCompleteMessageHandler } from '../helpers/messageHandlers';
+// import { waterFaucet } from "../helpers/waterFaucet";
+// import { isDepositOrWithdrawalCompleteMessageHandler } from '../helpers/messageHandlers';
 import logger from "../helpers/logger";
 
 const sequentialLoop = async (iterations, process, exit) => {

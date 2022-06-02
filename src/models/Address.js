@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
   const AddressModel = sequelize.define('address', modelDefinition, modelOptions);
 
   AddressModel.associate = (model) => {
-    AddressModel.belongsTo(model.wallet, { as: 'wallet' });
+    AddressModel.belongsTo(model.wallet);
     AddressModel.hasMany(model.transaction, {
       // as: 'transaction',
       // foreignKey: 'txId',

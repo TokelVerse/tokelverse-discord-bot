@@ -12,7 +12,7 @@ export const generateUserWalletAndAddress = async (
   let user = await db.user.findOne(
     {
       where: {
-        user_id: `discord-${userInfo.id}`,
+        user_id: `${userInfo.id}`,
       },
       transaction: t,
       lock: t.LOCK.UPDATE,
@@ -20,7 +20,7 @@ export const generateUserWalletAndAddress = async (
   );
   if (!user) {
     user = await db.user.create({
-      user_id: `discord-${userInfo.id}`,
+      user_id: `${userInfo.id}`,
       username: `${userInfo.username}#${userInfo.discriminator}`,
       firstname: '',
       lastname: '',
@@ -171,7 +171,7 @@ export const updateDiscordLastSeen = async (
     const user = await db.user.findOne(
       {
         where: {
-          user_id: `discord-${userInfo.id}`,
+          user_id: `${userInfo.id}`,
         },
         transaction: t,
         lock: t.LOCK.UPDATE,
@@ -181,7 +181,7 @@ export const updateDiscordLastSeen = async (
       const group = await db.group.findOne(
         {
           where: {
-            groupId: `discord-${guildId}`,
+            groupId: `${guildId}`,
           },
           transaction: t,
           lock: t.LOCK.UPDATE,

@@ -1,8 +1,8 @@
 /* eslint-disable no-restricted-syntax */
-import walletNotifyKomodo from '../helpers/blockchain/tokel/walletNotify';
-import { startKomodoSync } from "../services/syncTokel";
+import walletNotifyTokel from '../helpers/blockchain/tokel/walletNotify';
+import { startTokelSync } from "../services/syncTokel";
 
-//import { incomingDepositMessageHandler } from '../helpers/messageHandlers';
+// import { incomingDepositMessageHandler } from '../helpers/messageHandlers';
 
 const localhostOnly = (
   req,
@@ -30,7 +30,7 @@ export const notifyRouter = (
     '/api/rpc/blocknotify',
     localhostOnly,
     (req, res) => {
-      startKomodoSync(
+      startTokelSync(
         discordClient,
         queue,
       );
@@ -41,7 +41,11 @@ export const notifyRouter = (
   app.post(
     '/api/rpc/walletnotify',
     localhostOnly,
-    walletNotifyKomodo,
+    async (req, res, next) => {
+      if (req.body.ticker === 'TKL') {
+        walletNotifyTokel(req, res, next);
+      }
+    },
     async (req, res) => {
       if (res.locals.error) {
         console.log(res.locals.error);
@@ -70,5 +74,4 @@ export const notifyRouter = (
       res.sendStatus(200);
     },
   );
-
 };

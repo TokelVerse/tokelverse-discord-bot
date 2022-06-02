@@ -44,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
   UserModel.associate = (model) => {
     UserModel.hasMany(model.wallet);
     UserModel.hasMany(model.transaction);
+    UserModel.hasOne(model.linkedAddress);
   };
 
   return UserModel;

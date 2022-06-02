@@ -2,6 +2,11 @@ import { config } from "dotenv";
 import { updateDiscordChannel } from '../controllers/channel';
 import { updateDiscordGroup } from '../controllers/group';
 import { discordHelp } from '../controllers/help';
+import { discordLinkAddress } from '../controllers/link';
+import { discordUnlinkAddress } from '../controllers/unlink';
+
+import { discordAccount } from '../controllers/account';
+
 import { createUpdateDiscordUser, updateDiscordLastSeen } from '../controllers/user';
 import { myRateLimiter } from '../helpers/rateLimit';
 import { isMaintenanceOrDisabled } from '../helpers/isMaintenanceOrDisabled';
@@ -34,7 +39,6 @@ export const discordRouter = (
     });
   });
 
-
   discordClient.on("messageCreate", async (message) => {
     let groupTask;
     let groupTaskId;
@@ -59,8 +63,6 @@ export const discordRouter = (
       groupTaskId = groupTask && groupTask.id;
       channelTaskId = channelTask && channelTask.id;
     }
-    console.log(message.content);
-    console.log(settings.bot.command.discord);
     if (!message.content.startsWith(settings.bot.command.discord) || message.author.bot) return;
     const maintenance = await isMaintenanceOrDisabled(message, 'discord');
     if (maintenance.maintenance || !maintenance.enabled) return;
@@ -76,7 +78,6 @@ export const discordRouter = (
       });
       return;
     }
-    console.log('after group task');
 
     if (channelTask && channelTask.banned) {
       await message.channel.send({
@@ -90,7 +91,6 @@ export const discordRouter = (
       });
       return;
     }
-    console.log('after channel task');
 
     if (lastSeenDiscordTask && lastSeenDiscordTask.banned) {
       await message.channel.send({
@@ -105,13 +105,9 @@ export const discordRouter = (
       return;
     }
 
-    console.log('after lastSeen task');
-
     const messageReplaceBreaksWithSpaces = message.content.replace(/\n/g, " ");
     const preFilteredMessageDiscord = messageReplaceBreaksWithSpaces.split(' ');
     const filteredMessageDiscord = preFilteredMessageDiscord.filter((el) => el !== '');
-
-    console.log(filteredMessageDiscord);
 
     if (filteredMessageDiscord[1] === undefined) {
       const limited = await myRateLimiter(
@@ -119,7 +115,6 @@ export const discordRouter = (
         message,
         'Help',
       );
-      console.log('after rate limit');
       if (limited) return;
       await queue.add(async () => {
         const task = await discordHelp(message, io);
@@ -132,15 +127,70 @@ export const discordRouter = (
         message,
         'Help',
       );
-      console.log('after rate limit');
-      console.log(limited);
       if (limited) return;
-      console.log('before Help');
       await queue.add(async () => {
-        const task = await discordHelp(message, io);
+        const task = await discordHelp(
+          message,
+          io,
+        );
       });
     }
 
+    if (filteredMessageDiscord[1] && filteredMessageDiscord[1].toLowerCase() === 'help') {
+      const limited = await myRateLimiter(
+        discordClient,
+        message,
+        'Help',
+      );
+      if (limited) return;
+      await queue.add(async () => {
+        const task = await discordHelp(
+          message,
+          io,
+        );
+      });
+    }
+
+    if (filteredMessageDiscord[1] && filteredMessageDiscord[1].toLowerCase() === 'account') {
+      const limited = await myRateLimiter(
+        discordClient,
+        message,
+        'Account',
+      );
+      if (limited) return;
+      await queue.add(async () => {
+        const task = await discordAccount(
+          message,
+          io,
+        );
+      });
+    }
+
+    if (filteredMessageDiscord[1] && filteredMessageDiscord[1].toLowerCase() === 'link') {
+      const limited = await myRateLimiter(
+        discordClient,
+        message,
+        'Link',
+      );
+      if (limited) return;
+      const task = await discordLinkAddress(
+        message,
+        io,
+      );
+    }
+
+    if (filteredMessageDiscord[1] && filteredMessageDiscord[1].toLowerCase() === 'unlink') {
+      const limited = await myRateLimiter(
+        discordClient,
+        message,
+        'Unlink',
+      );
+      if (limited) return;
+      const task = await discordUnlinkAddress(
+        message,
+        io,
+      );
+    }
   });
   console.log(`Logged in as ${discordClient.user.tag}!`);
 };

@@ -370,6 +370,206 @@ export const discordBotMaintenanceMessage = () => {
   return result;
 };
 
+export const successUnlinkAddress = (
+  message,
+  address,
+) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle('Unlink Tokel Address')
+    .setDescription(`<@${message.author.id}>, successfully unlinked ${address}`)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const cancelUnlinkAddress = (
+  message,
+) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle('Unlink Tokel Address')
+    .setDescription(`<@${message.author.id}>, you canceled unlinking your address`)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const timeOutUnlinkAddressMessage = (
+  message,
+) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle('Unlink Tokel Address')
+    .setDescription(`<@${message.author.id}>, your request to unlink a tokel address has expired`)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const confirmUnlinkAddress = (
+  message,
+  address,
+) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle('Unlink Tokel Address')
+    .setDescription(`<@${message.author.id}>, are you sure you want to unlink ${address}?`)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const noAddressToUnlink = (
+  message,
+) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle('Unlink Tokel Address')
+    .setDescription(`<@${message.author.id}>, You don't have an address to unlink`)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const timeOutTokelLinkAddressMessage = (
+  message,
+) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle('Link Tokel Address')
+    .setDescription(`<@${message.author.id}>, your request to link a tokel address has expired`)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const enterAddressToLinkMessage = () => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle(`Link tokel address`)
+    .setDescription(`Please enter the tokel address you would like to link to your discord account:`)
+    .setThumbnail(settings.bot.logo)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const invalidTokelLinkAddress = () => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle(`Link tokel address`)
+    .setDescription(`You entered an invalid Tokel Address`)
+    .setThumbnail(settings.bot.logo)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const addedNewTokelLinkAddress = (
+  message,
+  linkedAddress,
+  depositAddress,
+) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle(`Link tokel address`)
+    .setDescription(`Successfully added
+please send any amount of tokel 
+
+from: **${linkedAddress}**
+to: **${depositAddress}**
+
+to verify this address belongs to you`)
+    .setThumbnail(settings.bot.logo)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const tokelLinkAddressAlreadyBusyVerifying = (message, address) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle(`Link tokel address`)
+    .setDescription(`You already busy verifying ${address}
+Please unlink your current address before adding another`)
+    .setThumbnail(settings.bot.logo)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const tokelLinkAddressAlreadyVerified = (message, address) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle(`Link tokel address`)
+    .setDescription(`You already verified ${address}`)
+    .setThumbnail(settings.bot.logo)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const tokelLinkAddressAlreadyOccupied = (message, address) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle(`Link tokel address`)
+    .setDescription(`${address} is already occupied by another discord account. 
+if you lost your discord account and would like to unlink address from your old account, please contact a tokelverse administrator`)
+    .setThumbnail(settings.bot.logo)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
 export const discordBotDisabledMessage = () => {
   const result = new MessageEmbed()
     .setColor(settings.bot.color)
@@ -390,6 +590,21 @@ export const warnDirectMessage = (userId, title) => {
     .setColor(settings.bot.color)
     .setTitle(title)
     .setDescription(`<@${userId}>, I've sent you a direct message.`)
+    .setThumbnail(settings.bot.logo)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const AccountInfoMessage = () => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle('Account Information')
+    .setDescription(`Shows discord account information`)
     .setThumbnail(settings.bot.logo)
     .setTimestamp()
     .setFooter({
@@ -427,7 +642,13 @@ export const helpMessage = (withdraw) => {
 Displays this message
 
 \`${settings.bot.command.discord} help\`
-Displays this message`)
+Displays this message
+
+\`${settings.bot.command.discord} account\`
+Displays your account information
+
+\`${settings.bot.command.discord} link\`
+Link a tokel address to your discord account`)
     .setTimestamp()
     .setFooter({
       text: `${settings.bot.name} v${pjson.version}`,

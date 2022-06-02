@@ -26,7 +26,7 @@ export const updateDiscordChannel = async (
       channelRecord = await db.channel.findOne(
         {
           where: {
-            channelId: `discord-${channelId}`,
+            channelId: `${channelId}`,
           },
           transaction: t,
           lock: t.LOCK.UPDATE,
@@ -34,7 +34,7 @@ export const updateDiscordChannel = async (
       );
       if (!channelRecord) {
         channelRecord = await db.channel.create({
-          channelId: `discord-${channelId}`,
+          channelId: `${channelId}`,
           lastActive: Date.now(),
           channelName: channel.name,
           groupId: group.id,

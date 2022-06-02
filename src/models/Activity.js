@@ -22,6 +22,12 @@ module.exports = (sequelize, DataTypes) => {
         'ignoreme_f',
         'help_s',
         'help_f',
+        'link_s',
+        'link_f',
+        'account_s',
+        'account_f',
+        'unlink_s',
+        'unlink_f',
       ],
     },
     amount: {

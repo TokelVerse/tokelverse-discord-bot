@@ -1,6 +1,7 @@
 import {
   Transaction,
   Op,
+  Sequelize,
 } from 'sequelize';
 import { sendVerificationEmail } from '../helpers/email';
 import db from '../../models';
@@ -16,11 +17,10 @@ export const isDashboardUserBanned = async (
   next,
 ) => {
   if (req.user.banned) {
-    console.log('user is banned');
-    req.logOut();
-    req.session.destroy();
-    res.status(401).send({
-      error: 'USER_BANNED',
+    req.session.destroy((err) => {
+      res.status(401).send({
+        error: 'USER_BANNED',
+      });
     });
   } else {
     next();
@@ -36,71 +36,31 @@ export const signin = async (
   next,
 ) => {
   const ip = req.headers['cf-connecting-ip'] || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  let activity;
-  if (req.authErr === 'USER_NOT_EXIST') {
-    throw new Error("User doesn't exist");
-  }
-  if (req.authErr === 'EMAIL_NOT_VERIFIED') {
-    res.locals.email = req.user_email;
-    const user = await db.dashboardUser.findOne({
-      where: {
-        [Op.or]: [
-          {
-            email: req.user_email.toLowerCase(),
-          },
-        ],
+  const activity = await db.activity.create({
+    dashboardUserId: req.user.id,
+    type: 'login_s',
+    //  ipId: res.locals.ip[0].id,
+  });
+  res.locals.activity = await db.activity.findOne({
+    where: {
+      id: activity.id,
+    },
+    attributes: [
+      'createdAt',
+      'type',
+    ],
+    include: [
+      {
+        model: db.dashboardUser,
+        as: 'dashboardUser',
+        required: false,
+        attributes: ['username'],
       },
-    });
-    if (user) {
-      const verificationToken = await generateVerificationToken(24);
-      if (user.authused === true) {
-        throw new Error("Authentication token already used");
-      }
-      const updatedUser = await user.update({
-        authexpires: verificationToken.tomorrow,
-        authtoken: verificationToken.authtoken,
-      });
-      const {
-        email,
-        authtoken,
-      } = updatedUser;
-      sendVerificationEmail(email, authtoken);
-      req.session.destroy();
-      res.status(401).send({
-        error: req.authErr,
-        email: res.locals.email,
-      });
-      throw new Error(req.authErr);
-    }
-  } else if (req.authErr) {
-    req.session.destroy();
-    throw new Error("LOGIN_ERROR");
-  } else {
-    const activity = await db.activity.create({
-      dashboardUserId: req.user.id,
-      type: 'login_s',
-      //  ipId: res.locals.ip[0].id,
-    });
-    res.locals.activity = await db.activity.findOne({
-      where: {
-        id: activity.id,
-      },
-      attributes: [
-        'createdAt',
-        'type',
-      ],
-      include: [
-        {
-          model: db.dashboardUser,
-          as: 'dashboardUser',
-          required: false,
-          attributes: ['username'],
-        },
-      ],
-    });
-    res.locals.result = req.user.username;
-    return next();
-  }
+    ],
+  });
+  res.locals.result = req.user.username;
+
+  return next();
 };
 
 export const destroySession = async (
@@ -132,10 +92,9 @@ export const destroySession = async (
       },
     ],
   });
-  req.logOut();
-  req.session.destroy();
-  res.redirect("/");
-  next();
+  req.session.destroy((err) => {
+    res.redirect('/');
+  });
 };
 
 /**
@@ -161,23 +120,22 @@ export const signup = async (req, res, next) => {
     // });
   }
 
-  const User = await db.dashboardUser.findOne({
+  const user = await db.dashboardUser.findOne({
     where: {
       [Op.or]: [
-        {
-          username,
-        },
-        {
-          email: email.toLowerCase(),
-        },
+        Sequelize.where(Sequelize.fn('lower', Sequelize.col('username')), Sequelize.fn('lower', username)),
+        Sequelize.where(Sequelize.fn('lower', Sequelize.col('email')), Sequelize.fn('lower', email)),
       ],
     },
   });
 
-  if (User && User.username.toLowerCase() === username.toLowerCase()) {
+  const isUserNameEqual = user && user.username.localeCompare(username, undefined, { sensitivity: 'accent' });
+  const isEmailEqual = user && user.email.localeCompare(email, undefined, { sensitivity: 'accent' });
+
+  if (isUserNameEqual === 0) {
     throw new Error("USERNAME_ALREADY_EXIST");
   }
-  if (User && User.email.toLowerCase() === email.toLowerCase()) {
+  if (isEmailEqual === 0) {
     throw new Error("EMAIL_ALREADY_EXIST");
   }
 
@@ -188,7 +146,7 @@ export const signup = async (req, res, next) => {
     const newUser = await db.dashboardUser.create({
       username,
       password,
-      email: email.toLowerCase(),
+      email,
       authused: false,
       authexpires: verificationToken.expires,
       authtoken: verificationToken.token,
@@ -198,9 +156,9 @@ export const signup = async (req, res, next) => {
     });
 
     t.afterCommit(() => {
-      sendVerificationEmail(email.toLowerCase(), newUser.authtoken);
+      sendVerificationEmail(email, newUser.authtoken);
       return res.json({
-        email: email.toLowerCase(),
+        email,
       });
       // next();
     });
@@ -215,14 +173,13 @@ export const resendVerification = async (
   res,
   next,
 ) => {
-  console.log('resend verification');
-  const { email } = req.body;
+  const {
+    email,
+  } = req.body;
   db.dashboardUser.findOne({
     where: {
       [Op.or]: [
-        {
-          email: email.toLowerCase(),
-        },
+        Sequelize.where(Sequelize.fn('lower', Sequelize.col('email')), Sequelize.fn('lower', email)),
       ],
     },
   }).then(async (user) => {
@@ -262,9 +219,7 @@ export const verifyEmail = (
   db.dashboardUser.findOne({
     where: {
       [Op.or]: [
-        {
-          email: email.toLowerCase(),
-        },
+        Sequelize.where(Sequelize.fn('lower', Sequelize.col('email')), Sequelize.fn('lower', email)),
       ],
     },
   }).then((user) => {

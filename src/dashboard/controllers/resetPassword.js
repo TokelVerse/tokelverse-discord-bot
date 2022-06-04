@@ -11,8 +11,9 @@ import db from '../../models';
  * Reset password
  */
 export const resetPassword = async (req, res, next) => {
-  console.log('resetPassword');
-  const { email } = req.body;
+  const {
+    email,
+  } = req.body;
   const user = await db.dashboardUser.findOne({
     where: {
       [Op.or]: [
@@ -139,8 +140,8 @@ export const resetPasswordNew = async (
             username,
             email,
           } = updatedUser;
-            // res.locals.username = username;
-            // res.locals.email = email;
+          // res.locals.username = username;
+          // res.locals.email = email;
           res.locals.result = {
             username,
             email,

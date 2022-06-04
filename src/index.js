@@ -28,6 +28,8 @@ import { startTokelSync } from "./services/syncTokel";
 import { patchTokelDeposits } from "./helpers/blockchain/tokel/patcher";
 import logger from "./helpers/logger";
 
+Object.freeze(Object.prototype);
+
 config();
 
 const checkCSRFRoute = (req) => {
@@ -183,9 +185,7 @@ const conditionalCSRF = function (
     ],
   });
 
-
   await discordClient.login(process.env.DISCORD_CLIENT_TOKEN);
-
 
   await initDatabaseRecords(
     discordClient,
@@ -201,7 +201,6 @@ const conditionalCSRF = function (
   const schedulePatchDeposits = schedule.scheduleJob('10 */1 * * *', () => {
     patchTokelDeposits();
   });
-
 
   router(
     app,

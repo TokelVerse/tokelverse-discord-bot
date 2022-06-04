@@ -68,6 +68,7 @@ module.exports = (sequelize, DataTypes) => {
     TransactionModel.belongsTo(model.block, { as: 'block' });
     TransactionModel.belongsTo(model.user);
     TransactionModel.belongsTo(model.addressExternal);
+    TransactionModel.belongsTo(model.wallet);
   };
 
   return TransactionModel;

@@ -193,6 +193,7 @@ const conditionalCSRF = function (
 
   await startTokelSync(
     discordClient,
+    io,
     queue,
   );
 

@@ -32,6 +32,7 @@ export const notifyRouter = (
     (req, res) => {
       startTokelSync(
         discordClient,
+        io,
         queue,
       );
       res.sendStatus(200);

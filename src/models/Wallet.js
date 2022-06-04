@@ -42,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
     WalletModel.belongsTo(model.user, { as: 'user' });
     WalletModel.hasOne(model.address);
     WalletModel.belongsTo(model.token);
+    WalletModel.hasMany(model.transaction);
   };
 
   // 5: Wallet has many addresses

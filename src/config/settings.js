@@ -1,5 +1,6 @@
 module.exports = {
   startSyncBlock: 399922,
+  confirmations: 6,
   bot: {
     name: "Tokelverse",
     color: "#4169E1",

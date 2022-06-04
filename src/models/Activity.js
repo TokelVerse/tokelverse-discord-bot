@@ -28,6 +28,12 @@ module.exports = (sequelize, DataTypes) => {
         'account_f',
         'unlink_s',
         'unlink_f',
+        'depositAccepted',
+        'depositComplete',
+        'withdrawRequested',
+        'withdrawAccepted',
+        'withdrawComplete',
+        'withdrawRejected',
       ],
     },
     amount: {

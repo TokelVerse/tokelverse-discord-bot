@@ -26,9 +26,6 @@ module.exports = (sequelize, DataTypes) => {
     TokenModel.hasMany(model.wallet, {
       as: 'wallet',
     });
-    TokenModel.hasMany(model.addressExternal, {
-      as: 'addressExternal',
-    });
     TokenModel.hasMany(model.transaction, {
       as: 'transactions',
     });

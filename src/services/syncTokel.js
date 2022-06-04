@@ -7,7 +7,6 @@ import db from '../models';
 import settings from '../config/settings';
 import { getInstance } from "./rclient";
 // import { waterFaucet } from "../helpers/waterFaucet";
-// import { isDepositOrWithdrawalCompleteMessageHandler } from '../helpers/messageHandlers';
 import logger from "../helpers/logger";
 
 const sequentialLoop = async (iterations, process, exit) => {
@@ -50,30 +49,29 @@ const sequentialLoop = async (iterations, process, exit) => {
 
 const syncTransactions = async (
   discordClient,
-  telegramClient,
-  matrixClient,
+  io,
 ) => {
   const transactions = await db.transaction.findAll({
     where: {
       phase: 'confirming',
     },
-    include: [{
-      model: db.address,
-      as: 'address',
-      include: [{
+    include: [
+      {
         model: db.wallet,
         as: 'wallet',
-      }],
-    }],
+        required: true,
+      },
+      {
+        model: db.address,
+        as: 'address',
+      },
+    ],
   });
 
   for await (const trans of transactions) {
     const transaction = await getInstance().getTransaction(trans.txid);
 
     for await (const detail of transaction.details) {
-      let isWithdrawalComplete = false;
-      let isDepositComplete = false;
-      let userToMessage;
       let updatedTransaction;
       let updatedWallet;
 
@@ -92,12 +90,13 @@ const syncTransactions = async (
               required: false,
             },
             {
+              model: db.wallet,
+              as: 'wallet',
+            },
+            {
               model: db.address,
               as: 'address',
-              include: [{
-                model: db.wallet,
-                as: 'wallet',
-              }],
+              required: false,
             },
           ],
         });
@@ -105,21 +104,29 @@ const syncTransactions = async (
         if (processTransaction) {
           const wallet = await db.wallet.findOne({
             where: {
-              userId: processTransaction.address.wallet.userId,
+              userId: processTransaction.wallet.userId,
+              id: processTransaction.wallet.id,
             },
             transaction: t,
             lock: t.LOCK.UPDATE,
           });
+          console.log(wallet);
+          console.log('process Transaction wallet');
 
-          if (transaction.confirmations < Number(settings.min.confirmations)) {
+          if (transaction.confirmations < Number(settings.confirmations)) {
             updatedTransaction = await processTransaction.update({
-              confirmations: transaction.confirmations,
+              confirmations: transaction.rawconfirmations,
             }, {
               transaction: t,
               lock: t.LOCK.UPDATE,
             });
+            console.log(transaction);
+            console.log(processTransaction);
+            console.log(detail);
+            console.log(processTransaction.address.address);
+            console.log('add confirmation');
           }
-          if (transaction.confirmations >= Number(settings.min.confirmations)) {
+          if (transaction.confirmations >= Number(settings.confirmations)) {
             if (
               detail.category === 'send'
               && processTransaction.type === 'send'
@@ -138,7 +145,7 @@ const syncTransactions = async (
               });
 
               updatedTransaction = await processTransaction.update({
-                confirmations: transaction.confirmations > 30000 ? 30000 : transaction.confirmations,
+                confirmations: transaction.rawconfirmations > 30000 ? 30000 : transaction.rawconfirmations,
                 phase: 'confirmed',
               }, {
                 transaction: t,
@@ -156,43 +163,38 @@ const syncTransactions = async (
                 lock: t.LOCK.UPDATE,
               });
 
-              const faucetSetting = await db.features.findOne({
-                where: {
-                  type: 'global',
-                  name: 'faucet',
-                },
-                transaction: t,
-                lock: t.LOCK.UPDATE,
-              });
+              // const faucetSetting = await db.features.findOne({
+              //   where: {
+              //     type: 'global',
+              //     name: 'faucet',
+              //   },
+              //   transaction: t,
+              //   lock: t.LOCK.UPDATE,
+              // });
 
               // const faucetWatered = await waterFaucet(
               //   t,
               //   Number(processTransaction.feeAmount),
               //   faucetSetting,
               // );
-
-              userToMessage = await db.user.findOne({
-                where: {
-                  id: updatedWallet.userId,
-                },
-                transaction: t,
-                lock: t.LOCK.UPDATE,
-              });
-              isWithdrawalComplete = true;
             }
             if (
               detail.category === 'receive'
               && processTransaction.type === 'receive'
               && detail.address === processTransaction.address.address
             ) {
+              console.log('final confirm receive');
+              console.log(detail.amount);
               updatedWallet = await wallet.update({
                 available: wallet.available + (detail.amount * 1e8),
               }, {
                 transaction: t,
                 lock: t.LOCK.UPDATE,
               });
+              console.log('updatedWallet');
+              console.log(updatedWallet);
               updatedTransaction = await trans.update({
-                confirmations: transaction.confirmations > 30000 ? 30000 : transaction.confirmations,
+                confirmations: transaction.rawconfirmations > 30000 ? 30000 : transaction.rawconfirmations,
                 phase: 'confirmed',
               }, {
                 transaction: t,
@@ -208,29 +210,19 @@ const syncTransactions = async (
                 transaction: t,
                 lock: t.LOCK.UPDATE,
               });
-              userToMessage = await db.user.findOne({
-                where: {
-                  id: updatedWallet.userId,
-                },
-                transaction: t,
-                lock: t.LOCK.UPDATE,
-              });
-              isDepositComplete = true;
             }
           }
         }
 
         t.afterCommit(async () => {
-          // await isDepositOrWithdrawalCompleteMessageHandler(
-          //   isDepositComplete,
-          //   isWithdrawalComplete,
-          //   discordClient,
-          //   telegramClient,
-          //   matrixClient,
-          //   userToMessage,
-          //   trans,
-          //   detail.amount,
-          // );
+          if (updatedTransaction) {
+            io.to('admin').emit(
+              'updateTransaction',
+              {
+                result: updatedTransaction,
+              },
+            );
+          }
         });
       }).catch(async (err) => {
         try {
@@ -283,8 +275,15 @@ const insertBlock = async (startBlock) => {
 
 export const startTokelSync = async (
   discordClient,
+  io,
   queue,
 ) => {
+  try {
+    await getInstance().getBlockchainInfo();
+  } catch (e) {
+    console.log(e);
+    return;
+  }
   const currentBlockCount = Math.max(0, await getInstance().getBlockCount());
   let startBlock = Number(settings.startSyncBlock);
 
@@ -307,6 +306,7 @@ export const startTokelSync = async (
       await queue.add(async () => {
         const task = await syncTransactions(
           discordClient,
+          io,
         );
       });
 

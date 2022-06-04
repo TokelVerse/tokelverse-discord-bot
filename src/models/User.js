@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
   const UserModel = sequelize.define('user', modelDefinition, modelOptions);
 
   UserModel.associate = (model) => {
-    UserModel.hasMany(model.wallet);
+    UserModel.hasOne(model.wallet);
     UserModel.hasMany(model.transaction);
     UserModel.hasOne(model.linkedAddress);
   };

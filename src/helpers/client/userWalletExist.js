@@ -19,12 +19,12 @@ export const userWalletExist = async (
   }
   const user = await db.user.findOne({
     where: {
-      user_id: `discord-${userId}`,
+      user_id: `${userId}`,
     },
     include: [
       {
         model: db.wallet,
-        as: 'wallets',
+        as: 'wallet',
         required: true,
         include: [
           {

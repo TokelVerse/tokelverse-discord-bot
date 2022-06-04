@@ -615,6 +615,25 @@ export const AccountInfoMessage = () => {
   return result;
 };
 
+export const linkedAddressVerified = (
+  discordId,
+  linkedAddress,
+) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle('Link tokel address')
+    .setDescription(`Thank you, <@${discordId}>,
+We successfully linked **${linkedAddress}** to your discord account`)
+    .setThumbnail(settings.bot.logo)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
 export const discordTransactionMemoTooLongMessage = (
   message,
   memoLength,

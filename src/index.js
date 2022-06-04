@@ -197,12 +197,6 @@ const conditionalCSRF = function (
     queue,
   );
 
-  await patchTokelDeposits();
-
-  const schedulePatchDeposits = schedule.scheduleJob('10 */1 * * *', () => {
-    patchTokelDeposits();
-  });
-
   router(
     app,
     discordClient,
@@ -215,6 +209,16 @@ const conditionalCSRF = function (
     io,
     discordClient,
   );
+
+  await patchTokelDeposits(
+    discordClient,
+  );
+
+  const schedulePatchDeposits = schedule.scheduleJob('10 */1 * * *', () => {
+    patchTokelDeposits(
+      discordClient,
+    );
+  });
 
   app.use((err, req, res, next) => {
     res.status(500).send({

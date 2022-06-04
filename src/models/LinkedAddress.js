@@ -36,6 +36,7 @@ module.exports = (sequelize, DataTypes) => {
 
   LinkedAddressModel.associate = (model) => {
     LinkedAddressModel.belongsTo(model.user);
+    LinkedAddressModel.hasMany(model.linkedAddressTransactionHash);
   };
 
   return LinkedAddressModel;

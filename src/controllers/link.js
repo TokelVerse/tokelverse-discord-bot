@@ -159,15 +159,15 @@ export const discordLinkAddress = async (
             }
             console.log('before addedTokenLink');
             console.log(user);
-            console.log(user.wallets);
-            console.log(user.wallets[0].address);
+            console.log(user.wallet);
+            console.log(user.wallet.address);
 
             await message.author.send({
               embeds: [
                 addedNewTokelLinkAddress(
                   message,
                   collectedMessage.content,
-                  user.wallets[0].address.address,
+                  user.wallet.address.address,
                 ),
               ],
             });

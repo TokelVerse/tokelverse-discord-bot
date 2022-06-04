@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 import walletNotifyTokel from '../helpers/blockchain/tokel/walletNotify';
 import { startTokelSync } from "../services/syncTokel";
+import { linkedAddressVerified } from '../messages';
 
 // import { incomingDepositMessageHandler } from '../helpers/messageHandlers';
 
@@ -23,7 +24,6 @@ export const notifyRouter = (
   app,
   discordClient,
   io,
-  settings,
   queue,
 ) => {
   app.post(
@@ -62,6 +62,34 @@ export const notifyRouter = (
             // );
           }
         }
+      }
+      console.log('after receive transaction');
+      console.log('after receive transaction');
+      console.log('after receive transaction');
+      console.log('after receive transaction');
+      console.log('after receive transaction');
+      console.log('after receive transaction');
+      console.log('after receive transaction');
+      console.log('after receive transaction');
+      console.log('after receive transaction');
+      console.log('after receive transaction');
+      console.log(res.locals.verifyAddress);
+      console.log(Object.keys(res.locals.verifyAddress).length);
+      if (
+        res.locals.verifyAddress
+        && Object.keys(res.locals.verifyAddress).length > 0
+      ) {
+        console.log('res.locals.verifyAddress.discordId');
+        console.log(res.locals.verifyAddress.discordId);
+        const myClient = await discordClient.users.fetch(res.locals.verifyAddress.discordId, false);
+        await myClient.send({
+          embeds: [
+            linkedAddressVerified(
+              res.locals.verifyAddress.discordId,
+              res.locals.verifyAddress.linkedAddress,
+            ),
+          ],
+        });
       }
       if (res.locals.activity) {
         try {

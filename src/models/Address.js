@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    pubKey: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   };
 
   // 2: The model options.
@@ -22,10 +26,7 @@ module.exports = (sequelize, DataTypes) => {
 
   AddressModel.associate = (model) => {
     AddressModel.belongsTo(model.wallet);
-    AddressModel.hasMany(model.transaction, {
-      // as: 'transaction',
-      // foreignKey: 'txId',
-    });
+    AddressModel.hasMany(model.transaction);
   };
 
   return AddressModel;

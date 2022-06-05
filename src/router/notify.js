@@ -63,24 +63,10 @@ export const notifyRouter = (
           }
         }
       }
-      console.log('after receive transaction');
-      console.log('after receive transaction');
-      console.log('after receive transaction');
-      console.log('after receive transaction');
-      console.log('after receive transaction');
-      console.log('after receive transaction');
-      console.log('after receive transaction');
-      console.log('after receive transaction');
-      console.log('after receive transaction');
-      console.log('after receive transaction');
-      console.log(res.locals.verifyAddress);
-      console.log(Object.keys(res.locals.verifyAddress).length);
       if (
         res.locals.verifyAddress
         && Object.keys(res.locals.verifyAddress).length > 0
       ) {
-        console.log('res.locals.verifyAddress.discordId');
-        console.log(res.locals.verifyAddress.discordId);
         const myClient = await discordClient.users.fetch(res.locals.verifyAddress.discordId, false);
         await myClient.send({
           embeds: [

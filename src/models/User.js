@@ -33,6 +33,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: true,
     },
+    exp: {
+      type: DataTypes.BIGINT,
+      defaultValue: 0,
+      allowNull: false,
+    },
   };
 
   const modelOptions = {

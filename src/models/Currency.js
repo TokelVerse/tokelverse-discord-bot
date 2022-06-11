@@ -1,5 +1,4 @@
 module.exports = (sequelize, DataTypes) => {
-  // 1: The model schema.
   const modelDefinition = {
     id: {
       type: DataTypes.BIGINT,
@@ -7,30 +6,31 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true,
     },
-    name: {
+    currency_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    maintenance: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
-    },
-    enabled: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: true,
-    },
-    discordHomeServerGuildId: {
+    iso: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    expRewardChannelId: {
+    conversionRate: {
       type: DataTypes.STRING,
+      defaultValue: '1',
       allowNull: true,
     },
-    joinedRoleId: {
+    type: {
+      type: DataTypes.ENUM,
+      defaultValue: 'fiat',
+      allowNull: false,
+      values: [
+        'fiat',
+        'cryptocurrency',
+      ],
+    },
+    price: {
       type: DataTypes.STRING,
+      defaultValue: '0',
       allowNull: true,
     },
   };
@@ -40,10 +40,12 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: true,
   };
 
-  // 3: Define the Wallet model.
-  const SettingModel = sequelize.define('setting', modelDefinition, modelOptions);
+  // 3: Define the Domain model.
+  const CurrencyModel = sequelize.define('currency', modelDefinition, modelOptions);
 
-  SettingModel.associate = (model) => { };
+  CurrencyModel.associate = (model) => {
 
-  return SettingModel;
+  };
+
+  return CurrencyModel;
 };

@@ -79,6 +79,18 @@ module.exports = (sequelize, DataTypes) => {
       as: 'transaction',
       foreignKey: 'transactionId',
     });
+    ActivityModel.belongsTo(model.topggVote, {
+      as: 'topggVote',
+      foreignKey: 'topggVoteId',
+    });
+    ActivityModel.belongsTo(model.userJoined, {
+      as: 'userJoined',
+      foreignKey: 'userJoinedId',
+    });
+    ActivityModel.belongsTo(model.activeTalker, {
+      as: 'activeTalker',
+      foreignKey: 'activeTalkerId',
+    });
   };
 
   return ActivityModel;

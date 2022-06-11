@@ -38,6 +38,11 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0,
       allowNull: false,
     },
+    totalInvitedUsersCount: {
+      type: DataTypes.BIGINT,
+      defaultValue: 0,
+      allowNull: false,
+    },
   };
 
   const modelOptions = {
@@ -50,6 +55,13 @@ module.exports = (sequelize, DataTypes) => {
     UserModel.hasOne(model.wallet);
     UserModel.hasMany(model.transaction);
     UserModel.hasOne(model.linkedAddress);
+    UserModel.hasMany(model.active);
+    UserModel.hasMany(model.topggVote);
+    UserModel.hasMany(model.activeTalker);
+    UserModel.belongsToMany(
+      model.rank,
+      { through: 'UserRank' },
+    );
   };
 
   return UserModel;

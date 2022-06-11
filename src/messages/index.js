@@ -676,7 +676,7 @@ export const gainVoteTopggExpMessage = (
   const result = new MessageEmbed()
     .setColor(settings.bot.color)
     .setTitle('Gain Exp')
-    .setDescription(`<@${userId}>, Thank you for voting for Runebase on TopGG.
+    .setDescription(`<@${userId}>, Thank you for voting for Tokelverse on TopGG.
 you have been rewarded ${amount} experience`)
     .setTimestamp()
     .setFooter({
@@ -695,7 +695,7 @@ export const invitedNewUserRewardMessage = (
   const result = new MessageEmbed()
     .setColor(settings.bot.color)
     .setTitle('Gain Exp')
-    .setDescription(`<@${userId}>, Thank you for inviting <@${joinedUserId}> to the Runebase server.
+    .setDescription(`<@${userId}>, Thank you for inviting <@${joinedUserId}> to the Tokelverse server.
 you have been rewarded ${amount} experience`)
     .setTimestamp()
     .setFooter({

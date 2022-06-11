@@ -55,6 +55,7 @@ export const discordRouter = (
     const setting = await db.setting.findOne();
 
     if (member.guild.id === setting.discordHomeServerGuildId) {
+      console.log(member.user);
       const newUser = await createUpdateDiscordUser(
         discordClient,
         member.user,
@@ -382,7 +383,7 @@ export const discordRouter = (
       });
     }
 
-    if (!message.content.startsWith(settings.bot.command.discord) || message.author.bot) return;
+    if (!message.content.startsWith(settings.bot.command) || message.author.bot) return;
     const maintenance = await isMaintenanceOrDisabled(message, 'discord');
     if (maintenance.maintenance || !maintenance.enabled) return;
     if (groupTask && groupTask.banned) {

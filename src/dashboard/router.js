@@ -17,6 +17,12 @@ import {
   fetchBotSettings,
   updateBotSettings,
 } from './controllers/bots';
+import {
+  fetchRanks,
+  addRank,
+  removeRank,
+  updateRank,
+} from './controllers/rank';
 
 import { insertIp } from './controllers/ip';
 
@@ -335,6 +341,49 @@ export const dashboardRouter = (
     ensuretfa,
     use(fetchBotSettings),
     respondCountAndResult,
+  );
+
+  app.post(
+    '/api/management/ranks',
+    use(IsAuthenticated),
+    use(isAdmin),
+    use(isDashboardUserBanned),
+    use(insertIp),
+    use(ensuretfa),
+    use(fetchRanks),
+    respondCountAndResult,
+  );
+  app.post(
+    '/api/management/rank/add',
+    use(IsAuthenticated),
+    use(isAdmin),
+    use(isDashboardUserBanned),
+    use(insertIp),
+    use(ensuretfa),
+    use(addRank),
+    respondResult,
+  );
+
+  app.post(
+    '/api/management/rank/remove',
+    use(IsAuthenticated),
+    use(isAdmin),
+    use(isDashboardUserBanned),
+    use(insertIp),
+    use(ensuretfa),
+    use(removeRank),
+    respondResult,
+  );
+
+  app.post(
+    '/api/management/rank/update',
+    use(IsAuthenticated),
+    use(isAdmin),
+    use(isDashboardUserBanned),
+    use(insertIp),
+    use(ensuretfa),
+    use(updateRank),
+    respondResult,
   );
 
   app.post(

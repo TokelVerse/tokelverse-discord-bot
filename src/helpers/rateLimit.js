@@ -36,6 +36,41 @@ const rateLimiterAccount = new RateLimiterFlexible.default.RateLimiterMemory({
   duration: 30,
 });
 
+const rateLimiterMyrank = new RateLimiterFlexible.default.RateLimiterMemory({
+  points: 2,
+  duration: 30,
+});
+
+const rateLimiterRanks = new RateLimiterFlexible.default.RateLimiterMemory({
+  points: 2,
+  duration: 30,
+});
+
+const rateLimiterDeposit = new RateLimiterFlexible.default.RateLimiterMemory({
+  points: 2,
+  duration: 30,
+});
+
+const rateLimiterBalance = new RateLimiterFlexible.default.RateLimiterMemory({
+  points: 2,
+  duration: 30,
+});
+
+const rateLimiterWithdraw = new RateLimiterFlexible.default.RateLimiterMemory({
+  points: 2,
+  duration: 30,
+});
+
+const rateLimiterLeaderboard = new RateLimiterFlexible.default.RateLimiterMemory({
+  points: 2,
+  duration: 30,
+});
+
+const rateLimiterMostActive = new RateLimiterFlexible.default.RateLimiterMemory({
+  points: 2,
+  duration: 30,
+});
+
 export const myRateLimiter = async (
   client,
   message,
@@ -70,6 +105,34 @@ export const myRateLimiter = async (
       }
       if (title.toLowerCase() === 'unlink') {
         await rateLimiterUnlink.consume(userId, 1);
+        return false;
+      }
+      if (title.toLowerCase() === 'ranks') {
+        await rateLimiterRanks.consume(userId, 1);
+        return false;
+      }
+      if (title.toLowerCase() === 'myrank') {
+        await rateLimiterMyrank.consume(userId, 1);
+        return false;
+      }
+      if (title.toLowerCase() === 'mostactive') {
+        await rateLimiterMostActive.consume(userId, 1);
+        return false;
+      }
+      if (title.toLowerCase() === 'leaderboard') {
+        await rateLimiterLeaderboard.consume(userId, 1);
+        return false;
+      }
+      if (title.toLowerCase() === 'deposit') {
+        await rateLimiterDeposit.consume(userId, 1);
+        return false;
+      }
+      if (title.toLowerCase() === 'withdraw') {
+        await rateLimiterWithdraw.consume(userId, 1);
+        return false;
+      }
+      if (title.toLowerCase() === 'balance') {
+        await rateLimiterBalance.consume(userId, 1);
         return false;
       }
 

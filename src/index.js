@@ -27,6 +27,8 @@ import { initDatabaseRecords } from "./helpers/initDatabaseRecords";
 import { startTokelSync } from "./services/syncTokel";
 import { patchTokelDeposits } from "./helpers/blockchain/tokel/patcher";
 import logger from "./helpers/logger";
+import settings from './config/settings';
+import { deployCommands } from './helpers/client/deployCommands';
 
 Object.freeze(Object.prototype);
 
@@ -185,29 +187,41 @@ const conditionalCSRF = function (
     ],
   });
 
+  await router(
+    app,
+    discordClient,
+    io,
+    queue,
+  );
+
   await discordClient.login(process.env.DISCORD_CLIENT_TOKEN);
+  console.log(`Logged in as ${discordClient.user.tag}!`);
+  discordClient.user.setPresence({
+    activities: [{
+      name: `${settings.bot.command}`,
+      type: "PLAYING",
+    }],
+  });
+
+  dashboardRouter(
+    app,
+    io,
+    discordClient,
+  );
 
   await initDatabaseRecords(
     discordClient,
+  );
+
+  await deployCommands(
+    process.env.DISCORD_CLIENT_TOKEN,
+    discordClient.user.id,
   );
 
   await startTokelSync(
     discordClient,
     io,
     queue,
-  );
-
-  router(
-    app,
-    discordClient,
-    io,
-    queue,
-  );
-
-  dashboardRouter(
-    app,
-    io,
-    discordClient,
   );
 
   await patchTokelDeposits(

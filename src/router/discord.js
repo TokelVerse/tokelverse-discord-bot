@@ -4,6 +4,8 @@ import { updateDiscordGroup } from '../controllers/group';
 import { discordHelp } from '../controllers/help';
 import { discordLinkAddress } from '../controllers/link';
 import { discordUnlinkAddress } from '../controllers/unlink';
+import { discordActiveTalker } from '../controllers/activeTalker';
+import db from "../models";
 
 import { discordAccount } from '../controllers/account';
 
@@ -63,6 +65,25 @@ export const discordRouter = (
       groupTaskId = groupTask && groupTask.id;
       channelTaskId = channelTask && channelTask.id;
     }
+
+    const messageReplaceBreaksWithSpaces = message.content.replace(/\n/g, " ");
+    const preFilteredMessageDiscord = messageReplaceBreaksWithSpaces.split(' ');
+    const filteredMessageDiscord = preFilteredMessageDiscord.filter((el) => el !== '');
+
+    if (!message.author.bot) {
+      const setting = await db.setting.findOne();
+      await queue.add(async () => {
+        if (message.guildId === setting.discordHomeServerGuildId) {
+          const task = await discordActiveTalker(
+            discordClient,
+            message,
+            filteredMessageDiscord,
+            io,
+          );
+        }
+      });
+    }
+
     if (!message.content.startsWith(settings.bot.command.discord) || message.author.bot) return;
     const maintenance = await isMaintenanceOrDisabled(message, 'discord');
     if (maintenance.maintenance || !maintenance.enabled) return;
@@ -104,10 +125,6 @@ export const discordRouter = (
       });
       return;
     }
-
-    const messageReplaceBreaksWithSpaces = message.content.replace(/\n/g, " ");
-    const preFilteredMessageDiscord = messageReplaceBreaksWithSpaces.split(' ');
-    const filteredMessageDiscord = preFilteredMessageDiscord.filter((el) => el !== '');
 
     if (filteredMessageDiscord[1] === undefined) {
       const limited = await myRateLimiter(

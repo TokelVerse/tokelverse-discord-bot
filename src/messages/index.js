@@ -615,6 +615,97 @@ export const AccountInfoMessage = () => {
   return result;
 };
 
+export const alreadyVotedTopGG = (
+  userId,
+) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle('Gain Exp')
+    .setDescription(`<@${userId}>, Thank you for your enthousiasme.
+You already voted past 12h, so we could not grant you experience`)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const levelUpMessage = (
+  userId,
+  rank,
+) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle('Gain Exp')
+    .setDescription(`Congratulations <@${userId}>
+You gained a level
+You are now a ${rank.name} (lvl ${rank.id})`)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const gainActiveTalkerExpMessage = (
+  userId,
+  amount,
+) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle('Gain Exp')
+    .setDescription(`<@${userId}>, Thank you for being so talkative in our community today!
+you have been rewarded ${amount} experience`)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const gainVoteTopggExpMessage = (
+  userId,
+  amount,
+) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle('Gain Exp')
+    .setDescription(`<@${userId}>, Thank you for voting for Runebase on TopGG.
+you have been rewarded ${amount} experience`)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const invitedNewUserRewardMessage = (
+  userId,
+  joinedUserId,
+  amount,
+) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle('Gain Exp')
+    .setDescription(`<@${userId}>, Thank you for inviting <@${joinedUserId}> to the Runebase server.
+you have been rewarded ${amount} experience`)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
 export const linkedAddressVerified = (
   discordId,
   linkedAddress,

@@ -24,7 +24,9 @@ module.exports = (sequelize, DataTypes) => {
     AddressExternalModel.hasMany(model.transaction);
     AddressExternalModel.belongsToMany(
       model.user,
-      { through: 'UserAddressExternal' },
+      {
+        through: 'UserAddressExternal',
+      },
     );
   };
 

@@ -26,6 +26,7 @@ import { dashboardRouter } from "./dashboard/router";
 import { initDatabaseRecords } from "./helpers/initDatabaseRecords";
 import { startTokelSync } from "./services/syncTokel";
 import { patchTokelDeposits } from "./helpers/blockchain/tokel/patcher";
+import { startNftCheck } from "./helpers/blockchain/tokel/nft";
 import logger from "./helpers/logger";
 import settings from './config/settings';
 import { deployCommands } from './helpers/client/deployCommands';
@@ -230,6 +231,15 @@ const conditionalCSRF = function (
 
   const schedulePatchDeposits = schedule.scheduleJob('10 */1 * * *', () => {
     patchTokelDeposits(
+      discordClient,
+    );
+  });
+
+  startNftCheck(
+    discordClient,
+  );
+  const scheduleNftCheck = schedule.scheduleJob('*/1 * * * *', () => {
+    startNftCheck(
       discordClient,
     );
   });

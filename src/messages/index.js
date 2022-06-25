@@ -744,21 +744,91 @@ We found ${memoLength} characters, maximum length is 512`)
   return result;
 };
 
+export const userUnlinkedAddressRolesLostMessage = (
+  user,
+  roles,
+) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle('Unlinked address')
+    .setDescription(`<@${user.user_id}>, has unlinked his/her address
+and has lost ${roles.length} ${roles.length === 1 ? 'role' : 'roles'}
+    ${roles.map((roleId) => `<@&${roleId}>`).join("\n")}`)
+    .setThumbnail(settings.bot.logo)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const userRolesLostMessage = (
+  user,
+  roles,
+) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle('Lost Roles')
+    .setDescription(`<@${user.user_id}>, Lost ${roles.length} ${roles.length === 1 ? 'role' : 'roles'}
+${roles.map((roleId) => `<@&${roleId}>`).join("\n")}`)
+    .setThumbnail(settings.bot.logo)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const userEarnedRolesMessage = (
+  user,
+  roles,
+) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle('Earned Roles')
+    .setDescription(`<@${user.user_id}>, Earned ${roles.length} ${roles.length === 1 ? 'role' : 'roles'}
+${roles.map((roleId) => `<@&${roleId}>`).join("\n")}`)
+    .setThumbnail(settings.bot.logo)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
 export const helpMessage = (withdraw) => {
   const result = new MessageEmbed()
     .setColor(settings.bot.color)
     .setTitle(`${`${settings.bot.name} v${pjson.version}`} Help`)
-    .setDescription(`\`${settings.bot.command.discord}\`
+    .setDescription(`\`${settings.bot.command}\`
 Displays this message
 
-\`${settings.bot.command.discord} help\`
+\`${settings.bot.command} help\`
 Displays this message
 
-\`${settings.bot.command.discord} account\`
-Displays your account information
+\`${settings.bot.command} link\`
+Link a tokel address to your discord account
 
-\`${settings.bot.command.discord} link\`
-Link a tokel address to your discord account`)
+\`${settings.bot.command} unlink\`
+Link a tokel address to your discord account
+
+\`${settings.bot.command} myrank\`
+Shows your rank
+
+\`${settings.bot.command} leaderboard\`
+Shows the leaderboard
+
+\`${settings.bot.command} mostactive\`
+Shows most active users past month
+
+\`${settings.bot.command} ranks\`
+Shows all the ranks to earn`)
     .setTimestamp()
     .setFooter({
       text: `${settings.bot.name} v${pjson.version}`,

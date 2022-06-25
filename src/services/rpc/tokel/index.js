@@ -47,6 +47,26 @@ class Tokel {
   }
 
   /**
+   * Returns all of the pubkey's tokens
+   * @param {string} pubkey the pubkey to look up
+   * @return {Promise} PubKey token list or Error.
+   */
+  tokenv2AllBalances(pubkey) {
+    console.log('pubkey');
+    console.log(pubkey);
+    return this.provider.rawCall('tokenv2allbalances', [pubkey]);
+  }
+
+  /**
+   * Returns all of the pubkey's tokens
+   * @param {string} pubkey the pubkey to look up
+   * @return {Promise} PubKey token list or Error.
+   */
+  tokenv2InfoTokel(tokenId) {
+    return this.provider.rawCall('tokenv2infotokel', [tokenId]);
+  }
+
+  /**
    * Returns the block hash of the block height number specified.
    * @param {number} blockNum The block number to look up.
    * @return {Promise} Block hash or Error.

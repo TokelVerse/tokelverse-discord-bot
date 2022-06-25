@@ -58,9 +58,18 @@ module.exports = (sequelize, DataTypes) => {
     UserModel.hasMany(model.active);
     UserModel.hasMany(model.topggVote);
     UserModel.hasMany(model.activeTalker);
+    UserModel.hasMany(model.nft);
     UserModel.belongsToMany(
       model.rank,
-      { through: 'UserRank' },
+      {
+        through: 'UserRank',
+      },
+    );
+    UserModel.belongsToMany(
+      model.role,
+      {
+        through: 'UserRole',
+      },
     );
   };
 

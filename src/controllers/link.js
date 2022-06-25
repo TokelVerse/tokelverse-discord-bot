@@ -68,7 +68,8 @@ export const discordLinkAddress = async (
       errors: ['time'],
     }).then(async (collected) => {
       const collectedMessage = collected.first();
-      console.log(collectedMessage);
+      console.log(collectedMessage.content);
+      console.log('collectedMessage.content');
       let isValidAddress;
       try {
         isValidAddress = await getInstance().validateAddress(collectedMessage.content);
@@ -76,8 +77,8 @@ export const discordLinkAddress = async (
         console.log(e);
         isValidAddress = false;
       }
-
-      if (isValidAddress) {
+      console.log(isValidAddress);
+      if (isValidAddress && isValidAddress.isvalid) {
         const isAlreadyOccupied = await db.linkedAddress.findOne({
           where: {
             address: collectedMessage.content,

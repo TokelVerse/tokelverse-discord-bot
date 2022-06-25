@@ -1,6 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 import { Transaction } from "sequelize";
 import {
+  MessageButton,
+  MessageActionRow,
+} from "discord.js";
+import {
   warnDirectMessage,
   noAddressToUnlink,
   confirmUnlinkAddress,
@@ -64,67 +68,104 @@ export const discordUnlinkAddress = async (
         ],
       });
     }
+
+    const noId = 'no';
+    const yesId = 'yes';
+    const NoButton = new MessageButton({
+      style: 'SECONDARY',
+      label: 'No',
+      emoji: '❌',
+      customId: noId,
+    });
+    const YesButton = new MessageButton({
+      style: 'SECONDARY',
+      label: 'Yes',
+      emoji: '✔️',
+      customId: yesId,
+    });
+
     if (hasAddressToUnlink) {
-      await message.author.send({
+      const embedMessage = await message.author.send({
         embeds: [
           confirmUnlinkAddress(
             message,
             hasAddressToUnlink.address,
           ),
         ],
+        components: [
+          new MessageActionRow({
+            components: [
+              YesButton,
+              NoButton,
+            ],
+          }),
+        ],
       });
-      const msgFilter = (m) => {
-        const filtered = m.author.id === message.author.id
-          && (
-            m.content.toUpperCase() === 'YES'
-            || m.content.toUpperCase() === 'Y'
-            || m.content.toUpperCase() === 'NO'
-            || m.content.toUpperCase() === 'N'
-          );
-        return filtered;
-      };
-      await message.author.dmChannel.awaitMessages({
-        filter: msgFilter,
+
+      const collector = embedMessage.createMessageComponentCollector({
+        filter: ({ user: discordUser }) => discordUser.id === user.user_id,
+        componentType: 'BUTTON',
         max: 1,
         time: 60000,
         errors: ['time'],
-      }).then(async (collected) => {
-        const collectedMessage = collected.first();
-        if (
-          collectedMessage.content.toUpperCase() === 'YES'
-          || collectedMessage.content.toUpperCase() === 'Y'
-        ) {
-          const unlinkedAddress = await hasAddressToUnlink.update({
-            enabled: false,
-          }, {
-            lock: t.LOCK.UPDATE,
-            transaction: t,
+      });
+
+      collector.on('collect', async (interaction) => {
+        if (interaction.customId === yesId) {
+          console.log('received yes');
+          await db.sequelize.transaction({
+            isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,
+          }, async (t) => {
+            const unlinkedAddress = await hasAddressToUnlink.update({
+              enabled: false,
+            }, {
+              lock: t.LOCK.UPDATE,
+              transaction: t,
+            });
+            await interaction.update({
+              embeds: [
+                successUnlinkAddress(
+                  message,
+                  unlinkedAddress.address,
+                ),
+              ],
+              components: [],
+            });
+          }).catch(async (err) => {
+            try {
+              await db.error.create({
+                type: 'unlink',
+                error: `${err}`,
+              });
+            } catch (e) {
+              logger.error(`Error Discord: ${e}`);
+            }
           });
-          await message.author.send({
-            embeds: [
-              successUnlinkAddress(
-                message,
-                unlinkedAddress.address,
-              ),
-            ],
-          });
-        } else {
-          await message.author.send({
+        }
+        if (interaction.customId === noId) {
+          await interaction.update({
             embeds: [
               cancelUnlinkAddress(
                 message,
               ),
             ],
+
           });
         }
-      }).catch(async (collected) => {
-        await message.author.send({
-          embeds: [
-            timeOutUnlinkAddressMessage(
-              message,
-            ),
-          ],
-        });
+      });
+
+      collector.on('end', async (collected) => {
+        console.log(collected.size);
+        if (collected.size === 0) {
+          await embedMessage.edit({
+            embeds: [
+              timeOutUnlinkAddressMessage(
+                message,
+              ),
+            ],
+            components: [],
+          });
+        }
       });
     }
 

@@ -387,6 +387,28 @@ export const successUnlinkAddress = (
   return result;
 };
 
+export const userAlreadyLinkedAnAddressMessage = (
+  user,
+  address,
+) => {
+  const result = new MessageEmbed()
+    .setColor(settings.bot.color)
+    .setTitle('Unlink Tokel Address')
+    .setDescription(`<@${user.user_id}>, You already linked an address.
+
+please unlink it with \`!tokelverse unlink\` before trying to link a new one 
+
+currently linked address: 
+**${address}**`)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
 export const cancelUnlinkAddress = (
   message,
 ) => {

@@ -240,7 +240,7 @@ var conditionalCSRF = function conditionalCSRF(req, res, next) {
             (0, _patcher.patchTokelDeposits)(discordClient);
           });
           (0, _nft.startNftCheck)(discordClient);
-          scheduleNftCheck = _nodeSchedule["default"].scheduleJob('*/1 * * * *', function () {
+          scheduleNftCheck = _nodeSchedule["default"].scheduleJob('*/20 * * * *', function () {
             (0, _nft.startNftCheck)(discordClient);
           });
           app.use(function (err, req, res, next) {

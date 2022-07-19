@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.warnDirectMessage = exports.walletNotFoundMessage = exports.userUnlinkedAddressRolesLostMessage = exports.userRolesLostMessage = exports.userNotFoundMessage = exports.userEarnedRolesMessage = exports.tokelLinkAddressAlreadyVerified = exports.tokelLinkAddressAlreadyOccupied = exports.tokelLinkAddressAlreadyBusyVerifying = exports.timeOutUnlinkAddressMessage = exports.timeOutTokelLinkAddressMessage = exports.successUnlinkAddress = exports.reviewMessage = exports.priceMessage = exports.noAddressToUnlink = exports.linkedAddressVerified = exports.levelUpMessage = exports.invitedNewUserRewardMessage = exports.invalidTokelLinkAddress = exports.helpMessage = exports.gainVoteTopggExpMessage = exports.gainActiveTalkerExpMessage = exports.enterAddressToLinkMessage = exports.discordWithdrawalConfirmedMessage = exports.discordWithdrawalAcceptedMessage = exports.discordWelcomeMessage = exports.discordUserWithdrawalRejectMessage = exports.discordUserBannedMessage = exports.discordTransactionMemoTooLongMessage = exports.discordServerBannedMessage = exports.discordLimitSpamMessage = exports.discordIncomingDepositMessage = exports.discordErrorMessage = exports.discordDepositConfirmedMessage = exports.discordChannelBannedMessage = exports.discordBotMaintenanceMessage = exports.discordBotDisabledMessage = exports.depositAddressMessage = exports.confirmUnlinkAddress = exports.coinInfoMessage = exports.cannotSendMessageUser = exports.cancelUnlinkAddress = exports.balanceMessage = exports.alreadyVotedTopGG = exports.addedNewTokelLinkAddress = exports.NotInDirectMessage = exports.AccountInfoMessage = void 0;
+exports.warnDirectMessage = exports.walletNotFoundMessage = exports.userUnlinkedAddressRolesLostMessage = exports.userRolesLostMessage = exports.userNotFoundMessage = exports.userEarnedRolesMessage = exports.userAlreadyLinkedAnAddressMessage = exports.tokelLinkAddressAlreadyVerified = exports.tokelLinkAddressAlreadyOccupied = exports.tokelLinkAddressAlreadyBusyVerifying = exports.timeOutUnlinkAddressMessage = exports.timeOutTokelLinkAddressMessage = exports.successUnlinkAddress = exports.reviewMessage = exports.priceMessage = exports.noAddressToUnlink = exports.linkedAddressVerified = exports.levelUpMessage = exports.invitedNewUserRewardMessage = exports.invalidTokelLinkAddress = exports.helpMessage = exports.gainVoteTopggExpMessage = exports.gainActiveTalkerExpMessage = exports.enterAddressToLinkMessage = exports.discordWithdrawalConfirmedMessage = exports.discordWithdrawalAcceptedMessage = exports.discordWelcomeMessage = exports.discordUserWithdrawalRejectMessage = exports.discordUserBannedMessage = exports.discordTransactionMemoTooLongMessage = exports.discordServerBannedMessage = exports.discordLimitSpamMessage = exports.discordIncomingDepositMessage = exports.discordErrorMessage = exports.discordDepositConfirmedMessage = exports.discordChannelBannedMessage = exports.discordBotMaintenanceMessage = exports.discordBotDisabledMessage = exports.depositAddressMessage = exports.confirmUnlinkAddress = exports.coinInfoMessage = exports.cannotSendMessageUser = exports.cancelUnlinkAddress = exports.balanceMessage = exports.alreadyVotedTopGG = exports.addedNewTokelLinkAddress = exports.NotInDirectMessage = exports.AccountInfoMessage = void 0;
 
 var _discord = require("discord.js");
 
@@ -257,6 +257,16 @@ var successUnlinkAddress = function successUnlinkAddress(message, address) {
 };
 
 exports.successUnlinkAddress = successUnlinkAddress;
+
+var userAlreadyLinkedAnAddressMessage = function userAlreadyLinkedAnAddressMessage(user, address) {
+  var result = new _discord.MessageEmbed().setColor(_settings["default"].bot.color).setTitle('Unlink Tokel Address').setDescription("<@".concat(user.user_id, ">, You already linked an address.\n\nplease unlink it with `!tokelverse unlink` before trying to link a new one \n\ncurrently linked address: \n**").concat(address, "**")).setTimestamp().setFooter({
+    text: "".concat(_settings["default"].bot.name, " v").concat(_package["default"].version),
+    iconURL: _settings["default"].bot.logo
+  });
+  return result;
+};
+
+exports.userAlreadyLinkedAnAddressMessage = userAlreadyLinkedAnAddressMessage;
 
 var cancelUnlinkAddress = function cancelUnlinkAddress(message) {
   var result = new _discord.MessageEmbed().setColor(_settings["default"].bot.color).setTitle('Unlink Tokel Address').setDescription("<@".concat(message.author.id, ">, you canceled unlinking your address")).setTimestamp().setFooter({

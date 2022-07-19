@@ -238,7 +238,7 @@ const conditionalCSRF = function (
   startNftCheck(
     discordClient,
   );
-  const scheduleNftCheck = schedule.scheduleJob('*/1 * * * *', () => {
+  const scheduleNftCheck = schedule.scheduleJob('*/20 * * * *', () => {
     startNftCheck(
       discordClient,
     );

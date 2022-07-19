@@ -11,6 +11,7 @@ import {
   cannotSendMessageUser,
   discordErrorMessage,
   timeOutTokelLinkAddressMessage,
+  userAlreadyLinkedAnAddressMessage,
 } from '../messages';
 import db from '../models';
 import logger from "../helpers/logger";
@@ -48,6 +49,25 @@ export const discordLinkAddress = async (
           ),
         ],
       });
+    }
+    const userAlreadyLinkedAnAddress = await db.linkedAddress.findOne({
+      where: {
+        userId: user.id,
+        enabled: true,
+      },
+      lock: t.LOCK.UPDATE,
+      transaction: t,
+    });
+    if (userAlreadyLinkedAnAddress) {
+      await message.author.send({
+        embeds: [
+          userAlreadyLinkedAnAddressMessage(
+            user,
+            userAlreadyLinkedAnAddress.address,
+          ),
+        ],
+      });
+      return;
     }
 
     await message.author.send({

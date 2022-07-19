@@ -39,7 +39,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
               isolationLevel: _sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
             }, /*#__PURE__*/function () {
               var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(t) {
-                var _yield$userWalletExis, _yield$userWalletExis2, user, userActivity, msgFilter, preActivity, finalActivity;
+                var _yield$userWalletExis, _yield$userWalletExis2, user, userActivity, userAlreadyLinkedAnAddress, msgFilter, preActivity, finalActivity;
 
                 return _regenerator["default"].wrap(function _callee3$(_context3) {
                   while (1) {
@@ -80,17 +80,44 @@ var discordLinkAddress = /*#__PURE__*/function () {
 
                       case 13:
                         _context3.next = 15;
+                        return _models["default"].linkedAddress.findOne({
+                          where: {
+                            userId: user.id,
+                            enabled: true
+                          },
+                          lock: t.LOCK.UPDATE,
+                          transaction: t
+                        });
+
+                      case 15:
+                        userAlreadyLinkedAnAddress = _context3.sent;
+
+                        if (!userAlreadyLinkedAnAddress) {
+                          _context3.next = 20;
+                          break;
+                        }
+
+                        _context3.next = 19;
+                        return message.author.send({
+                          embeds: [(0, _messages.userAlreadyLinkedAnAddressMessage)(user, userAlreadyLinkedAnAddress.address)]
+                        });
+
+                      case 19:
+                        return _context3.abrupt("return");
+
+                      case 20:
+                        _context3.next = 22;
                         return message.author.send({
                           embeds: [(0, _messages.enterAddressToLinkMessage)()]
                         });
 
-                      case 15:
+                      case 22:
                         msgFilter = function msgFilter(m) {
                           var filtered = m.author.id === message.author.id;
                           return filtered;
                         };
 
-                        _context3.next = 18;
+                        _context3.next = 25;
                         return message.author.dmChannel.awaitMessages({
                           filter: msgFilter,
                           max: 1,
@@ -293,8 +320,8 @@ var discordLinkAddress = /*#__PURE__*/function () {
                           };
                         }());
 
-                      case 18:
-                        _context3.next = 20;
+                      case 25:
+                        _context3.next = 27;
                         return _models["default"].activity.create({
                           type: 'link_s',
                           earnerId: user.id
@@ -303,9 +330,9 @@ var discordLinkAddress = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 20:
+                      case 27:
                         preActivity = _context3.sent;
-                        _context3.next = 23;
+                        _context3.next = 30;
                         return _models["default"].activity.findOne({
                           where: {
                             id: preActivity.id
@@ -318,11 +345,11 @@ var discordLinkAddress = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 23:
+                      case 30:
                         finalActivity = _context3.sent;
                         activity.unshift(finalActivity);
 
-                      case 25:
+                      case 32:
                       case "end":
                         return _context3.stop();
                     }

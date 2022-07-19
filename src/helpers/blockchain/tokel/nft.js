@@ -5,7 +5,7 @@ import {
   userEarnedRolesMessage,
   userUnlinkedAddressRolesLostMessage,
   userRolesLostMessage,
-} from '../../../messages';
+} from '../../../embeds';
 import { getInstance } from "../../../services/rclient";
 import { addCripttyRole } from './roles/criptty/addCripttyRole';
 import { removeCripttyRole } from './roles/criptty/removeCripttyRole';

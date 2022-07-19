@@ -13,7 +13,7 @@ import {
   successUnlinkAddress,
   cannotSendMessageUser,
   discordErrorMessage,
-} from '../messages';
+} from '../embeds';
 import db from '../models';
 import logger from "../helpers/logger";
 import { userWalletExist } from "../helpers/client/userWalletExist";

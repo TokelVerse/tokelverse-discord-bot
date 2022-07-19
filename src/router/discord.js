@@ -23,7 +23,7 @@ import {
   discordUserBannedMessage,
   discordServerBannedMessage,
   discordChannelBannedMessage,
-} from '../messages';
+} from '../embeds';
 
 config();
 

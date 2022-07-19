@@ -3,7 +3,7 @@ import { Transaction } from "sequelize";
 import db from '../../../models';
 
 import { getInstance } from "../../../services/rclient";
-import { linkedAddressVerified } from "../../../messages";
+import { linkedAddressVerified } from "../../../embeds";
 
 export async function patchTokelDeposits(
   discordClient,

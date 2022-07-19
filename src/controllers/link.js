@@ -12,7 +12,7 @@ import {
   discordErrorMessage,
   timeOutTokelLinkAddressMessage,
   userAlreadyLinkedAnAddressMessage,
-} from '../messages';
+} from '../embeds';
 import db from '../models';
 import logger from "../helpers/logger";
 import { userWalletExist } from "../helpers/client/userWalletExist";
@@ -38,7 +38,7 @@ export const discordLinkAddress = async (
       activity.unshift(userActivity);
     }
     if (!user) return;
-    console.log(user.wallet);
+    // console.log(user.wallet);
 
     if (message.channel.type === 'GUILD_TEXT') {
       await message.channel.send({

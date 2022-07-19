@@ -2,7 +2,7 @@ import { Op } from "sequelize";
 import db from "../../models";
 import {
   levelUpMessage,
-} from '../../messages';
+} from '../../embeds';
 import { handleExperienceMessage } from './messageHandlers/expierenceMessageHandler';
 
 export const gainExp = async (

@@ -3,7 +3,7 @@ import {
   gainVoteTopggExpMessage,
   invitedNewUserRewardMessage,
   gainActiveTalkerExpMessage,
-} from '../../../messages';
+} from '../../../embeds';
 
 export const handleExperienceMessage = async (
   discordChannel,

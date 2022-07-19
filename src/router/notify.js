@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 import walletNotifyTokel from '../helpers/blockchain/tokel/walletNotify';
 import { startTokelSync } from "../services/syncTokel";
-import { linkedAddressVerified } from '../messages';
+import { linkedAddressVerified } from '../embeds';
 
 // import { incomingDepositMessageHandler } from '../helpers/messageHandlers';
 

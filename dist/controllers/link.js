@@ -15,7 +15,9 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/
 
 var _sequelize = require("sequelize");
 
-var _messages = require("../messages");
+var _discord = require("discord.js");
+
+var _embeds = require("../embeds");
 
 var _models = _interopRequireDefault(require("../models"));
 
@@ -66,20 +68,18 @@ var discordLinkAddress = /*#__PURE__*/function () {
                         return _context3.abrupt("return");
 
                       case 9:
-                        console.log(user.wallet);
-
-                        if (!(message.channel.type === 'GUILD_TEXT')) {
-                          _context3.next = 13;
+                        if (!(message.channel.type === _discord.ChannelType.GuildText)) {
+                          _context3.next = 12;
                           break;
                         }
 
-                        _context3.next = 13;
+                        _context3.next = 12;
                         return message.channel.send({
-                          embeds: [(0, _messages.warnDirectMessage)(message.author.id, 'Link Tokel Address')]
+                          embeds: [(0, _embeds.warnDirectMessage)(message.author.id, 'Link Tokel Address')]
                         });
 
-                      case 13:
-                        _context3.next = 15;
+                      case 12:
+                        _context3.next = 14;
                         return _models["default"].linkedAddress.findOne({
                           where: {
                             userId: user.id,
@@ -89,35 +89,35 @@ var discordLinkAddress = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 15:
+                      case 14:
                         userAlreadyLinkedAnAddress = _context3.sent;
 
                         if (!userAlreadyLinkedAnAddress) {
-                          _context3.next = 20;
+                          _context3.next = 19;
                           break;
                         }
 
-                        _context3.next = 19;
+                        _context3.next = 18;
                         return message.author.send({
-                          embeds: [(0, _messages.userAlreadyLinkedAnAddressMessage)(user, userAlreadyLinkedAnAddress.address)]
+                          embeds: [(0, _embeds.userAlreadyLinkedAnAddressMessage)(user, userAlreadyLinkedAnAddress.address)]
                         });
 
-                      case 19:
+                      case 18:
                         return _context3.abrupt("return");
 
-                      case 20:
-                        _context3.next = 22;
+                      case 19:
+                        _context3.next = 21;
                         return message.author.send({
-                          embeds: [(0, _messages.enterAddressToLinkMessage)()]
+                          embeds: [(0, _embeds.enterAddressToLinkMessage)()]
                         });
 
-                      case 22:
+                      case 21:
                         msgFilter = function msgFilter(m) {
                           var filtered = m.author.id === message.author.id;
                           return filtered;
                         };
 
-                        _context3.next = 25;
+                        _context3.next = 24;
                         return message.author.dmChannel.awaitMessages({
                           filter: msgFilter,
                           max: 1,
@@ -177,7 +177,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
 
                                     _context.next = 21;
                                     return message.author.send({
-                                      embeds: [(0, _messages.tokelLinkAddressAlreadyOccupied)(message, collectedMessage.content)]
+                                      embeds: [(0, _embeds.tokelLinkAddressAlreadyOccupied)(message, collectedMessage.content)]
                                     });
 
                                   case 21:
@@ -205,7 +205,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
 
                                     _context.next = 29;
                                     return message.author.send({
-                                      embeds: [(0, _messages.tokelLinkAddressAlreadyVerified)(message, collectedMessage.content)]
+                                      embeds: [(0, _embeds.tokelLinkAddressAlreadyVerified)(message, collectedMessage.content)]
                                     });
 
                                   case 29:
@@ -221,7 +221,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
                                     console.log('4');
                                     _context.next = 35;
                                     return message.author.send({
-                                      embeds: [(0, _messages.tokelLinkAddressAlreadyBusyVerifying)(message, linkedAddressDB.address)]
+                                      embeds: [(0, _embeds.tokelLinkAddressAlreadyBusyVerifying)(message, linkedAddressDB.address)]
                                     });
 
                                   case 35:
@@ -271,7 +271,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
                                     console.log(user.wallet.address);
                                     _context.next = 53;
                                     return message.author.send({
-                                      embeds: [(0, _messages.addedNewTokelLinkAddress)(message, collectedMessage.content, user.wallet.address.address)]
+                                      embeds: [(0, _embeds.addedNewTokelLinkAddress)(message, collectedMessage.content, user.wallet.address.address)]
                                     });
 
                                   case 53:
@@ -281,7 +281,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
                                   case 55:
                                     _context.next = 57;
                                     return message.author.send({
-                                      embeds: [(0, _messages.invalidTokelLinkAddress)(message)]
+                                      embeds: [(0, _embeds.invalidTokelLinkAddress)(message)]
                                     });
 
                                   case 57:
@@ -304,7 +304,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
                                     console.log(collected);
                                     _context2.next = 3;
                                     return message.author.send({
-                                      embeds: [(0, _messages.timeOutTokelLinkAddressMessage)(message)]
+                                      embeds: [(0, _embeds.timeOutTokelLinkAddressMessage)(message)]
                                     });
 
                                   case 3:
@@ -320,8 +320,8 @@ var discordLinkAddress = /*#__PURE__*/function () {
                           };
                         }());
 
-                      case 25:
-                        _context3.next = 27;
+                      case 24:
+                        _context3.next = 26;
                         return _models["default"].activity.create({
                           type: 'link_s',
                           earnerId: user.id
@@ -330,9 +330,9 @@ var discordLinkAddress = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 27:
+                      case 26:
                         preActivity = _context3.sent;
-                        _context3.next = 30;
+                        _context3.next = 29;
                         return _models["default"].activity.findOne({
                           where: {
                             id: preActivity.id
@@ -345,11 +345,11 @@ var discordLinkAddress = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 30:
+                      case 29:
                         finalActivity = _context3.sent;
                         activity.unshift(finalActivity);
 
-                      case 32:
+                      case 31:
                       case "end":
                         return _context3.stop();
                     }
@@ -393,7 +393,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
 
                         _context4.next = 12;
                         return message.channel.send({
-                          embeds: [(0, _messages.cannotSendMessageUser)("Link", message)]
+                          embeds: [(0, _embeds.cannotSendMessageUser)("Link", message)]
                         })["catch"](function (e) {
                           console.log(e);
                         });
@@ -405,7 +405,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
                       case 14:
                         _context4.next = 16;
                         return message.channel.send({
-                          embeds: [(0, _messages.discordErrorMessage)("Link")]
+                          embeds: [(0, _embeds.discordErrorMessage)("Link")]
                         })["catch"](function (e) {
                           console.log(e);
                         });

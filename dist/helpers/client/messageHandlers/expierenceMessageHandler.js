@@ -11,7 +11,7 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"))
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
-var _messages = require("../../../messages");
+var _embeds = require("../../../embeds");
 
 var handleExperienceMessage = /*#__PURE__*/function () {
   var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(discordChannel, updatedUser, amount, gainExpType) {
@@ -31,7 +31,7 @@ var handleExperienceMessage = /*#__PURE__*/function () {
             _context.next = 4;
             return discordChannel.send({
               content: "<@".concat(updatedUser.user_id, ">"),
-              embeds: [(0, _messages.gainActiveTalkerExpMessage)(updatedUser.user_id, amount)]
+              embeds: [(0, _embeds.gainActiveTalkerExpMessage)(updatedUser.user_id, amount)]
             });
 
           case 4:
@@ -43,7 +43,7 @@ var handleExperienceMessage = /*#__PURE__*/function () {
             _context.next = 7;
             return discordChannel.send({
               content: "<@".concat(updatedUser.user_id, ">"),
-              embeds: [(0, _messages.gainVoteTopggExpMessage)(updatedUser.user_id, amount)]
+              embeds: [(0, _embeds.gainVoteTopggExpMessage)(updatedUser.user_id, amount)]
             });
 
           case 7:
@@ -55,7 +55,7 @@ var handleExperienceMessage = /*#__PURE__*/function () {
             _context.next = 10;
             return discordChannel.send({
               content: "<@".concat(updatedUser.user_id, ">"),
-              embeds: [(0, _messages.invitedNewUserRewardMessage)(updatedUser.user_id, userJoined, amount)]
+              embeds: [(0, _embeds.invitedNewUserRewardMessage)(updatedUser.user_id, userJoined, amount)]
             });
 
           case 10:

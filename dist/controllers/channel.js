@@ -13,6 +13,8 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/
 
 var _sequelize = require("sequelize");
 
+var _discord = require("discord.js");
+
 var _models = _interopRequireDefault(require("../models"));
 
 var _logger = _interopRequireDefault(require("../helpers/logger"));
@@ -24,7 +26,7 @@ var updateDiscordChannel = /*#__PURE__*/function () {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            if (message.type && message.type === "GUILD_VOICE") {
+            if (message.type && message.type === _discord.ChannelType.GuildVoice) {
               channelId = message.id;
             } else if (message.guild && message.guild.id && message.channelId) {
               channelId = message.channelId;

@@ -19,9 +19,7 @@ var _canvas = require("canvas");
 
 var _discord = require("discord.js");
 
-var _path = _interopRequireDefault(require("path"));
-
-var _messages = require("../messages");
+var _embeds = require("../embeds");
 
 var _models = _interopRequireDefault(require("../models"));
 
@@ -43,7 +41,7 @@ var discordRanks = /*#__PURE__*/function () {
               isolationLevel: _sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
             }, /*#__PURE__*/function () {
               var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(t) {
-                var _yield$userWalletExis, _yield$userWalletExis2, user, userActivity, allRanks, canvasAddedRanksHeight, canvas, ctx, attachment, discordChannel, preActivity, finalActivity;
+                var _yield$userWalletExis, _yield$userWalletExis2, user, userActivity, allRanks, canvasAddedRanksHeight, canvas, ctx, finalImage, discordChannel, preActivity, finalActivity;
 
                 return _regenerator["default"].wrap(function _callee$(_context) {
                   while (1) {
@@ -79,12 +77,6 @@ var discordRanks = /*#__PURE__*/function () {
                       case 11:
                         allRanks = _context.sent;
                         canvasAddedRanksHeight = allRanks.length * 40 + 36.5;
-                        _context.next = 15;
-                        return (0, _canvas.registerFont)(_path["default"].join(__dirname, '../assets/fonts/', 'Heart_warming.otf'), {
-                          family: 'HeartWarming'
-                        });
-
-                      case 15:
                         canvas = (0, _canvas.createCanvas)(600, canvasAddedRanksHeight);
                         ctx = canvas.getContext('2d');
                         ctx.font = 'bold 20px "HeartWarming"';
@@ -145,40 +137,46 @@ var discordRanks = /*#__PURE__*/function () {
                         ctx.moveTo(598.5, 0);
                         ctx.lineTo(598.5, canvasAddedRanksHeight);
                         ctx.stroke();
-                        attachment = new _discord.MessageAttachment(canvas.toBuffer(), 'ranks.png');
+                        finalImage = canvas.toBuffer(); // const attachment = new MessageAttachment(canvas.toBuffer(), 'ranks.png');
 
-                        if (!(message.type && message.type === 'APPLICATION_COMMAND')) {
-                          _context.next = 71;
-                          break;
-                        }
-
-                        if (!message.guildId) {
+                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
                           _context.next = 69;
                           break;
                         }
 
-                        _context.next = 66;
+                        if (!message.guildId) {
+                          _context.next = 67;
+                          break;
+                        }
+
+                        _context.next = 64;
                         return discordClient.channels.cache.get(message.channelId);
 
-                      case 66:
+                      case 64:
                         discordChannel = _context.sent;
-                        _context.next = 69;
+                        _context.next = 67;
                         return discordChannel.send({
-                          files: [attachment]
+                          files: [{
+                            attachment: finalImage,
+                            name: 'ranks.png'
+                          }]
                         });
 
-                      case 69:
-                        _context.next = 73;
+                      case 67:
+                        _context.next = 71;
                         break;
+
+                      case 69:
+                        _context.next = 71;
+                        return message.channel.send({
+                          files: [{
+                            attachment: finalImage,
+                            name: 'ranks.png'
+                          }]
+                        });
 
                       case 71:
                         _context.next = 73;
-                        return message.channel.send({
-                          files: [attachment]
-                        });
-
-                      case 73:
-                        _context.next = 75;
                         return _models["default"].activity.create({
                           type: 'ranks_s',
                           earnerId: user.id
@@ -187,9 +185,9 @@ var discordRanks = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 75:
+                      case 73:
                         preActivity = _context.sent;
-                        _context.next = 78;
+                        _context.next = 76;
                         return _models["default"].activity.findOne({
                           where: {
                             id: preActivity.id
@@ -202,11 +200,11 @@ var discordRanks = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 78:
+                      case 76:
                         finalActivity = _context.sent;
                         activity.unshift(finalActivity);
 
-                      case 80:
+                      case 78:
                       case "end":
                         return _context.stop();
                     }
@@ -250,7 +248,7 @@ var discordRanks = /*#__PURE__*/function () {
                           break;
                         }
 
-                        if (!(message.type && message.type === 'APPLICATION_COMMAND')) {
+                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
                           _context2.next = 18;
                           break;
                         }
@@ -262,7 +260,7 @@ var discordRanks = /*#__PURE__*/function () {
                         discordChannel = _context2.sent;
                         _context2.next = 16;
                         return discordChannel.send({
-                          embeds: [(0, _messages.cannotSendMessageUser)("Ranks", message)]
+                          embeds: [(0, _embeds.cannotSendMessageUser)("Ranks", message)]
                         })["catch"](function (e) {
                           console.log(e);
                         });
@@ -274,7 +272,7 @@ var discordRanks = /*#__PURE__*/function () {
                       case 18:
                         _context2.next = 20;
                         return message.channel.send({
-                          embeds: [(0, _messages.cannotSendMessageUser)("Ranks", message)]
+                          embeds: [(0, _embeds.cannotSendMessageUser)("Ranks", message)]
                         })["catch"](function (e) {
                           console.log(e);
                         });
@@ -284,7 +282,7 @@ var discordRanks = /*#__PURE__*/function () {
                         break;
 
                       case 22:
-                        if (!(message.type && message.type === 'APPLICATION_COMMAND')) {
+                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
                           _context2.next = 30;
                           break;
                         }
@@ -296,7 +294,7 @@ var discordRanks = /*#__PURE__*/function () {
                         _discordChannel = _context2.sent;
                         _context2.next = 28;
                         return _discordChannel.send({
-                          embeds: [(0, _messages.discordErrorMessage)("Ranks")]
+                          embeds: [(0, _embeds.discordErrorMessage)("Ranks")]
                         })["catch"](function (e) {
                           console.log(e);
                         });
@@ -308,7 +306,7 @@ var discordRanks = /*#__PURE__*/function () {
                       case 30:
                         _context2.next = 32;
                         return message.channel.send({
-                          embeds: [(0, _messages.discordErrorMessage)("Ranks")]
+                          embeds: [(0, _embeds.discordErrorMessage)("Ranks")]
                         })["catch"](function (e) {
                           console.log(e);
                         });

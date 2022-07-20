@@ -17,7 +17,7 @@ var _models = _interopRequireDefault(require("../../../models"));
 
 var _rclient = require("../../../services/rclient");
 
-var _messages = require("../../../messages");
+var _embeds = require("../../../embeds");
 
 function _asyncIterator(iterable) { var method, async, sync, retry = 2; for ("undefined" != typeof Symbol && (async = Symbol.asyncIterator, sync = Symbol.iterator); retry--;) { if (async && null != (method = iterable[async])) return method.call(iterable); if (sync && null != (method = iterable[sync])) return new AsyncFromSyncIterator(method.call(iterable)); async = "@@asyncIterator", sync = "@@iterator"; } throw new TypeError("Object is not async iterable"); }
 
@@ -216,7 +216,7 @@ function _patchTokelDeposits() {
                                             myClient = _context.sent;
                                             _context.next = 7;
                                             return myClient.send({
-                                              embeds: [(0, _messages.linkedAddressVerified)(verifyAddress.discordId, verifyAddress.linkedAddress)]
+                                              embeds: [(0, _embeds.linkedAddressVerified)(verifyAddress.discordId, verifyAddress.linkedAddress)]
                                             })["catch"](function (error) {
                                               console.log(error);
                                             });

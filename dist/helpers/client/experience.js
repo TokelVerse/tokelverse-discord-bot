@@ -17,7 +17,7 @@ var _sequelize = require("sequelize");
 
 var _models = _interopRequireDefault(require("../../models"));
 
-var _messages = require("../../messages");
+var _embeds = require("../../embeds");
 
 var _expierenceMessageHandler = require("./messageHandlers/expierenceMessageHandler");
 
@@ -132,7 +132,7 @@ var gainExp = /*#__PURE__*/function () {
           case 31:
             _context.next = 33;
             return discordChannel.send({
-              embeds: [(0, _messages.levelUpMessage)(updatedUser.user_id, currentRank)]
+              embeds: [(0, _embeds.levelUpMessage)(updatedUser.user_id, currentRank)]
             });
 
           case 33:

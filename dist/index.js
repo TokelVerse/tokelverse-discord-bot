@@ -44,6 +44,10 @@ var _socket = _interopRequireDefault(require("socket.io"));
 
 var _csurf = _interopRequireDefault(require("csurf"));
 
+var _path = _interopRequireDefault(require("path"));
+
+var _canvas = require("canvas");
+
 var _router = require("./router");
 
 var _router2 = require("./dashboard/router");
@@ -65,6 +69,9 @@ var _deployCommands = require("./helpers/client/deployCommands");
 /* eslint-disable import/first */
 Object.freeze(Object.prototype);
 (0, _dotenv.config)();
+(0, _canvas.registerFont)(_path["default"].join(__dirname, './assets/fonts/', 'Heart_warming.otf'), {
+  family: 'HeartWarming'
+});
 
 var checkCSRFRoute = function checkCSRFRoute(req) {
   var hostmachine = req.headers.host.split(':')[0];
@@ -201,8 +208,9 @@ var conditionalCSRF = function conditionalCSRF(req, res, next) {
             };
           }());
           discordClient = new _discord.Client({
-            intents: [_discord.Intents.FLAGS.GUILDS, _discord.Intents.FLAGS.GUILD_MEMBERS, _discord.Intents.FLAGS.GUILD_PRESENCES, _discord.Intents.FLAGS.GUILD_MESSAGES, _discord.Intents.FLAGS.DIRECT_MESSAGES, _discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, _discord.Intents.FLAGS.DIRECT_MESSAGE_REACTIONS, _discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, _discord.Intents.FLAGS.GUILD_VOICE_STATES],
-            partials: ['MESSAGE', 'CHANNEL', 'REACTION']
+            intents: [_discord.GatewayIntentBits.Guilds, _discord.GatewayIntentBits.GuildMembers, _discord.GatewayIntentBits.GuildMessages, _discord.GatewayIntentBits.DirectMessages, _discord.GatewayIntentBits.GuildMessageReactions, _discord.GatewayIntentBits.DirectMessageReactions, _discord.GatewayIntentBits.GuildEmojisAndStickers, _discord.GatewayIntentBits.GuildVoiceStates, _discord.GatewayIntentBits.MessageContent, _discord.GatewayIntentBits.GuildPresences, _discord.GatewayIntentBits.GuildInvites // GatewayIntentBits.
+            ],
+            partials: [_discord.Partials.Message, _discord.Partials.Channel, _discord.Partials.Reaction]
           });
           _context2.next = 32;
           return (0, _router.router)(app, discordClient, io, queue);
@@ -240,7 +248,7 @@ var conditionalCSRF = function conditionalCSRF(req, res, next) {
             (0, _patcher.patchTokelDeposits)(discordClient);
           });
           (0, _nft.startNftCheck)(discordClient);
-          scheduleNftCheck = _nodeSchedule["default"].scheduleJob('*/20 * * * *', function () {
+          scheduleNftCheck = _nodeSchedule["default"].scheduleJob('*/15 * * * *', function () {
             (0, _nft.startNftCheck)(discordClient);
           });
           app.use(function (err, req, res, next) {

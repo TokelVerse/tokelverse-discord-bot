@@ -15,7 +15,9 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/
 
 var _sequelize = require("sequelize");
 
-var _messages = require("../messages");
+var _discord = require("discord.js");
+
+var _embeds = require("../embeds");
 
 var _models = _interopRequireDefault(require("../models"));
 
@@ -202,7 +204,7 @@ var discordUserJoined = /*#__PURE__*/function () {
                           break;
                         }
 
-                        if (!(message.type && message.type === 'APPLICATION_COMMAND')) {
+                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
                           _context2.next = 18;
                           break;
                         }
@@ -214,7 +216,7 @@ var discordUserJoined = /*#__PURE__*/function () {
                         discordChannel = _context2.sent;
                         _context2.next = 16;
                         return discordChannel.send({
-                          embeds: [(0, _messages.cannotSendMessageUser)("userJoined", message)]
+                          embeds: [(0, _embeds.cannotSendMessageUser)("userJoined", message)]
                         })["catch"](function (e) {
                           console.log(e);
                         });
@@ -226,7 +228,7 @@ var discordUserJoined = /*#__PURE__*/function () {
                       case 18:
                         _context2.next = 20;
                         return message.channel.send({
-                          embeds: [(0, _messages.cannotSendMessageUser)("userJoined", message)]
+                          embeds: [(0, _embeds.cannotSendMessageUser)("userJoined", message)]
                         })["catch"](function (e) {
                           console.log(e);
                         });
@@ -236,7 +238,7 @@ var discordUserJoined = /*#__PURE__*/function () {
                         break;
 
                       case 22:
-                        if (!(message.type && message.type === 'APPLICATION_COMMAND')) {
+                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
                           _context2.next = 30;
                           break;
                         }
@@ -248,7 +250,7 @@ var discordUserJoined = /*#__PURE__*/function () {
                         _discordChannel = _context2.sent;
                         _context2.next = 28;
                         return _discordChannel.send({
-                          embeds: [(0, _messages.discordErrorMessage)("userJoined")]
+                          embeds: [(0, _embeds.discordErrorMessage)("userJoined")]
                         })["catch"](function (e) {
                           console.log(e);
                         });
@@ -260,7 +262,7 @@ var discordUserJoined = /*#__PURE__*/function () {
                       case 30:
                         _context2.next = 32;
                         return message.channel.send({
-                          embeds: [(0, _messages.discordErrorMessage)("userJoined")]
+                          embeds: [(0, _embeds.discordErrorMessage)("userJoined")]
                         })["catch"](function (e) {
                           console.log(e);
                         });

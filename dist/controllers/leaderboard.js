@@ -23,7 +23,7 @@ var _discord = require("discord.js");
 
 var _path = _interopRequireDefault(require("path"));
 
-var _messages = require("../messages");
+var _embeds = require("../embeds");
 
 var _models = _interopRequireDefault(require("../models"));
 
@@ -45,7 +45,7 @@ var discordLeaderboard = /*#__PURE__*/function () {
               isolationLevel: _sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
             }, /*#__PURE__*/function () {
               var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(t) {
-                var _yield$userWalletExis, _yield$userWalletExis2, user, userActivity, allRanks, topUsers, promises, newTopUsers, canvasAddedRanksHeight, canvas, ctx, expBarWidth, attachment, discordChannel, preActivity, finalActivity;
+                var _yield$userWalletExis, _yield$userWalletExis2, user, userActivity, allRanks, topUsers, promises, newTopUsers, canvasAddedRanksHeight, canvas, ctx, expBarWidth, finalImage, discordChannel, preActivity, finalActivity;
 
                 return _regenerator["default"].wrap(function _callee3$(_context3) {
                   while (1) {
@@ -237,12 +237,6 @@ var discordLeaderboard = /*#__PURE__*/function () {
                         newTopUsers = _context3.sent;
                         console.log(newTopUsers);
                         canvasAddedRanksHeight = newTopUsers.length * 300 + 36.5;
-                        _context3.next = 23;
-                        return (0, _canvas.registerFont)(_path["default"].join(__dirname, '../assets/fonts/', 'Heart_warming.otf'), {
-                          family: 'HeartWarming'
-                        });
-
-                      case 23:
                         canvas = (0, _canvas.createCanvas)(1040, canvasAddedRanksHeight);
                         ctx = canvas.getContext('2d');
                         expBarWidth = 600;
@@ -398,40 +392,46 @@ var discordLeaderboard = /*#__PURE__*/function () {
                         ctx.moveTo(1038.5, 0);
                         ctx.lineTo(1038.5, canvasAddedRanksHeight);
                         ctx.stroke();
-                        attachment = new _discord.MessageAttachment(canvas.toBuffer(), 'leaderboard.png');
+                        finalImage = canvas.toBuffer(); // const attachment = new MessageAttachment(canvas.toBuffer(), 'leaderboard.png');
 
-                        if (!(message.type && message.type === 'APPLICATION_COMMAND')) {
-                          _context3.next = 72;
-                          break;
-                        }
-
-                        if (!message.guildId) {
+                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
                           _context3.next = 70;
                           break;
                         }
 
-                        _context3.next = 67;
+                        if (!message.guildId) {
+                          _context3.next = 68;
+                          break;
+                        }
+
+                        _context3.next = 65;
                         return discordClient.channels.cache.get(message.channelId);
 
-                      case 67:
+                      case 65:
                         discordChannel = _context3.sent;
-                        _context3.next = 70;
+                        _context3.next = 68;
                         return discordChannel.send({
-                          files: [attachment]
+                          files: [{
+                            attachment: finalImage,
+                            name: 'leaderboard.png'
+                          }]
                         });
 
-                      case 70:
-                        _context3.next = 74;
+                      case 68:
+                        _context3.next = 72;
                         break;
+
+                      case 70:
+                        _context3.next = 72;
+                        return message.channel.send({
+                          files: [{
+                            attachment: finalImage,
+                            name: 'leaderboard.png'
+                          }]
+                        });
 
                       case 72:
                         _context3.next = 74;
-                        return message.channel.send({
-                          files: [attachment]
-                        });
-
-                      case 74:
-                        _context3.next = 76;
                         return _models["default"].activity.create({
                           type: 'leaderboard_s',
                           earnerId: user.id
@@ -440,9 +440,9 @@ var discordLeaderboard = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 76:
+                      case 74:
                         preActivity = _context3.sent;
-                        _context3.next = 79;
+                        _context3.next = 77;
                         return _models["default"].activity.findOne({
                           where: {
                             id: preActivity.id
@@ -455,11 +455,11 @@ var discordLeaderboard = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 79:
+                      case 77:
                         finalActivity = _context3.sent;
                         activity.unshift(finalActivity);
 
-                      case 81:
+                      case 79:
                       case "end":
                         return _context3.stop();
                     }
@@ -502,7 +502,7 @@ var discordLeaderboard = /*#__PURE__*/function () {
                           break;
                         }
 
-                        if (!(message.type && message.type === 'APPLICATION_COMMAND')) {
+                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
                           _context4.next = 18;
                           break;
                         }
@@ -514,7 +514,7 @@ var discordLeaderboard = /*#__PURE__*/function () {
                         discordChannel = _context4.sent;
                         _context4.next = 16;
                         return discordChannel.send({
-                          embeds: [(0, _messages.cannotSendMessageUser)("Leaderboard", message)]
+                          embeds: [(0, _embeds.cannotSendMessageUser)("Leaderboard", message)]
                         })["catch"](function (e) {
                           console.log(e);
                         });
@@ -526,7 +526,7 @@ var discordLeaderboard = /*#__PURE__*/function () {
                       case 18:
                         _context4.next = 20;
                         return message.channel.send({
-                          embeds: [(0, _messages.cannotSendMessageUser)("Leaderboard", message)]
+                          embeds: [(0, _embeds.cannotSendMessageUser)("Leaderboard", message)]
                         })["catch"](function (e) {
                           console.log(e);
                         });
@@ -536,7 +536,7 @@ var discordLeaderboard = /*#__PURE__*/function () {
                         break;
 
                       case 22:
-                        if (!(message.type && message.type === 'APPLICATION_COMMAND')) {
+                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
                           _context4.next = 30;
                           break;
                         }
@@ -548,7 +548,7 @@ var discordLeaderboard = /*#__PURE__*/function () {
                         _discordChannel = _context4.sent;
                         _context4.next = 28;
                         return _discordChannel.send({
-                          embeds: [(0, _messages.discordErrorMessage)("Leaderboard")]
+                          embeds: [(0, _embeds.discordErrorMessage)("Leaderboard")]
                         })["catch"](function (e) {
                           console.log(e);
                         });
@@ -560,7 +560,7 @@ var discordLeaderboard = /*#__PURE__*/function () {
                       case 30:
                         _context4.next = 32;
                         return message.channel.send({
-                          embeds: [(0, _messages.discordErrorMessage)("Leaderboard")]
+                          embeds: [(0, _embeds.discordErrorMessage)("Leaderboard")]
                         })["catch"](function (e) {
                           console.log(e);
                         });

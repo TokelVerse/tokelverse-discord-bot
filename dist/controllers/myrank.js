@@ -23,7 +23,7 @@ var _discord = require("discord.js");
 
 var _path = _interopRequireDefault(require("path"));
 
-var _messages = require("../messages");
+var _embeds = require("../embeds");
 
 var _models = _interopRequireDefault(require("../models"));
 
@@ -45,7 +45,7 @@ var discordMyRank = /*#__PURE__*/function () {
               isolationLevel: _sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
             }, /*#__PURE__*/function () {
               var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(t) {
-                var _yield$userWalletExis, _yield$userWalletExis2, user, userActivity, totalChatActivity, monthlyChatActivity, currentRank, currentRankExp, nextRank, nextRankExp, currentExp, canvas, ctx, expBarWidth, avatar, reqExp, calculatedCurrentExp, percentage, attachment, discordUser, discordChannel, preActivity, finalActivity;
+                var _yield$userWalletExis, _yield$userWalletExis2, user, userActivity, totalChatActivity, monthlyChatActivity, currentRank, currentRankExp, nextRank, nextRankExp, currentExp, canvas, ctx, expBarWidth, avatar, reqExp, calculatedCurrentExp, percentage, finalImage, discordUser, discordChannel, preActivity, finalActivity;
 
                 return _regenerator["default"].wrap(function _callee$(_context) {
                   while (1) {
@@ -128,37 +128,31 @@ var discordMyRank = /*#__PURE__*/function () {
                         nextRank = _context.sent;
                         nextRankExp = nextRank && nextRank.expNeeded ? nextRank.expNeeded : currentRankExp;
                         currentExp = user.exp;
-                        _context.next = 26;
-                        return (0, _canvas.registerFont)(_path["default"].join(__dirname, '../assets/fonts/', 'Heart_warming.otf'), {
-                          family: 'HeartWarming'
-                        });
-
-                      case 26:
                         canvas = (0, _canvas.createCanvas)(1000, 300);
                         ctx = canvas.getContext('2d');
                         expBarWidth = 600; // const background = await loadImage(path.join(__dirname, '../assets/images/', 'myrank_background_two.png'));
 
-                        if (!(message.type && message.type === 'APPLICATION_COMMAND')) {
-                          _context.next = 35;
+                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
+                          _context.next = 33;
                           break;
                         }
 
-                        _context.next = 32;
+                        _context.next = 30;
                         return (0, _canvas.loadImage)("https://cdn.discordapp.com/avatars/".concat(message.user.id, "/").concat(message.user.avatar, ".png?size=256"));
 
-                      case 32:
+                      case 30:
                         avatar = _context.sent;
-                        _context.next = 38;
+                        _context.next = 36;
                         break;
 
-                      case 35:
-                        _context.next = 37;
+                      case 33:
+                        _context.next = 35;
                         return (0, _canvas.loadImage)("https://cdn.discordapp.com/avatars/".concat(message.author.id, "/").concat(message.author.avatar, ".png?size=256"));
 
-                      case 37:
+                      case 35:
                         avatar = _context.sent;
 
-                      case 38:
+                      case 36:
                         // background
                         // ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
                         // circle for avatar
@@ -244,73 +238,86 @@ var discordMyRank = /*#__PURE__*/function () {
                         ctx.clip(); // Add the avatar
 
                         ctx.drawImage(avatar, 10, 10, 220, 220);
-                        attachment = new _discord.MessageAttachment(canvas.toBuffer(), 'rank.png');
+                        finalImage = canvas.toBuffer(); // const attachment = new MessageAttachment(canvas.toBuffer(), 'rank.png');
+
                         console.log('before send');
 
-                        if (!(message.type && message.type === 'APPLICATION_COMMAND')) {
-                          _context.next = 126;
+                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
+                          _context.next = 124;
                           break;
                         }
 
-                        _context.next = 113;
+                        _context.next = 111;
                         return discordClient.users.cache.get(message.user.id);
 
-                      case 113:
+                      case 111:
                         discordUser = _context.sent;
 
                         if (!message.guildId) {
-                          _context.next = 122;
+                          _context.next = 120;
                           break;
                         }
 
-                        _context.next = 117;
+                        _context.next = 115;
                         return discordClient.channels.cache.get(message.channelId);
 
-                      case 117:
+                      case 115:
                         discordChannel = _context.sent;
-                        _context.next = 120;
+                        _context.next = 118;
                         return discordChannel.send({
-                          files: [attachment]
+                          files: [{
+                            attachment: finalImage,
+                            name: 'myRank.png'
+                          }]
                         });
+
+                      case 118:
+                        _context.next = 122;
+                        break;
 
                       case 120:
-                        _context.next = 124;
-                        break;
+                        _context.next = 122;
+                        return discordUser.send({
+                          files: [{
+                            attachment: finalImage,
+                            name: 'myRank.png'
+                          }]
+                        });
 
                       case 122:
-                        _context.next = 124;
-                        return discordUser.send({
-                          files: [attachment]
-                        });
-
-                      case 124:
-                        _context.next = 132;
+                        _context.next = 130;
                         break;
 
-                      case 126:
-                        if (!(message.channel.type === 'DM')) {
-                          _context.next = 129;
+                      case 124:
+                        if (!(message.channel.type === _discord.ChannelType.DM)) {
+                          _context.next = 127;
                           break;
                         }
 
-                        _context.next = 129;
+                        _context.next = 127;
                         return message.author.send({
-                          files: [attachment]
+                          files: [{
+                            attachment: finalImage,
+                            name: 'myRank.png'
+                          }]
                         });
 
-                      case 129:
-                        if (!(message.channel.type === 'GUILD_TEXT')) {
-                          _context.next = 132;
+                      case 127:
+                        if (!(message.channel.type === _discord.ChannelType.GuildText)) {
+                          _context.next = 130;
                           break;
                         }
 
-                        _context.next = 132;
+                        _context.next = 130;
                         return message.channel.send({
-                          files: [attachment]
+                          files: [{
+                            attachment: finalImage,
+                            name: 'myRank.png'
+                          }]
                         });
 
-                      case 132:
-                        _context.next = 134;
+                      case 130:
+                        _context.next = 132;
                         return _models["default"].activity.create({
                           type: 'myrank_s',
                           earnerId: user.id
@@ -319,9 +326,9 @@ var discordMyRank = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 134:
+                      case 132:
                         preActivity = _context.sent;
-                        _context.next = 137;
+                        _context.next = 135;
                         return _models["default"].activity.findOne({
                           where: {
                             id: preActivity.id
@@ -334,11 +341,11 @@ var discordMyRank = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 137:
+                      case 135:
                         finalActivity = _context.sent;
                         activity.unshift(finalActivity);
 
-                      case 139:
+                      case 137:
                       case "end":
                         return _context.stop();
                     }
@@ -380,7 +387,7 @@ var discordMyRank = /*#__PURE__*/function () {
                           break;
                         }
 
-                        if (!(message.type && message.type === 'APPLICATION_COMMAND')) {
+                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
                           _context2.next = 17;
                           break;
                         }
@@ -392,7 +399,7 @@ var discordMyRank = /*#__PURE__*/function () {
                         discordChannel = _context2.sent;
                         _context2.next = 15;
                         return discordChannel.send({
-                          embeds: [(0, _messages.cannotSendMessageUser)("MyRank", message)]
+                          embeds: [(0, _embeds.cannotSendMessageUser)("MyRank", message)]
                         })["catch"](function (e) {
                           console.log(e);
                         });
@@ -404,7 +411,7 @@ var discordMyRank = /*#__PURE__*/function () {
                       case 17:
                         _context2.next = 19;
                         return message.channel.send({
-                          embeds: [(0, _messages.cannotSendMessageUser)("MyRank", message)]
+                          embeds: [(0, _embeds.cannotSendMessageUser)("MyRank", message)]
                         })["catch"](function (e) {
                           console.log(e);
                         });
@@ -414,7 +421,7 @@ var discordMyRank = /*#__PURE__*/function () {
                         break;
 
                       case 21:
-                        if (!(message.type && message.type === 'APPLICATION_COMMAND')) {
+                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
                           _context2.next = 29;
                           break;
                         }
@@ -426,7 +433,7 @@ var discordMyRank = /*#__PURE__*/function () {
                         _discordChannel = _context2.sent;
                         _context2.next = 27;
                         return _discordChannel.send({
-                          embeds: [(0, _messages.discordErrorMessage)("MyRank")]
+                          embeds: [(0, _embeds.discordErrorMessage)("MyRank")]
                         })["catch"](function (e) {
                           console.log(e);
                         });
@@ -438,7 +445,7 @@ var discordMyRank = /*#__PURE__*/function () {
                       case 29:
                         _context2.next = 31;
                         return message.channel.send({
-                          embeds: [(0, _messages.discordErrorMessage)("MyRank")]
+                          embeds: [(0, _embeds.discordErrorMessage)("MyRank")]
                         })["catch"](function (e) {
                           console.log(e);
                         });

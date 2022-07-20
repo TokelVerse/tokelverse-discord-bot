@@ -13,6 +13,8 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/
 
 var _dotenv = require("dotenv");
 
+var _discord = require("discord.js");
+
 var _channel = require("../controllers/channel");
 
 var _group = require("../controllers/group");
@@ -47,7 +49,7 @@ var _isMaintenanceOrDisabled = require("../helpers/isMaintenanceOrDisabled");
 
 var _settings = _interopRequireDefault(require("../config/settings"));
 
-var _messages = require("../messages");
+var _embeds = require("../embeds");
 
 (0, _dotenv.config)();
 
@@ -305,7 +307,7 @@ var discordRouter = function discordRouter(discordClient, queue, io) {
         while (1) {
           switch (_context17.prev = _context17.next) {
             case 0:
-              if (!(!interaction.isCommand() && !interaction.isButton())) {
+              if (!(!interaction.type !== _discord.InteractionType.ApplicationCommand && !interaction.isButton())) {
                 _context17.next = 2;
                 break;
               }
@@ -370,7 +372,7 @@ var discordRouter = function discordRouter(discordClient, queue, io) {
               })));
 
             case 13:
-              if (!interaction.isCommand()) {
+              if (!(interaction.type === _discord.InteractionType.ApplicationCommand)) {
                 _context17.next = 119;
                 break;
               }
@@ -937,7 +939,7 @@ var discordRouter = function discordRouter(discordClient, queue, io) {
 
               _context28.next = 27;
               return message.channel.send({
-                embeds: [(0, _messages.discordServerBannedMessage)(groupTask)]
+                embeds: [(0, _embeds.discordServerBannedMessage)(groupTask)]
               })["catch"](function (e) {
                 console.log(e);
               });
@@ -953,7 +955,7 @@ var discordRouter = function discordRouter(discordClient, queue, io) {
 
               _context28.next = 31;
               return message.channel.send({
-                embeds: [(0, _messages.discordChannelBannedMessage)(channelTask)]
+                embeds: [(0, _embeds.discordChannelBannedMessage)(channelTask)]
               })["catch"](function (e) {
                 console.log(e);
               });
@@ -969,7 +971,7 @@ var discordRouter = function discordRouter(discordClient, queue, io) {
 
               _context28.next = 35;
               return message.channel.send({
-                embeds: [(0, _messages.discordUserBannedMessage)(lastSeenDiscordTask)]
+                embeds: [(0, _embeds.discordUserBannedMessage)(lastSeenDiscordTask)]
               })["catch"](function (e) {
                 console.log(e);
               });

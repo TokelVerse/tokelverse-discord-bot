@@ -15,7 +15,9 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/
 
 var _sequelize = require("sequelize");
 
-var _messages = require("../messages");
+var _discord = require("discord.js");
+
+var _embeds = require("../embeds");
 
 var _models = _interopRequireDefault(require("../models"));
 
@@ -64,31 +66,31 @@ var discordHelp = /*#__PURE__*/function () {
                         return _context.abrupt("return");
 
                       case 9:
-                        if (!(message.channel.type === 'DM')) {
+                        if (!(message.channel.type === _discord.ChannelType.DM)) {
                           _context.next = 12;
                           break;
                         }
 
                         _context.next = 12;
                         return message.author.send({
-                          embeds: [(0, _messages.helpMessage)()]
+                          embeds: [(0, _embeds.helpMessage)()]
                         });
 
                       case 12:
-                        if (!(message.channel.type === 'GUILD_TEXT')) {
+                        if (!(message.channel.type === _discord.ChannelType.GuildText)) {
                           _context.next = 17;
                           break;
                         }
 
                         _context.next = 15;
                         return message.author.send({
-                          embeds: [(0, _messages.helpMessage)()]
+                          embeds: [(0, _embeds.helpMessage)()]
                         });
 
                       case 15:
                         _context.next = 17;
                         return message.channel.send({
-                          embeds: [(0, _messages.warnDirectMessage)(message.author.id, 'Help')]
+                          embeds: [(0, _embeds.warnDirectMessage)(message.author.id, 'Help')]
                         });
 
                       case 17:
@@ -164,7 +166,7 @@ var discordHelp = /*#__PURE__*/function () {
 
                         _context2.next = 12;
                         return message.channel.send({
-                          embeds: [(0, _messages.cannotSendMessageUser)("Help", message)]
+                          embeds: [(0, _embeds.cannotSendMessageUser)("Help", message)]
                         })["catch"](function (e) {
                           console.log(e);
                         });
@@ -176,7 +178,7 @@ var discordHelp = /*#__PURE__*/function () {
                       case 14:
                         _context2.next = 16;
                         return message.channel.send({
-                          embeds: [(0, _messages.discordErrorMessage)("Help")]
+                          embeds: [(0, _embeds.discordErrorMessage)("Help")]
                         })["catch"](function (e) {
                           console.log(e);
                         });

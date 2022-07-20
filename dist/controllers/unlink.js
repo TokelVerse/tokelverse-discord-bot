@@ -17,13 +17,15 @@ var _sequelize = require("sequelize");
 
 var _discord = require("discord.js");
 
-var _messages = require("../messages");
+var _embeds = require("../embeds");
 
 var _models = _interopRequireDefault(require("../models"));
 
 var _logger = _interopRequireDefault(require("../helpers/logger"));
 
 var _userWalletExist = require("../helpers/client/userWalletExist");
+
+var _buttons = require("../buttons");
 
 /* eslint-disable import/prefer-default-export */
 var discordUnlinkAddress = /*#__PURE__*/function () {
@@ -39,7 +41,7 @@ var discordUnlinkAddress = /*#__PURE__*/function () {
               isolationLevel: _sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
             }, /*#__PURE__*/function () {
               var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5(t) {
-                var _yield$userWalletExis, _yield$userWalletExis2, user, userActivity, hasAddressToUnlink, noId, yesId, NoButton, YesButton, embedMessage, collector, preActivity, finalActivity;
+                var _yield$userWalletExis, _yield$userWalletExis2, user, userActivity, hasAddressToUnlink, embedMessage, collector, preActivity, finalActivity;
 
                 return _regenerator["default"].wrap(function _callee5$(_context5) {
                   while (1) {
@@ -66,18 +68,21 @@ var discordUnlinkAddress = /*#__PURE__*/function () {
                         return _context5.abrupt("return");
 
                       case 9:
-                        if (!(message.channel.type === 'GUILD_TEXT')) {
-                          _context5.next = 12;
+                        console.log(1);
+
+                        if (!(message.channel.type === _discord.ChannelType.GuildText)) {
+                          _context5.next = 13;
                           break;
                         }
 
-                        _context5.next = 12;
+                        _context5.next = 13;
                         return message.channel.send({
-                          embeds: [(0, _messages.warnDirectMessage)(message.author.id, 'Unlink Tokel Address')]
+                          embeds: [(0, _embeds.warnDirectMessage)(message.author.id, 'Unlink Tokel Address')]
                         });
 
-                      case 12:
-                        _context5.next = 14;
+                      case 13:
+                        console.log(2);
+                        _context5.next = 16;
                         return _models["default"].linkedAddress.findOne({
                           where: {
                             enabled: true,
@@ -87,67 +92,76 @@ var discordUnlinkAddress = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 14:
+                      case 16:
                         hasAddressToUnlink = _context5.sent;
+                        console.log(3);
 
                         if (hasAddressToUnlink) {
-                          _context5.next = 18;
+                          _context5.next = 21;
                           break;
                         }
 
-                        _context5.next = 18;
+                        _context5.next = 21;
                         return message.author.send({
-                          embeds: [(0, _messages.noAddressToUnlink)(message)]
+                          embeds: [(0, _embeds.noAddressToUnlink)(message)]
                         });
 
-                      case 18:
-                        noId = 'no';
-                        yesId = 'yes';
-                        NoButton = new _discord.MessageButton({
-                          style: 'SECONDARY',
-                          label: 'No',
-                          emoji: '❌',
-                          customId: noId
-                        });
-                        YesButton = new _discord.MessageButton({
-                          style: 'SECONDARY',
-                          label: 'Yes',
-                          emoji: '✔️',
-                          customId: yesId
-                        });
+                      case 21:
+                        console.log(4);
+                        console.log(hasAddressToUnlink);
 
                         if (!hasAddressToUnlink) {
-                          _context5.next = 29;
+                          _context5.next = 46;
                           break;
                         }
 
-                        _context5.next = 25;
-                        return message.author.send({
-                          embeds: [(0, _messages.confirmUnlinkAddress)(message, hasAddressToUnlink.address)],
-                          components: [new _discord.MessageActionRow({
-                            components: [YesButton, NoButton]
-                          })]
-                        });
+                        _context5.t0 = message.author;
+                        _context5.t1 = [(0, _embeds.confirmUnlinkAddress)(message, hasAddressToUnlink.address)];
+                        _context5.t2 = _discord.ActionRowBuilder;
+                        _context5.next = 29;
+                        return (0, _buttons.generateYesButton)();
 
-                      case 25:
+                      case 29:
+                        _context5.t3 = _context5.sent;
+                        _context5.next = 32;
+                        return (0, _buttons.generateNoButton)();
+
+                      case 32:
+                        _context5.t4 = _context5.sent;
+                        _context5.t5 = [_context5.t3, _context5.t4];
+                        _context5.t6 = {
+                          components: _context5.t5
+                        };
+                        _context5.t7 = new _context5.t2(_context5.t6);
+                        _context5.t8 = [_context5.t7];
+                        _context5.t9 = {
+                          embeds: _context5.t1,
+                          components: _context5.t8
+                        };
+                        _context5.next = 40;
+                        return _context5.t0.send.call(_context5.t0, _context5.t9);
+
+                      case 40:
                         embedMessage = _context5.sent;
+                        console.log(6);
                         collector = embedMessage.createMessageComponentCollector({
                           filter: function filter(_ref3) {
                             var discordUser = _ref3.user;
                             return discordUser.id === user.user_id;
                           },
-                          componentType: 'BUTTON',
+                          // componentType: 'BUTTON',
                           max: 1,
                           time: 60000,
                           errors: ['time']
                         });
+                        console.log(7);
                         collector.on('collect', /*#__PURE__*/function () {
                           var _ref4 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(interaction) {
                             return _regenerator["default"].wrap(function _callee3$(_context3) {
                               while (1) {
                                 switch (_context3.prev = _context3.next) {
                                   case 0:
-                                    if (!(interaction.customId === yesId)) {
+                                    if (!(interaction.customId === 'yes')) {
                                       _context3.next = 4;
                                       break;
                                     }
@@ -175,7 +189,7 @@ var discordUnlinkAddress = /*#__PURE__*/function () {
                                                 unlinkedAddress = _context.sent;
                                                 _context.next = 5;
                                                 return interaction.update({
-                                                  embeds: [(0, _messages.successUnlinkAddress)(message, unlinkedAddress.address)],
+                                                  embeds: [(0, _embeds.successUnlinkAddress)(message, unlinkedAddress.address)],
                                                   components: []
                                                 });
 
@@ -227,14 +241,15 @@ var discordUnlinkAddress = /*#__PURE__*/function () {
                                     }());
 
                                   case 4:
-                                    if (!(interaction.customId === noId)) {
+                                    if (!(interaction.customId === 'no')) {
                                       _context3.next = 7;
                                       break;
                                     }
 
                                     _context3.next = 7;
                                     return interaction.update({
-                                      embeds: [(0, _messages.cancelUnlinkAddress)(message)]
+                                      embeds: [(0, _embeds.cancelUnlinkAddress)(message)],
+                                      components: []
                                     });
 
                                   case 7:
@@ -264,7 +279,7 @@ var discordUnlinkAddress = /*#__PURE__*/function () {
 
                                     _context4.next = 4;
                                     return embedMessage.edit({
-                                      embeds: [(0, _messages.timeOutUnlinkAddressMessage)(message)],
+                                      embeds: [(0, _embeds.timeOutUnlinkAddressMessage)(message)],
                                       components: []
                                     });
 
@@ -281,8 +296,8 @@ var discordUnlinkAddress = /*#__PURE__*/function () {
                           };
                         }());
 
-                      case 29:
-                        _context5.next = 31;
+                      case 46:
+                        _context5.next = 48;
                         return _models["default"].activity.create({
                           type: 'unlink_s',
                           earnerId: user.id
@@ -291,9 +306,9 @@ var discordUnlinkAddress = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 31:
+                      case 48:
                         preActivity = _context5.sent;
-                        _context5.next = 34;
+                        _context5.next = 51;
                         return _models["default"].activity.findOne({
                           where: {
                             id: preActivity.id
@@ -306,11 +321,11 @@ var discordUnlinkAddress = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 34:
+                      case 51:
                         finalActivity = _context5.sent;
                         activity.unshift(finalActivity);
 
-                      case 36:
+                      case 53:
                       case "end":
                         return _context5.stop();
                     }
@@ -354,7 +369,7 @@ var discordUnlinkAddress = /*#__PURE__*/function () {
 
                         _context6.next = 12;
                         return message.channel.send({
-                          embeds: [(0, _messages.cannotSendMessageUser)("Unlink", message)]
+                          embeds: [(0, _embeds.cannotSendMessageUser)("Unlink", message)]
                         })["catch"](function (e) {
                           console.log(e);
                         });
@@ -366,7 +381,7 @@ var discordUnlinkAddress = /*#__PURE__*/function () {
                       case 14:
                         _context6.next = 16;
                         return message.channel.send({
-                          embeds: [(0, _messages.discordErrorMessage)("Unlink")]
+                          embeds: [(0, _embeds.discordErrorMessage)("Unlink")]
                         })["catch"](function (e) {
                           console.log(e);
                         });

@@ -15,7 +15,7 @@ var _walletNotify = _interopRequireDefault(require("../helpers/blockchain/tokel/
 
 var _syncTokel = require("../services/syncTokel");
 
-var _messages = require("../messages");
+var _embeds = require("../embeds");
 
 function _asyncIterator(iterable) { var method, async, sync, retry = 2; for ("undefined" != typeof Symbol && (async = Symbol.asyncIterator, sync = Symbol.iterator); retry--;) { if (async && null != (method = iterable[async])) return method.call(iterable); if (sync && null != (method = iterable[sync])) return new AsyncFromSyncIterator(method.call(iterable)); async = "@@asyncIterator", sync = "@@iterator"; } throw new TypeError("Object is not async iterable"); }
 
@@ -160,7 +160,7 @@ var notifyRouter = function notifyRouter(app, discordClient, io, queue) {
               myClient = _context2.sent;
               _context2.next = 39;
               return myClient.send({
-                embeds: [(0, _messages.linkedAddressVerified)(res.locals.verifyAddress.discordId, res.locals.verifyAddress.linkedAddress)]
+                embeds: [(0, _embeds.linkedAddressVerified)(res.locals.verifyAddress.discordId, res.locals.verifyAddress.linkedAddress)]
               });
 
             case 39:

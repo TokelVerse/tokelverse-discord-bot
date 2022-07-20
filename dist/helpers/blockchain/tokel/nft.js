@@ -17,7 +17,7 @@ var _sequelize = require("sequelize");
 
 var _models = _interopRequireDefault(require("../../../models"));
 
-var _messages = require("../../../messages");
+var _embeds = require("../../../embeds");
 
 var _rclient = require("../../../services/rclient");
 
@@ -207,7 +207,7 @@ function _startNftCheck() {
 
                                   _context.next = 45;
                                   return discordChannel.send({
-                                    embeds: [(0, _messages.userUnlinkedAddressRolesLostMessage)(userWithNFT, rolesLost)]
+                                    embeds: [(0, _embeds.userUnlinkedAddressRolesLostMessage)(userWithNFT, rolesLost)]
                                   });
 
                                 case 45:
@@ -436,7 +436,7 @@ function _startNftCheck() {
 
                                             _context5.next = 21;
                                             return discordChannel.send({
-                                              embeds: [(0, _messages.userRolesLostMessage)(checkUser, rolesLost)]
+                                              embeds: [(0, _embeds.userRolesLostMessage)(checkUser, rolesLost)]
                                             });
 
                                           case 21:
@@ -745,7 +745,7 @@ function _startNftCheck() {
 
                                             _context9.next = 25;
                                             return discordChannel.send({
-                                              embeds: [(0, _messages.userEarnedRolesMessage)(linkedAddress.user, rolesEarned)]
+                                              embeds: [(0, _embeds.userEarnedRolesMessage)(linkedAddress.user, rolesEarned)]
                                             });
 
                                           case 25:

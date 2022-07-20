@@ -4,11 +4,8 @@ import {
   createCanvas,
 } from 'canvas';
 import {
-  MessageAttachment,
-  ChannelType,
   InteractionType,
 } from "discord.js";
-import path from 'path';
 import {
   cannotSendMessageUser,
   discordErrorMessage,

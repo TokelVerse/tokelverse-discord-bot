@@ -1,7 +1,8 @@
 /* eslint-disable import/first */
 import {
   Client,
-  Intents,
+  GatewayIntentBits,
+  Partials,
 } from "discord.js";
 import _ from 'lodash';
 import PQueue from 'p-queue';
@@ -21,6 +22,8 @@ import cookieParser from 'cookie-parser';
 import { createClient as createRedisClient } from 'redis';
 import socketIo from 'socket.io';
 import csurf from 'csurf';
+import path from 'path';
+import { registerFont } from 'canvas';
 import { router } from "./router";
 import { dashboardRouter } from "./dashboard/router";
 import { initDatabaseRecords } from "./helpers/initDatabaseRecords";
@@ -34,6 +37,17 @@ import { deployCommands } from './helpers/client/deployCommands';
 Object.freeze(Object.prototype);
 
 config();
+
+registerFont(
+  path.join(
+    __dirname,
+    './assets/fonts/',
+    'Heart_warming.otf',
+  ),
+  {
+    family: 'HeartWarming',
+  },
+);
 
 const checkCSRFRoute = (req) => {
   const hostmachine = req.headers.host.split(':')[0];
@@ -171,20 +185,23 @@ const conditionalCSRF = function (
 
   const discordClient = new Client({
     intents: [
-      Intents.FLAGS.GUILDS,
-      Intents.FLAGS.GUILD_MEMBERS,
-      Intents.FLAGS.GUILD_PRESENCES,
-      Intents.FLAGS.GUILD_MESSAGES,
-      Intents.FLAGS.DIRECT_MESSAGES,
-      Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-      Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-      Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-      Intents.FLAGS.GUILD_VOICE_STATES,
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMembers,
+      GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.DirectMessages,
+      GatewayIntentBits.GuildMessageReactions,
+      GatewayIntentBits.DirectMessageReactions,
+      GatewayIntentBits.GuildEmojisAndStickers,
+      GatewayIntentBits.GuildVoiceStates,
+      GatewayIntentBits.MessageContent,
+      GatewayIntentBits.GuildPresences,
+      GatewayIntentBits.GuildInvites,
+      // GatewayIntentBits.
     ],
     partials: [
-      'MESSAGE',
-      'CHANNEL',
-      'REACTION',
+      Partials.Message,
+      Partials.Channel,
+      Partials.Reaction,
     ],
   });
 
@@ -238,7 +255,7 @@ const conditionalCSRF = function (
   startNftCheck(
     discordClient,
   );
-  const scheduleNftCheck = schedule.scheduleJob('*/20 * * * *', () => {
+  const scheduleNftCheck = schedule.scheduleJob('*/1 * * * *', () => {
     startNftCheck(
       discordClient,
     );

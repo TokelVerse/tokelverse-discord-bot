@@ -1,4 +1,4 @@
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 // import moment from 'moment';
 import settings from '../config/settings';
 import pjson from "../../package.json";
@@ -7,7 +7,7 @@ import { capitalize } from "../helpers/utils";
 export const discordUserBannedMessage = (
   user,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor("#C70039")
     .setTitle(`🚫     User: ${user.username} Banned     🚫`)
     .setDescription(`Reason:
@@ -24,7 +24,7 @@ ${user.banMessage}`)
 export const discordServerBannedMessage = (
   server,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(`#C70039`)
     .setTitle('🚫     Server Banned     🚫')
     .setDescription(`Reason:
@@ -39,7 +39,7 @@ ${server.banMessage}`)
 };
 
 export const priceMessage = (replyString) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Price')
     .setThumbnail(settings.bot.logo)
@@ -54,7 +54,7 @@ export const priceMessage = (replyString) => {
 };
 
 export const discordChannelBannedMessage = (channel) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor('#FF7900')
     .setTitle('❗     Channel Restricted     ❗')
     .setDescription(`Reason:
@@ -73,7 +73,7 @@ export const coinInfoMessage = (
   priceInfo,
   walletVersion,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Tipbot')
     .addField("Coin Info", settings.coin.description)
@@ -105,7 +105,7 @@ export const coinInfoMessage = (
 };
 
 export const discordLimitSpamMessage = (userId, myFunctionName) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(myFunctionName)
     .setDescription(`🚫 Slow down! 🚫
@@ -120,7 +120,7 @@ export const discordLimitSpamMessage = (userId, myFunctionName) => {
 };
 
 export const cannotSendMessageUser = (title, message) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(title)
     .setDescription(`<@${message.author.id}>, ${settings.bot.name} was unable to send you a direct message.\nPlease check your discord privacy settings.`)
@@ -134,7 +134,7 @@ export const cannotSendMessageUser = (title, message) => {
 };
 
 export const discordErrorMessage = (title) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(title)
     .setDescription(`Something went wrong.`)
@@ -151,7 +151,7 @@ export const discordDepositConfirmedMessage = (
   amount,
   trans,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(`Deposit #${trans.id}`)
     .setDescription(`Deposit Confirmed
@@ -166,7 +166,7 @@ ${trans.amount / 1e8} ${settings.coin.ticker} has been credited to your wallet`)
 };
 
 export const discordIncomingDepositMessage = (detail) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(`Deposit #${detail.transaction[0].id}`)
     .setDescription(`incoming deposit detected for ${detail.amount} ${settings.coin.ticker}
@@ -182,7 +182,7 @@ ${settings.coin.explorer}/tx/${detail.transaction[0].txid}`)
 };
 
 export const discordUserWithdrawalRejectMessage = (title) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Withdraw')
     .setDescription(`Your withdrawal has been rejected`)
@@ -202,7 +202,7 @@ export const reviewMessage = (
   const amount = ((transaction.amount / 1e8).toFixed(8)).replace(/(\.0+|0+)$/, '');
   const fee = ((transaction.feeAmount / 1e8).toFixed(8)).replace(/(\.0+|0+)$/, '');
   const total = (((transaction.amount - transaction.feeAmount) / 1e8).toFixed(8)).replace(/(\.0+|0+)$/, '');
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(`Withdraw #${transaction.id}`)
     .setDescription(`<@${message.author.id}>, Your withdrawal is being reviewed
@@ -225,7 +225,7 @@ export const discordWithdrawalAcceptedMessage = (
   const amount = ((updatedTrans.amount / 1e8).toFixed(8)).replace(/(\.0+|0+)$/, '');
   const fee = ((updatedTrans.feeAmount / 1e8).toFixed(8)).replace(/(\.0+|0+)$/, '');
   const total = (((updatedTrans.amount - updatedTrans.feeAmount) / 1e8).toFixed(8)).replace(/(\.0+|0+)$/, '');
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(`Withdraw #${updatedTrans.id}`)
     .setDescription(`Your withdrawal has been accepted
@@ -245,7 +245,7 @@ ${settings.coin.explorer}/tx/${updatedTrans.txid}`)
 };
 
 export const discordWithdrawalConfirmedMessage = (userId, trans) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(`Withdraw #${trans.id}`)
     .setDescription(`<@${userId}>, Your withdrawal has been complete`)
@@ -259,7 +259,7 @@ export const discordWithdrawalConfirmedMessage = (userId, trans) => {
 };
 
 export const balanceMessage = (userId, user, priceInfo) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Balance')
     .setDescription(`<@${userId}>'s current available balance: ${user.wallet.available / 1e8} ${settings.coin.ticker}
@@ -276,7 +276,7 @@ Estimated value of <@${userId}>'s balance: $${(((user.wallet.available + user.wa
 };
 
 export const depositAddressMessage = (userId, user) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Deposit')
     .setDescription(`<@${userId}>'s deposit address:
@@ -292,7 +292,7 @@ export const depositAddressMessage = (userId, user) => {
 };
 
 export const walletNotFoundMessage = (message, title) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(title)
     .setDescription(`<@${message.author.id}>, Wallet not found`)
@@ -309,7 +309,7 @@ export const userNotFoundMessage = (
   message,
   title,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(title)
     .setDescription(`<@${message.author.id}>, User not found`)
@@ -323,7 +323,7 @@ export const userNotFoundMessage = (
 };
 
 export const NotInDirectMessage = (message, title) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(title)
     .setDescription(`<@${message.author.id}>, Can't use this command in a direct message`)
@@ -340,7 +340,7 @@ export const NotInDirectMessage = (message, title) => {
 export const discordWelcomeMessage = (
   userInfo,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(`Bot`)
     .setDescription(`Welcome <@${userInfo.id}>, Welcome to Tokelverse.
@@ -356,7 +356,7 @@ Type "${settings.bot.command.discord} help" for bot usage info`)
 };
 
 export const discordBotMaintenanceMessage = () => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(`Bot`)
     .setDescription(`Discord tipbot maintenance`)
@@ -374,7 +374,7 @@ export const successUnlinkAddress = (
   message,
   address,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Unlink Tokel Address')
     .setDescription(`<@${message.author.id}>, successfully unlinked ${address}`)
@@ -391,7 +391,7 @@ export const userAlreadyLinkedAnAddressMessage = (
   user,
   address,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Unlink Tokel Address')
     .setDescription(`<@${user.user_id}>, You already linked an address.
@@ -412,7 +412,7 @@ currently linked address:
 export const cancelUnlinkAddress = (
   message,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Unlink Tokel Address')
     .setDescription(`<@${message.author.id}>, you canceled unlinking your address`)
@@ -428,7 +428,7 @@ export const cancelUnlinkAddress = (
 export const timeOutUnlinkAddressMessage = (
   message,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Unlink Tokel Address')
     .setDescription(`<@${message.author.id}>, your request to unlink a tokel address has expired`)
@@ -445,7 +445,7 @@ export const confirmUnlinkAddress = (
   message,
   address,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Unlink Tokel Address')
     .setDescription(`<@${message.author.id}>, are you sure you want to unlink ${address}?`)
@@ -461,7 +461,7 @@ export const confirmUnlinkAddress = (
 export const noAddressToUnlink = (
   message,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Unlink Tokel Address')
     .setDescription(`<@${message.author.id}>, You don't have an address to unlink`)
@@ -477,7 +477,7 @@ export const noAddressToUnlink = (
 export const timeOutTokelLinkAddressMessage = (
   message,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Link Tokel Address')
     .setDescription(`<@${message.author.id}>, your request to link a tokel address has expired`)
@@ -491,7 +491,7 @@ export const timeOutTokelLinkAddressMessage = (
 };
 
 export const enterAddressToLinkMessage = () => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(`Link tokel address`)
     .setDescription(`Please enter the tokel address you would like to link to your discord account:`)
@@ -506,7 +506,7 @@ export const enterAddressToLinkMessage = () => {
 };
 
 export const invalidTokelLinkAddress = () => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(`Link tokel address`)
     .setDescription(`You entered an invalid Tokel Address`)
@@ -525,7 +525,7 @@ export const addedNewTokelLinkAddress = (
   linkedAddress,
   depositAddress,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(`Link tokel address`)
     .setDescription(`Successfully added
@@ -546,7 +546,7 @@ to verify this address belongs to you`)
 };
 
 export const tokelLinkAddressAlreadyBusyVerifying = (message, address) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(`Link tokel address`)
     .setDescription(`You already busy verifying ${address}
@@ -562,7 +562,7 @@ Please unlink your current address before adding another`)
 };
 
 export const tokelLinkAddressAlreadyVerified = (message, address) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(`Link tokel address`)
     .setDescription(`You already verified ${address}`)
@@ -577,7 +577,7 @@ export const tokelLinkAddressAlreadyVerified = (message, address) => {
 };
 
 export const tokelLinkAddressAlreadyOccupied = (message, address) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(`Link tokel address`)
     .setDescription(`${address} is already occupied by another discord account. 
@@ -593,7 +593,7 @@ if you lost your discord account and would like to unlink address from your old 
 };
 
 export const discordBotDisabledMessage = () => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(`Bot`)
     .setDescription(`Discord tipbot disabled`)
@@ -608,7 +608,7 @@ export const discordBotDisabledMessage = () => {
 };
 
 export const warnDirectMessage = (userId, title) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(title)
     .setDescription(`<@${userId}>, I've sent you a direct message.`)
@@ -623,7 +623,7 @@ export const warnDirectMessage = (userId, title) => {
 };
 
 export const AccountInfoMessage = () => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Account Information')
     .setDescription(`Shows discord account information`)
@@ -640,7 +640,7 @@ export const AccountInfoMessage = () => {
 export const alreadyVotedTopGG = (
   userId,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Gain Exp')
     .setDescription(`<@${userId}>, Thank you for your enthousiasme.
@@ -658,7 +658,7 @@ export const levelUpMessage = (
   userId,
   rank,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Gain Exp')
     .setDescription(`Congratulations <@${userId}>
@@ -677,7 +677,7 @@ export const gainActiveTalkerExpMessage = (
   userId,
   amount,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Gain Exp')
     .setDescription(`<@${userId}>, Thank you for being so talkative in our community today!
@@ -695,7 +695,7 @@ export const gainVoteTopggExpMessage = (
   userId,
   amount,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Gain Exp')
     .setDescription(`<@${userId}>, Thank you for voting for Tokelverse on TopGG.
@@ -714,7 +714,7 @@ export const invitedNewUserRewardMessage = (
   joinedUserId,
   amount,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Gain Exp')
     .setDescription(`<@${userId}>, Thank you for inviting <@${joinedUserId}> to the Tokelverse server.
@@ -732,7 +732,7 @@ export const linkedAddressVerified = (
   discordId,
   linkedAddress,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Link tokel address')
     .setDescription(`Thank you, <@${discordId}>,
@@ -751,7 +751,7 @@ export const discordTransactionMemoTooLongMessage = (
   message,
   memoLength,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Withdraw')
     .setDescription(`<@${message.author.id}>, Your withdrawal memo is too long!
@@ -770,7 +770,7 @@ export const userUnlinkedAddressRolesLostMessage = (
   user,
   roles,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Unlinked address')
     .setDescription(`<@${user.user_id}>, has unlinked his/her address
@@ -790,7 +790,7 @@ export const userRolesLostMessage = (
   user,
   roles,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Lost Roles')
     .setDescription(`<@${user.user_id}>, Lost ${roles.length} ${roles.length === 1 ? 'role' : 'roles'}
@@ -809,7 +809,7 @@ export const userEarnedRolesMessage = (
   user,
   roles,
 ) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Earned Roles')
     .setDescription(`<@${user.user_id}>, Earned ${roles.length} ${roles.length === 1 ? 'role' : 'roles'}
@@ -825,7 +825,7 @@ ${roles.map((roleId) => `<@&${roleId}>`).join("\n")}`)
 };
 
 export const helpMessage = (withdraw) => {
-  const result = new MessageEmbed()
+  const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(`${`${settings.bot.name} v${pjson.version}`} Help`)
     .setDescription(`\`${settings.bot.command}\`

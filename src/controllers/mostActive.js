@@ -3,9 +3,12 @@ import { Transaction, Sequelize, Op } from "sequelize";
 import {
   createCanvas,
   loadImage,
-  registerFont,
 } from 'canvas';
-import { MessageAttachment } from "discord.js";
+import {
+  MessageAttachment,
+  ChannelType,
+  InteractionType,
+} from "discord.js";
 import path from 'path';
 import {
   cannotSendMessageUser,
@@ -153,7 +156,6 @@ export const discordMostActive = async (
     console.log(newTopUsers);
 
     const canvasAddedRanksHeight = (newTopUsers.length * 300) + 36.5;
-    await registerFont(path.join(__dirname, '../assets/fonts/', 'Heart_warming.otf'), { family: 'HeartWarming' });
 
     const canvas = createCanvas(1040, canvasAddedRanksHeight);
     const ctx = canvas.getContext('2d');
@@ -512,21 +514,28 @@ export const discordMostActive = async (
     ctx.lineTo(1038.5, canvasAddedRanksHeight);
     ctx.stroke();
 
-    const attachment = new MessageAttachment(canvas.toBuffer(), 'mostActive.png');
+    const finalImage = canvas.toBuffer();
+    // const attachment = new MessageAttachment(canvas.toBuffer(), 'mostActive.png');
 
-    if (message.type && message.type === 'APPLICATION_COMMAND') {
+    if (message.type && message.type === InteractionType.ApplicationCommand) {
       if (message.guildId) {
         const discordChannel = await discordClient.channels.cache.get(message.channelId);
         await discordChannel.send({
           files: [
-            attachment,
+            {
+              attachment: finalImage,
+              name: 'mostActive.png',
+            },
           ],
         });
       }
     } else {
       await message.channel.send({
         files: [
-          attachment,
+          {
+            attachment: finalImage,
+            name: 'mostActive.png',
+          },
         ],
       });
     }
@@ -564,7 +573,7 @@ export const discordMostActive = async (
       logger.error(`Error Discord: ${e}`);
     }
     if (err.code && err.code === 50007) {
-      if (message.type && message.type === 'APPLICATION_COMMAND') {
+      if (message.type && message.type === InteractionType.ApplicationCommand) {
         const discordChannel = await discordClient.channels.cache.get(message.channelId);
         await discordChannel.send({
           embeds: [
@@ -588,7 +597,7 @@ export const discordMostActive = async (
           console.log(e);
         });
       }
-    } else if (message.type && message.type === 'APPLICATION_COMMAND') {
+    } else if (message.type && message.type === InteractionType.ApplicationCommand) {
       const discordChannel = await discordClient.channels.cache.get(message.channelId);
       await discordChannel.send({
         embeds: [

@@ -1,5 +1,9 @@
 import { Transaction, Op } from "sequelize";
 import {
+  ChannelType,
+  InteractionType,
+} from 'discord.js';
+import {
   discordErrorMessage,
   cannotSendMessageUser,
 } from '../embeds';
@@ -138,7 +142,7 @@ export const discordActiveTalker = async (
     }
     // logger.error(`Error Discord ActiveTalker Requested by: ${message.author.id}-${message.author.username}#${message.author.discriminator} - ${err}`);
     if (err.code && err.code === 50007) {
-      if (message.type && message.type === 'APPLICATION_COMMAND') {
+      if (message.type && message.type === InteractionType.ApplicationCommand) {
         const discordChannel = await discordClient.channels.cache.get(message.channelId);
         await discordChannel.send({
           embeds: [
@@ -162,7 +166,7 @@ export const discordActiveTalker = async (
           console.log(e);
         });
       }
-    } else if (message.type && message.type === 'APPLICATION_COMMAND') {
+    } else if (message.type && message.type === InteractionType.ApplicationCommand) {
       const discordChannel = await discordClient.channels.cache.get(message.channelId);
       await discordChannel.send({
         embeds: [

@@ -1,6 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 import { Transaction } from "sequelize";
 import {
+  ChannelType,
+  InteractionType,
+} from 'discord.js';
+import {
   warnDirectMessage,
   helpMessage,
   cannotSendMessageUser,
@@ -31,14 +35,14 @@ export const discordHelp = async (
     }
     if (!user) return;
 
-    if (message.channel.type === 'DM') {
+    if (message.channel.type === ChannelType.DM) {
       await message.author.send({
         embeds: [
           helpMessage(),
         ],
       });
     }
-    if (message.channel.type === 'GUILD_TEXT') {
+    if (message.channel.type === ChannelType.GuildText) {
       await message.author.send({
         embeds: [
           helpMessage(),

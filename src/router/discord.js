@@ -1,4 +1,7 @@
 import { config } from "dotenv";
+import {
+  InteractionType,
+} from 'discord.js';
 import { updateDiscordChannel } from '../controllers/channel';
 import { updateDiscordGroup } from '../controllers/group';
 import { discordHelp } from '../controllers/help';
@@ -18,7 +21,6 @@ import { createUpdateDiscordUser, updateDiscordLastSeen } from '../controllers/u
 import { myRateLimiter } from '../helpers/rateLimit';
 import { isMaintenanceOrDisabled } from '../helpers/isMaintenanceOrDisabled';
 import settings from '../config/settings';
-
 import {
   discordUserBannedMessage,
   discordServerBannedMessage,
@@ -116,7 +118,7 @@ export const discordRouter = (
   });
 
   discordClient.on('interactionCreate', async (interaction) => {
-    if (!interaction.isCommand() && !interaction.isButton()) return;
+    if (!interaction.type !== InteractionType.ApplicationCommand && !interaction.isButton()) return;
     let groupTask;
     let groupTaskId;
     let channelTask;
@@ -143,7 +145,7 @@ export const discordRouter = (
         groupTaskId = groupTask && groupTask.id;
         channelTaskId = channelTask && channelTask.id;
       });
-      if (interaction.isCommand()) {
+      if (interaction.type === InteractionType.ApplicationCommand) {
         const { commandName } = interaction;
         if (commandName === 'help') {
           await interaction.deferReply().catch((e) => {

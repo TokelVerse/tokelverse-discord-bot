@@ -2,9 +2,12 @@
 import { Transaction } from "sequelize";
 import {
   createCanvas,
-  registerFont,
 } from 'canvas';
-import { MessageAttachment } from "discord.js";
+import {
+  MessageAttachment,
+  ChannelType,
+  InteractionType,
+} from "discord.js";
 import path from 'path';
 import {
   cannotSendMessageUser,
@@ -43,7 +46,6 @@ export const discordRanks = async (
       },
     );
     const canvasAddedRanksHeight = (allRanks.length * 40) + 36.5;
-    await registerFont(path.join(__dirname, '../assets/fonts/', 'Heart_warming.otf'), { family: 'HeartWarming' });
     const canvas = createCanvas(600, canvasAddedRanksHeight);
     const ctx = canvas.getContext('2d');
     ctx.font = 'bold 20px "HeartWarming"';
@@ -118,21 +120,28 @@ export const discordRanks = async (
     ctx.lineTo(598.5, canvasAddedRanksHeight);
     ctx.stroke();
 
-    const attachment = new MessageAttachment(canvas.toBuffer(), 'ranks.png');
+    const finalImage = canvas.toBuffer();
+    // const attachment = new MessageAttachment(canvas.toBuffer(), 'ranks.png');
 
-    if (message.type && message.type === 'APPLICATION_COMMAND') {
+    if (message.type && message.type === InteractionType.ApplicationCommand) {
       if (message.guildId) {
         const discordChannel = await discordClient.channels.cache.get(message.channelId);
         await discordChannel.send({
           files: [
-            attachment,
+            {
+              attachment: finalImage,
+              name: 'ranks.png',
+            },
           ],
         });
       }
     } else {
       await message.channel.send({
         files: [
-          attachment,
+          {
+            attachment: finalImage,
+            name: 'ranks.png',
+          },
         ],
       });
     }
@@ -170,7 +179,7 @@ export const discordRanks = async (
     }
     logger.error(`Error Discord Ranks Requested by: ${message.author.id}-${message.author.username}#${message.author.discriminator} - ${err}`);
     if (err.code && err.code === 50007) {
-      if (message.type && message.type === 'APPLICATION_COMMAND') {
+      if (message.type && message.type === InteractionType.ApplicationCommand) {
         const discordChannel = await discordClient.channels.cache.get(message.channelId);
         await discordChannel.send({
           embeds: [
@@ -194,7 +203,7 @@ export const discordRanks = async (
           console.log(e);
         });
       }
-    } else if (message.type && message.type === 'APPLICATION_COMMAND') {
+    } else if (message.type && message.type === InteractionType.ApplicationCommand) {
       const discordChannel = await discordClient.channels.cache.get(message.channelId);
       await discordChannel.send({
         embeds: [

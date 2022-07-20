@@ -1,6 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 import { Transaction, Op } from "sequelize";
 import {
+  ChannelType,
+  InteractionType,
+} from 'discord.js';
+import {
   cannotSendMessageUser,
   discordErrorMessage,
 } from '../embeds';
@@ -108,7 +112,7 @@ export const discordUserJoined = async (
     }
     // logger.error(`Error Discord userJoined Requested by: ${message.author.id}-${message.author.username}#${message.author.discriminator} - ${err}`);
     if (err.code && err.code === 50007) {
-      if (message.type && message.type === 'APPLICATION_COMMAND') {
+      if (message.type && message.type === InteractionType.ApplicationCommand) {
         const discordChannel = await discordClient.channels.cache.get(message.channelId);
         await discordChannel.send({
           embeds: [
@@ -132,7 +136,7 @@ export const discordUserJoined = async (
           console.log(e);
         });
       }
-    } else if (message.type && message.type === 'APPLICATION_COMMAND') {
+    } else if (message.type && message.type === InteractionType.ApplicationCommand) {
       const discordChannel = await discordClient.channels.cache.get(message.channelId);
       await discordChannel.send({
         embeds: [

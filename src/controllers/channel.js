@@ -1,4 +1,8 @@
 import { Transaction } from "sequelize";
+import {
+  ChannelType,
+  InteractionType,
+} from 'discord.js';
 import db from '../models';
 import logger from "../helpers/logger";
 
@@ -9,7 +13,7 @@ export const updateDiscordChannel = async (
   let channelId;
   let channelRecord;
 
-  if (message.type && message.type === "GUILD_VOICE") {
+  if (message.type && message.type === ChannelType.GuildVoice) {
     channelId = message.id;
   } else if (message.guild && message.guild.id && message.channelId) {
     channelId = message.channelId;

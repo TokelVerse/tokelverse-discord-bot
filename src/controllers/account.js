@@ -1,6 +1,9 @@
 /* eslint-disable import/prefer-default-export */
 import { Transaction } from "sequelize";
 import {
+  ChannelType,
+} from 'discord.js';
+import {
   warnDirectMessage,
   AccountInfoMessage,
   cannotSendMessageUser,
@@ -31,14 +34,14 @@ export const discordAccount = async (
     }
     if (!user) return;
 
-    if (message.channel.type === 'DM') {
+    if (message.channel.type === ChannelType.DM) {
       await message.author.send({
         embeds: [
           AccountInfoMessage(),
         ],
       });
     }
-    if (message.channel.type === 'GUILD_TEXT') {
+    if (message.channel.type === ChannelType.GuildText) {
       await message.author.send({
         embeds: [
           AccountInfoMessage(),

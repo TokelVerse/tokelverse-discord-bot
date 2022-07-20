@@ -7,9 +7,12 @@ import {
 import {
   createCanvas,
   loadImage,
-  registerFont,
 } from 'canvas';
-import { MessageAttachment } from "discord.js";
+import {
+  MessageAttachment,
+  ChannelType,
+  InteractionType,
+} from "discord.js";
 import path from 'path';
 import {
   cannotSendMessageUser,
@@ -93,7 +96,7 @@ export const discordMyRank = async (
 
     const nextRankExp = nextRank && nextRank.expNeeded ? nextRank.expNeeded : currentRankExp;
     const currentExp = user.exp;
-    await registerFont(path.join(__dirname, '../assets/fonts/', 'Heart_warming.otf'), { family: 'HeartWarming' });
+
     const canvas = createCanvas(1000, 300);
     const ctx = canvas.getContext('2d');
     const expBarWidth = 600;
@@ -101,7 +104,7 @@ export const discordMyRank = async (
     // const background = await loadImage(path.join(__dirname, '../assets/images/', 'myrank_background_two.png'));
 
     let avatar;
-    if (message.type && message.type === 'APPLICATION_COMMAND') {
+    if (message.type && message.type === InteractionType.ApplicationCommand) {
       avatar = await loadImage(`https://cdn.discordapp.com/avatars/${message.user.id}/${message.user.avatar}.png?size=256`);
     } else {
       avatar = await loadImage(`https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png?size=256`);
@@ -231,38 +234,51 @@ export const discordMyRank = async (
     // Add the avatar
     ctx.drawImage(avatar, 10, 10, 220, 220);
 
-    const attachment = new MessageAttachment(canvas.toBuffer(), 'rank.png');
+    const finalImage = canvas.toBuffer();
+    // const attachment = new MessageAttachment(canvas.toBuffer(), 'rank.png');
 
     console.log('before send');
 
-    if (message.type && message.type === 'APPLICATION_COMMAND') {
+    if (message.type && message.type === InteractionType.ApplicationCommand) {
       const discordUser = await discordClient.users.cache.get(message.user.id);
       if (message.guildId) {
         const discordChannel = await discordClient.channels.cache.get(message.channelId);
         await discordChannel.send({
           files: [
-            attachment,
+            {
+              attachment: finalImage,
+              name: 'myRank.png',
+            },
           ],
         });
       } else {
         await discordUser.send({
           files: [
-            attachment,
+            {
+              attachment: finalImage,
+              name: 'myRank.png',
+            },
           ],
         });
       }
     } else {
-      if (message.channel.type === 'DM') {
+      if (message.channel.type === ChannelType.DM) {
         await message.author.send({
           files: [
-            attachment,
+            {
+              attachment: finalImage,
+              name: 'myRank.png',
+            },
           ],
         });
       }
-      if (message.channel.type === 'GUILD_TEXT') {
+      if (message.channel.type === ChannelType.GuildText) {
         await message.channel.send({
           files: [
-            attachment,
+            {
+              attachment: finalImage,
+              name: 'myRank.png',
+            },
           ],
         });
       }
@@ -300,7 +316,7 @@ export const discordMyRank = async (
       logger.error(`Error Discord: ${e}`);
     }
     if (err.code && err.code === 50007) {
-      if (message.type && message.type === 'APPLICATION_COMMAND') {
+      if (message.type && message.type === InteractionType.ApplicationCommand) {
         const discordChannel = await discordClient.channels.cache.get(message.channelId);
         await discordChannel.send({
           embeds: [
@@ -324,7 +340,7 @@ export const discordMyRank = async (
           console.log(e);
         });
       }
-    } else if (message.type && message.type === 'APPLICATION_COMMAND') {
+    } else if (message.type && message.type === InteractionType.ApplicationCommand) {
       const discordChannel = await discordClient.channels.cache.get(message.channelId);
       await discordChannel.send({
         embeds: [

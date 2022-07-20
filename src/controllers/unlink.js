@@ -1,8 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 import { Transaction } from "sequelize";
 import {
-  MessageButton,
-  MessageActionRow,
+  ActionRowBuilder,
+  ChannelType,
 } from "discord.js";
 import {
   warnDirectMessage,
@@ -17,6 +17,10 @@ import {
 import db from '../models';
 import logger from "../helpers/logger";
 import { userWalletExist } from "../helpers/client/userWalletExist";
+import {
+  generateNoButton,
+  generateYesButton,
+} from '../buttons';
 
 export const discordUnlinkAddress = async (
   message,
@@ -39,7 +43,8 @@ export const discordUnlinkAddress = async (
     }
     if (!user) return;
 
-    if (message.channel.type === 'GUILD_TEXT') {
+    console.log(1);
+    if (message.channel.type === ChannelType.GuildText) {
       await message.channel.send({
         embeds: [
           warnDirectMessage(
@@ -49,7 +54,7 @@ export const discordUnlinkAddress = async (
         ],
       });
     }
-
+    console.log(2);
     const hasAddressToUnlink = await db.linkedAddress.findOne({
       where: {
         enabled: true,
@@ -58,7 +63,7 @@ export const discordUnlinkAddress = async (
       lock: t.LOCK.UPDATE,
       transaction: t,
     });
-
+    console.log(3);
     if (!hasAddressToUnlink) {
       await message.author.send({
         embeds: [
@@ -69,20 +74,8 @@ export const discordUnlinkAddress = async (
       });
     }
 
-    const noId = 'no';
-    const yesId = 'yes';
-    const NoButton = new MessageButton({
-      style: 'SECONDARY',
-      label: 'No',
-      emoji: '❌',
-      customId: noId,
-    });
-    const YesButton = new MessageButton({
-      style: 'SECONDARY',
-      label: 'Yes',
-      emoji: '✔️',
-      customId: yesId,
-    });
+    console.log(4);
+    console.log(hasAddressToUnlink);
 
     if (hasAddressToUnlink) {
       const embedMessage = await message.author.send({
@@ -93,25 +86,25 @@ export const discordUnlinkAddress = async (
           ),
         ],
         components: [
-          new MessageActionRow({
+          new ActionRowBuilder({
             components: [
-              YesButton,
-              NoButton,
+              await generateYesButton(),
+              await generateNoButton(),
             ],
           }),
         ],
       });
-
+      console.log(6);
       const collector = embedMessage.createMessageComponentCollector({
         filter: ({ user: discordUser }) => discordUser.id === user.user_id,
-        componentType: 'BUTTON',
+        // componentType: 'BUTTON',
         max: 1,
         time: 60000,
         errors: ['time'],
       });
-
+      console.log(7);
       collector.on('collect', async (interaction) => {
-        if (interaction.customId === yesId) {
+        if (interaction.customId === 'yes') {
           console.log('received yes');
           await db.sequelize.transaction({
             isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,
@@ -142,14 +135,14 @@ export const discordUnlinkAddress = async (
             }
           });
         }
-        if (interaction.customId === noId) {
+        if (interaction.customId === 'no') {
           await interaction.update({
             embeds: [
               cancelUnlinkAddress(
                 message,
               ),
             ],
-
+            components: [],
           });
         }
       });

@@ -1,4 +1,8 @@
 import { Transaction } from "sequelize";
+import {
+  ChannelType,
+  InteractionType,
+} from 'discord.js';
 import db from '../models';
 import logger from "../helpers/logger";
 import { getInstance } from "../services/rclient";

@@ -1,6 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 import { Transaction } from "sequelize";
 import {
+  ChannelType,
+  InteractionType,
+} from 'discord.js';
+import {
   warnDirectMessage,
   enterAddressToLinkMessage,
   invalidTokelLinkAddress,
@@ -40,7 +44,7 @@ export const discordLinkAddress = async (
     if (!user) return;
     // console.log(user.wallet);
 
-    if (message.channel.type === 'GUILD_TEXT') {
+    if (message.channel.type === ChannelType.GuildText) {
       await message.channel.send({
         embeds: [
           warnDirectMessage(

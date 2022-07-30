@@ -228,58 +228,58 @@ export const discordRouter = (
             console.log(e);
           });
         }
-        if (commandName === 'deposit') {
-          await interaction.deferReply().catch((e) => {
-            console.log(e);
-          });
-          const limited = await myRateLimiter(
-            discordClient,
-            interaction,
-            'Deposit',
-          );
-          if (limited) {
-            await interaction.editReply('rate limited').catch((e) => {
-              console.log(e);
-            });
-            return;
-          }
-          await queue.add(async () => {
-            const task = await discordDeposit(
-              discordClient,
-              interaction,
-              io,
-            );
-          });
-          await interaction.editReply('\u200b').catch((e) => {
-            console.log(e);
-          });
-        }
-        if (commandName === 'balance') {
-          await interaction.deferReply().catch((e) => {
-            console.log(e);
-          });
-          const limited = await myRateLimiter(
-            discordClient,
-            interaction,
-            'Balance',
-          );
-          if (limited) {
-            await interaction.editReply('rate limited').catch((e) => {
-              console.log(e);
-            });
-            return;
-          }
-          await queue.add(async () => {
-            const task = await discordBalance(
-              discordClient,
-              interaction,
-              io,
-            );
-          });
-          await interaction.editReply('\u200b').catch((e) => {
-            console.log(e);
-          });
-        }
+        // if (commandName === 'deposit') {
+        //   await interaction.deferReply().catch((e) => {
+        //     console.log(e);
+        //   });
+        //   const limited = await myRateLimiter(
+        //     discordClient,
+        //     interaction,
+        //     'Deposit',
+        //   );
+        //   if (limited) {
+        //     await interaction.editReply('rate limited').catch((e) => {
+        //       console.log(e);
+        //     });
+        //     return;
+        //   }
+        //   await queue.add(async () => {
+        //     const task = await discordDeposit(
+        //       discordClient,
+        //       interaction,
+        //       io,
+        //     );
+        //   });
+        //   await interaction.editReply('\u200b').catch((e) => {
+        //     console.log(e);
+        //   });
+        // }
+        // if (commandName === 'balance') {
+        //   await interaction.deferReply().catch((e) => {
+        //     console.log(e);
+        //   });
+        //   const limited = await myRateLimiter(
+        //     discordClient,
+        //     interaction,
+        //     'Balance',
+        //   );
+        //   if (limited) {
+        //     await interaction.editReply('rate limited').catch((e) => {
+        //       console.log(e);
+        //     });
+        //     return;
+        //   }
+        //   await queue.add(async () => {
+        //     const task = await discordBalance(
+        //       discordClient,
+        //       interaction,
+        //       io,
+        //     );
+        //   });
+        //   await interaction.editReply('\u200b').catch((e) => {
+        //     console.log(e);
+        //   });
+        // }
 
         if (commandName === 'leaderboard') {
           await interaction.deferReply().catch((e) => {

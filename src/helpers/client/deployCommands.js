@@ -1,7 +1,9 @@
 import { config } from "dotenv";
-import { SlashCommandBuilder } from '@discordjs/builders';
+import {
+  SlashCommandBuilder,
+} from "discord.js";
 import { REST } from '@discordjs/rest';
-import { Routes } from 'discord-api-types/v9';
+import { Routes } from 'discord-api-types/v10';
 import db from '../../models';
 
 config();
@@ -23,7 +25,7 @@ export const deployCommands = async (
 ) => {
   const setting = await db.setting.findOne();
 
-  const rest = new REST({ version: '9' }).setToken(botToken);
+  const rest = new REST({ version: '10' }).setToken(botToken);
 
   rest.put(Routes.applicationCommands(clientId), { body: commands })
     .then(() => console.log('Successfully registered application commands.'))

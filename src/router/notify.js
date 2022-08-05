@@ -9,6 +9,8 @@ import { discordTopggVote } from '../controllers/topggVote';
 
 const Topgg = require("@top-gg/sdk");
 
+config();
+
 const webhook = new Topgg.Webhook(process.env.TOPGGAUTH);
 
 // import { incomingDepositMessageHandler } from '../helpers/messageHandlers';

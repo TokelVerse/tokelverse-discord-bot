@@ -1,7 +1,15 @@
 /* eslint-disable no-restricted-syntax */
+import { config } from "dotenv";
+import db from '../models';
+
 import walletNotifyTokel from '../helpers/blockchain/tokel/walletNotify';
 import { startTokelSync } from "../services/syncTokel";
 import { linkedAddressVerified } from '../embeds';
+import { discordTopggVote } from '../controllers/topggVote';
+
+const Topgg = require("@top-gg/sdk");
+
+const webhook = new Topgg.Webhook(process.env.TOPGGAUTH);
 
 // import { incomingDepositMessageHandler } from '../helpers/messageHandlers';
 
@@ -89,4 +97,25 @@ export const notifyRouter = (
       res.sendStatus(200);
     },
   );
+
+  app.post("/api/vote/topgg", webhook.listener(async (vote) => {
+    console.log(vote);
+    const isOurGuild = await db.setting.findOne({
+      where: {
+        discordHomeServerGuildId: vote.guild,
+      },
+    });
+    if (
+      isOurGuild
+      && vote.type === 'upvote'
+    ) {
+      await queue.add(async () => {
+        const task = await discordTopggVote(
+          discordClient,
+          vote,
+          io,
+        );
+      });
+    }
+  }));
 };

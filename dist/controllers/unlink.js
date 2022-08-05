@@ -48,7 +48,7 @@ var discordUnlinkAddress = /*#__PURE__*/function () {
                     switch (_context5.prev = _context5.next) {
                       case 0:
                         _context5.next = 2;
-                        return (0, _userWalletExist.userWalletExist)(message, t, 'unlink');
+                        return (0, _userWalletExist.userWalletExist)(message, 'unlink', t);
 
                       case 2:
                         _yield$userWalletExis = _context5.sent;

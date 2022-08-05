@@ -20,7 +20,7 @@ var capitalize = function capitalize(s) {
 };
 
 var userWalletExist = /*#__PURE__*/function () {
-  var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(message, t, functionName) {
+  var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(message, functionName, t) {
     var activity, userId, user;
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {

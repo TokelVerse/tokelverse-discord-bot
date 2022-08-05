@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.6](https://github.com/TokelVerse/tokelverse-discord-bot/compare/v0.0.5...v0.0.6) (2022-08-05)
+
+
+### Bug Fixes
+
+* add disabled feature messages ([98cb9e8](https://github.com/TokelVerse/tokelverse-discord-bot/commit/98cb9e8ff09d613081c9c5b4a66981cd7622b50c))
+* **embeds:** ✏️ show correct prefix command in welcome message ([624a421](https://github.com/TokelVerse/tokelverse-discord-bot/commit/624a421f0c575a5bfbb460d318583f91caa101cf))
+* **embeds:** add disabled feature messages ([7381c6e](https://github.com/TokelVerse/tokelverse-discord-bot/commit/7381c6e3f8a65500181a4819205be2068aaa262d))
+
+
+### Refactor
+
+* **userWalletExists:** ♻️ db transaction object as last argument ([0dfbe17](https://github.com/TokelVerse/tokelverse-discord-bot/commit/0dfbe177276ce79a1494550f14e54b2f3a4a4417))
+
 ### [0.0.5](https://github.com/TokelVerse/tokelverse-discord-bot/compare/v0.0.4...v0.0.5) (2022-08-05)
 
 

@@ -48,7 +48,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
                     switch (_context3.prev = _context3.next) {
                       case 0:
                         _context3.next = 2;
-                        return (0, _userWalletExist.userWalletExist)(message, t, 'link');
+                        return (0, _userWalletExist.userWalletExist)(message, 'link', t);
 
                       case 2:
                         _yield$userWalletExis = _context3.sent;

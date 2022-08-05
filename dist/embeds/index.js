@@ -259,7 +259,7 @@ var NotInDirectMessage = function NotInDirectMessage(message, title) {
 exports.NotInDirectMessage = NotInDirectMessage;
 
 var discordWelcomeMessage = function discordWelcomeMessage(userInfo) {
-  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle("Bot").setDescription("Welcome <@".concat(userInfo.id, ">, Welcome to Tokelverse.\nType \"").concat(_settings["default"].bot.command.discord, " help\" for bot usage info")).setThumbnail(_settings["default"].bot.logo).setTimestamp().setFooter({
+  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle("Bot").setDescription("Welcome <@".concat(userInfo.id, ">, Welcome to Tokelverse.\nType \"").concat(_settings["default"].bot.command, " help\" for bot usage info")).setThumbnail(_settings["default"].bot.logo).setTimestamp().setFooter({
     text: "".concat(_settings["default"].bot.name, " v").concat(_package["default"].version),
     iconURL: _settings["default"].bot.logo
   });

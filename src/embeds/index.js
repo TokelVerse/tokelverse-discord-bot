@@ -386,7 +386,7 @@ export const discordWelcomeMessage = (
     .setColor(settings.bot.color)
     .setTitle(`Bot`)
     .setDescription(`Welcome <@${userInfo.id}>, Welcome to Tokelverse.
-Type "${settings.bot.command.discord} help" for bot usage info`)
+Type "${settings.bot.command} help" for bot usage info`)
     .setThumbnail(settings.bot.logo)
     .setTimestamp()
     .setFooter({

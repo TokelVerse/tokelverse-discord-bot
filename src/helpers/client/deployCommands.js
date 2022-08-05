@@ -1,22 +1,70 @@
 import { config } from "dotenv";
 import {
+  Routes,
   SlashCommandBuilder,
 } from "discord.js";
 import { REST } from '@discordjs/rest';
-import { Routes } from 'discord-api-types/v10';
 import db from '../../models';
+import settings from '../../config/settings';
 
 config();
 
+const mainTipBotCommand = new SlashCommandBuilder().setName(`${settings.bot.command.slash}`).setDescription(`'Use ${settings.bot.name}`);
+
+mainTipBotCommand
+  .addSubcommand(
+    (subcommand) => subcommand
+      .setName('help')
+      .setDescription(`${settings.bot.name} usage info`),
+  )
+  .addSubcommand(
+    (subcommand) => subcommand
+      .setName('myrank')
+      .setDescription(`Displays the user's rank`),
+  )
+  .addSubcommand(
+    (subcommand) => subcommand
+      .setName('ranks')
+      .setDescription(`Displays all the ranks`),
+  )
+  .addSubcommand(
+    (subcommand) => subcommand
+      .setName('leaderboard')
+      .setDescription(`Displays the user's rank`),
+  )
+  .addSubcommand(
+    (subcommand) => subcommand
+      .setName('mostactive')
+      .setDescription(`Displays the top ten most active users (chatting)`),
+  )
+  // .addSubcommand(
+  //   (subcommand) => subcommand
+  //     .setName('balance')
+  //     .setDescription(`Display your balance`),
+  // )
+  // .addSubcommand(
+  //   (subcommand) => subcommand
+  //     .setName('deposit')
+  //     .setDescription(`Displays your deposit address`),
+  // )
+  // .addSubcommand(
+  //   (subcommand) => subcommand
+  //     .setName('withdraw')
+  //     .setDescription(`Starts Withdrawal process`),
+  // )
+  .addSubcommand(
+    (subcommand) => subcommand
+      .setName('link')
+      .setDescription(`Starts tokel address link process`),
+  )
+  .addSubcommand(
+    (subcommand) => subcommand
+      .setName('link')
+      .setDescription(`Starts tokel address unlink process`),
+  );
+
 const commands = [
-  new SlashCommandBuilder().setName('help').setDescription('DM\'s you with a help message'),
-  new SlashCommandBuilder().setName('myrank').setDescription('Displays the user\'s rank'),
-  new SlashCommandBuilder().setName('ranks').setDescription('Displays all the ranks'),
-  new SlashCommandBuilder().setName('leaderboard').setDescription('Displays the top ten leaderboard'),
-  new SlashCommandBuilder().setName('mostactive').setDescription('Displays the top ten most active users (chatting)'),
-  new SlashCommandBuilder().setName('balance').setDescription('Display your balance'),
-  new SlashCommandBuilder().setName('deposit').setDescription('Displays your deposit address!'),
-  new SlashCommandBuilder().setName('withdraw').setDescription('Starts Withdrawal process'),
+  mainTipBotCommand,
 ].map((command) => command.toJSON());
 
 export const deployCommands = async (

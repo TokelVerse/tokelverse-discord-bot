@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.5](https://github.com/TokelVerse/tokelverse-discord-bot/compare/v0.0.4...v0.0.5) (2022-08-05)
+
+
+### Bug Fixes
+
+* **topggVote:** 🐛 disable CSRF token check for topgg voting ([616e3ee](https://github.com/TokelVerse/tokelverse-discord-bot/commit/616e3eefefca384e84603f1307aa01a99bcddf1e))
+
 ### [0.0.4](https://github.com/TokelVerse/tokelverse-discord-bot/compare/v0.0.3...v0.0.4) (2022-08-05)
 
 

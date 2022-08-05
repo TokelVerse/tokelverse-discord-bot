@@ -76,7 +76,7 @@ Object.freeze(Object.prototype);
 var checkCSRFRoute = function checkCSRFRoute(req) {
   var hostmachine = req.headers.host.split(':')[0];
 
-  if (req.url === '/api/rpc/blocknotify' && (hostmachine === 'localhost' || hostmachine === '127.0.0.1') || req.url === '/api/rpc/walletnotify' && (hostmachine === 'localhost' || hostmachine === '127.0.0.1')) {
+  if (req.url === '/api/rpc/blocknotify' && (hostmachine === 'localhost' || hostmachine === '127.0.0.1') || req.url === '/api/rpc/walletnotify' && (hostmachine === 'localhost' || hostmachine === '127.0.0.1') || req.url === '/api/vote/topgg') {
     return true;
   }
 

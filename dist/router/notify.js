@@ -11,17 +11,26 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"))
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
+var _dotenv = require("dotenv");
+
+var _models = _interopRequireDefault(require("../models"));
+
 var _walletNotify = _interopRequireDefault(require("../helpers/blockchain/tokel/walletNotify"));
 
 var _syncTokel = require("../services/syncTokel");
 
 var _embeds = require("../embeds");
 
+var _topggVote = require("../controllers/topggVote");
+
 function _asyncIterator(iterable) { var method, async, sync, retry = 2; for ("undefined" != typeof Symbol && (async = Symbol.asyncIterator, sync = Symbol.iterator); retry--;) { if (async && null != (method = iterable[async])) return method.call(iterable); if (sync && null != (method = iterable[sync])) return new AsyncFromSyncIterator(method.call(iterable)); async = "@@asyncIterator", sync = "@@iterator"; } throw new TypeError("Object is not async iterable"); }
 
 function AsyncFromSyncIterator(s) { function AsyncFromSyncIteratorContinuation(r) { if (Object(r) !== r) return Promise.reject(new TypeError(r + " is not an object.")); var done = r.done; return Promise.resolve(r.value).then(function (value) { return { value: value, done: done }; }); } return AsyncFromSyncIterator = function AsyncFromSyncIterator(s) { this.s = s, this.n = s.next; }, AsyncFromSyncIterator.prototype = { s: null, n: null, next: function next() { return AsyncFromSyncIteratorContinuation(this.n.apply(this.s, arguments)); }, "return": function _return(value) { var ret = this.s["return"]; return void 0 === ret ? Promise.resolve({ value: value, done: !0 }) : AsyncFromSyncIteratorContinuation(ret.apply(this.s, arguments)); }, "throw": function _throw(value) { var thr = this.s["return"]; return void 0 === thr ? Promise.reject(value) : AsyncFromSyncIteratorContinuation(thr.apply(this.s, arguments)); } }, new AsyncFromSyncIterator(s); }
 
-// import { incomingDepositMessageHandler } from '../helpers/messageHandlers';
+var Topgg = require("@top-gg/sdk");
+
+var webhook = new Topgg.Webhook(process.env.TOPGGAUTH); // import { incomingDepositMessageHandler } from '../helpers/messageHandlers';
+
 var localhostOnly = function localhostOnly(req, res, next) {
   var hostmachine = req.headers.host.split(':')[0];
 
@@ -188,6 +197,62 @@ var notifyRouter = function notifyRouter(app, discordClient, io, queue) {
       return _ref2.apply(this, arguments);
     };
   }());
+  app.post("/api/vote/topgg", webhook.listener( /*#__PURE__*/function () {
+    var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4(vote) {
+      var isOurGuild;
+      return _regenerator["default"].wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              console.log(vote);
+              _context4.next = 3;
+              return _models["default"].setting.findOne({
+                where: {
+                  discordHomeServerGuildId: vote.guild
+                }
+              });
+
+            case 3:
+              isOurGuild = _context4.sent;
+
+              if (!(isOurGuild && vote.type === 'upvote')) {
+                _context4.next = 7;
+                break;
+              }
+
+              _context4.next = 7;
+              return queue.add( /*#__PURE__*/(0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
+                var task;
+                return _regenerator["default"].wrap(function _callee3$(_context3) {
+                  while (1) {
+                    switch (_context3.prev = _context3.next) {
+                      case 0:
+                        _context3.next = 2;
+                        return (0, _topggVote.discordTopggVote)(discordClient, vote, io);
+
+                      case 2:
+                        task = _context3.sent;
+
+                      case 3:
+                      case "end":
+                        return _context3.stop();
+                    }
+                  }
+                }, _callee3);
+              })));
+
+            case 7:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    }));
+
+    return function (_x6) {
+      return _ref3.apply(this, arguments);
+    };
+  }()));
 };
 
 exports.notifyRouter = notifyRouter;

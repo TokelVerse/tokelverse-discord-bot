@@ -66,6 +66,9 @@ const checkCSRFRoute = (req) => {
         || hostmachine === '127.0.0.1'
       )
     )
+    || (
+      req.url === '/api/vote/topgg'
+    )
   ) {
     return true;
   }

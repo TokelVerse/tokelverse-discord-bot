@@ -27,8 +27,8 @@ export const discordUserJoined = async (
       userActivity,
     ] = await userWalletExist(
       message,
-      t,
       'userJoined',
+      t,
     );
     if (userActivity) {
       console.log('user not found');

@@ -9,6 +9,7 @@
     "package.json",
     "deployCommands",
     "topggVote",
-    "embeds"
+    "embeds",
+    "userWalletExists"
   ]
 }

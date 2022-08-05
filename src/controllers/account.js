@@ -26,8 +26,8 @@ export const discordAccount = async (
       userActivity,
     ] = await userWalletExist(
       message,
-      t,
       'account',
+      t,
     );
     if (userActivity) {
       activity.unshift(userActivity);

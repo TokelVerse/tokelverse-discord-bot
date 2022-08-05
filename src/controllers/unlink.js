@@ -35,8 +35,8 @@ export const discordUnlinkAddress = async (
       userActivity,
     ] = await userWalletExist(
       message,
-      t,
       'unlink',
+      t,
     );
     if (userActivity) {
       activity.unshift(userActivity);

@@ -35,8 +35,8 @@ export const discordLinkAddress = async (
       userActivity,
     ] = await userWalletExist(
       message,
-      t,
       'link',
+      t,
     );
     if (userActivity) {
       activity.unshift(userActivity);

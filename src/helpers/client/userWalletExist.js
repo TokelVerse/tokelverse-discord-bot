@@ -7,8 +7,8 @@ const capitalize = (s) => s && s[0].toUpperCase() + s.slice(1);
 
 export const userWalletExist = async (
   message,
-  t,
   functionName,
+  t,
 ) => {
   let activity;
   let userId;

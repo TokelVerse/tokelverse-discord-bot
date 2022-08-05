@@ -33,8 +33,8 @@ export const discordMostActive = async (
       userActivity,
     ] = await userWalletExist(
       message,
-      t,
       'mostActive',
+      t,
     );
     if (userActivity) {
       activity.unshift(userActivity);

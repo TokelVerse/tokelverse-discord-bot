@@ -20,6 +20,7 @@ export const discordTopggVote = async (
   await db.sequelize.transaction({
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,
   }, async (t) => {
+    console.log('1');
     const [
       user,
       userActivity,
@@ -28,6 +29,7 @@ export const discordTopggVote = async (
       'topggvote',
       t,
     );
+    console.log('2');
     if (userActivity) {
       activity.unshift(userActivity);
     }
@@ -43,7 +45,7 @@ export const discordTopggVote = async (
       lock: t.LOCK.UPDATE,
       transaction: t,
     });
-
+    console.log('3');
     if (topggVoteRecord) {
       const setting = await db.setting.findOne();
       const findGroupToPost = await db.group.findOne({
@@ -62,14 +64,14 @@ export const discordTopggVote = async (
       });
       return;
     }
-
+    console.log('4');
     const newTopggRecord = await db.topggVote.create({
       userId: user.id,
     }, {
       lock: t.LOCK.UPDATE,
       transaction: t,
     });
-
+    console.log('5');
     const newExp = await gainExp(
       discordClient,
       message.user,
@@ -77,7 +79,7 @@ export const discordTopggVote = async (
       'topggVote',
       t,
     );
-
+    console.log('5');
     const preActivity = await db.activity.create({
       type: 'topggvote_s',
       earnerId: user.id,
@@ -101,6 +103,7 @@ export const discordTopggVote = async (
     });
     activity.unshift(finalActivity);
   }).catch(async (err) => {
+    console.log(err);
     try {
       await db.error.create({
         type: 'topggvote',

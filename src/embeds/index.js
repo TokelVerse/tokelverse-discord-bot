@@ -38,6 +38,48 @@ ${server.banMessage}`)
   return result;
 };
 
+export const featureDisabledChannelMessage = (name) => {
+  const result = new EmbedBuilder()
+    .setColor(settings.bot.color)
+    .setTitle(name)
+    .setDescription(`This Feature has been disabled for this channel`)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const featureDisabledServerMessage = (name) => {
+  const result = new EmbedBuilder()
+    .setColor(settings.bot.color)
+    .setTitle(name)
+    .setDescription(`This Feature has been disabled for this server`)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
+export const featureDisabledGlobalMessage = (name) => {
+  const result = new EmbedBuilder()
+    .setColor(settings.bot.color)
+    .setTitle(name)
+    .setDescription(`This Feature has been disabled`)
+    .setTimestamp()
+    .setFooter({
+      text: `${settings.bot.name} v${pjson.version}`,
+      iconURL: settings.bot.logo,
+    });
+
+  return result;
+};
+
 export const priceMessage = (replyString) => {
   const result = new EmbedBuilder()
     .setColor(settings.bot.color)

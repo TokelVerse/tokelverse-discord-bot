@@ -8,6 +8,7 @@
   "conventionalCommits.scopes": [
     "package.json",
     "deployCommands",
-    "topggVote"
+    "topggVote",
+    "embeds"
   ]
 }

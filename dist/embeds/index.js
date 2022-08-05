@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.warnDirectMessage = exports.walletNotFoundMessage = exports.userUnlinkedAddressRolesLostMessage = exports.userRolesLostMessage = exports.userNotFoundMessage = exports.userEarnedRolesMessage = exports.userAlreadyLinkedAnAddressMessage = exports.tokelLinkAddressAlreadyVerified = exports.tokelLinkAddressAlreadyOccupied = exports.tokelLinkAddressAlreadyBusyVerifying = exports.timeOutUnlinkAddressMessage = exports.timeOutTokelLinkAddressMessage = exports.successUnlinkAddress = exports.reviewMessage = exports.priceMessage = exports.noAddressToUnlink = exports.linkedAddressVerified = exports.levelUpMessage = exports.invitedNewUserRewardMessage = exports.invalidTokelLinkAddress = exports.helpMessage = exports.gainVoteTopggExpMessage = exports.gainActiveTalkerExpMessage = exports.enterAddressToLinkMessage = exports.discordWithdrawalConfirmedMessage = exports.discordWithdrawalAcceptedMessage = exports.discordWelcomeMessage = exports.discordUserWithdrawalRejectMessage = exports.discordUserBannedMessage = exports.discordTransactionMemoTooLongMessage = exports.discordServerBannedMessage = exports.discordLimitSpamMessage = exports.discordIncomingDepositMessage = exports.discordErrorMessage = exports.discordDepositConfirmedMessage = exports.discordChannelBannedMessage = exports.discordBotMaintenanceMessage = exports.discordBotDisabledMessage = exports.depositAddressMessage = exports.confirmUnlinkAddress = exports.coinInfoMessage = exports.cannotSendMessageUser = exports.cancelUnlinkAddress = exports.balanceMessage = exports.alreadyVotedTopGG = exports.addedNewTokelLinkAddress = exports.NotInDirectMessage = exports.AccountInfoMessage = void 0;
+exports.warnDirectMessage = exports.walletNotFoundMessage = exports.userUnlinkedAddressRolesLostMessage = exports.userRolesLostMessage = exports.userNotFoundMessage = exports.userEarnedRolesMessage = exports.userAlreadyLinkedAnAddressMessage = exports.tokelLinkAddressAlreadyVerified = exports.tokelLinkAddressAlreadyOccupied = exports.tokelLinkAddressAlreadyBusyVerifying = exports.timeOutUnlinkAddressMessage = exports.timeOutTokelLinkAddressMessage = exports.successUnlinkAddress = exports.reviewMessage = exports.priceMessage = exports.noAddressToUnlink = exports.linkedAddressVerified = exports.levelUpMessage = exports.invitedNewUserRewardMessage = exports.invalidTokelLinkAddress = exports.helpMessage = exports.gainVoteTopggExpMessage = exports.gainActiveTalkerExpMessage = exports.featureDisabledServerMessage = exports.featureDisabledGlobalMessage = exports.featureDisabledChannelMessage = exports.enterAddressToLinkMessage = exports.discordWithdrawalConfirmedMessage = exports.discordWithdrawalAcceptedMessage = exports.discordWelcomeMessage = exports.discordUserWithdrawalRejectMessage = exports.discordUserBannedMessage = exports.discordTransactionMemoTooLongMessage = exports.discordServerBannedMessage = exports.discordLimitSpamMessage = exports.discordIncomingDepositMessage = exports.discordErrorMessage = exports.discordDepositConfirmedMessage = exports.discordChannelBannedMessage = exports.discordBotMaintenanceMessage = exports.discordBotDisabledMessage = exports.depositAddressMessage = exports.confirmUnlinkAddress = exports.coinInfoMessage = exports.cannotSendMessageUser = exports.cancelUnlinkAddress = exports.balanceMessage = exports.alreadyVotedTopGG = exports.addedNewTokelLinkAddress = exports.NotInDirectMessage = exports.AccountInfoMessage = void 0;
 
 var _discord = require("discord.js");
 
@@ -35,6 +35,36 @@ var discordServerBannedMessage = function discordServerBannedMessage(server) {
 };
 
 exports.discordServerBannedMessage = discordServerBannedMessage;
+
+var featureDisabledChannelMessage = function featureDisabledChannelMessage(name) {
+  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle(name).setDescription("This Feature has been disabled for this channel").setTimestamp().setFooter({
+    text: "".concat(_settings["default"].bot.name, " v").concat(_package["default"].version),
+    iconURL: _settings["default"].bot.logo
+  });
+  return result;
+};
+
+exports.featureDisabledChannelMessage = featureDisabledChannelMessage;
+
+var featureDisabledServerMessage = function featureDisabledServerMessage(name) {
+  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle(name).setDescription("This Feature has been disabled for this server").setTimestamp().setFooter({
+    text: "".concat(_settings["default"].bot.name, " v").concat(_package["default"].version),
+    iconURL: _settings["default"].bot.logo
+  });
+  return result;
+};
+
+exports.featureDisabledServerMessage = featureDisabledServerMessage;
+
+var featureDisabledGlobalMessage = function featureDisabledGlobalMessage(name) {
+  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle(name).setDescription("This Feature has been disabled").setTimestamp().setFooter({
+    text: "".concat(_settings["default"].bot.name, " v").concat(_package["default"].version),
+    iconURL: _settings["default"].bot.logo
+  });
+  return result;
+};
+
+exports.featureDisabledGlobalMessage = featureDisabledGlobalMessage;
 
 var priceMessage = function priceMessage(replyString) {
   var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle('Price').setThumbnail(_settings["default"].bot.logo).setDescription(replyString).setTimestamp().setFooter({

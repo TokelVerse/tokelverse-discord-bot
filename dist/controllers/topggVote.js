@@ -47,28 +47,30 @@ var discordTopggVote = /*#__PURE__*/function () {
                   while (1) {
                     switch (_context.prev = _context.next) {
                       case 0:
-                        _context.next = 2;
+                        console.log('1');
+                        _context.next = 3;
                         return (0, _userWalletExist.userWalletExist)(message, 'topggvote', t);
 
-                      case 2:
+                      case 3:
                         _yield$userWalletExis = _context.sent;
                         _yield$userWalletExis2 = (0, _slicedToArray2["default"])(_yield$userWalletExis, 2);
                         user = _yield$userWalletExis2[0];
                         userActivity = _yield$userWalletExis2[1];
+                        console.log('2');
 
                         if (userActivity) {
                           activity.unshift(userActivity);
                         }
 
                         if (user) {
-                          _context.next = 9;
+                          _context.next = 11;
                           break;
                         }
 
                         return _context.abrupt("return");
 
-                      case 9:
-                        _context.next = 11;
+                      case 11:
+                        _context.next = 13;
                         return _models["default"].topggVote.findOne({
                           where: {
                             userId: user.id,
@@ -78,44 +80,46 @@ var discordTopggVote = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 11:
+                      case 13:
                         topggVoteRecord = _context.sent;
+                        console.log('3');
 
                         if (!topggVoteRecord) {
-                          _context.next = 25;
+                          _context.next = 28;
                           break;
                         }
 
-                        _context.next = 15;
+                        _context.next = 18;
                         return _models["default"].setting.findOne();
 
-                      case 15:
+                      case 18:
                         setting = _context.sent;
-                        _context.next = 18;
+                        _context.next = 21;
                         return _models["default"].group.findOne({
                           where: {
                             groupId: setting.discordHomeServerGuildId
                           }
                         });
 
-                      case 18:
+                      case 21:
                         findGroupToPost = _context.sent;
-                        _context.next = 21;
+                        _context.next = 24;
                         return discordClient.channels.cache.get(findGroupToPost.expRewardChannelId);
 
-                      case 21:
+                      case 24:
                         discordChannel = _context.sent;
-                        _context.next = 24;
+                        _context.next = 27;
                         return discordChannel.send({
                           content: "<@".concat(user.user_id, ">"),
                           embeds: [(0, _embeds.alreadyVotedTopGG)(user.user_id)]
                         });
 
-                      case 24:
+                      case 27:
                         return _context.abrupt("return");
 
-                      case 25:
-                        _context.next = 27;
+                      case 28:
+                        console.log('4');
+                        _context.next = 31;
                         return _models["default"].topggVote.create({
                           userId: user.id
                         }, {
@@ -123,14 +127,16 @@ var discordTopggVote = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 27:
+                      case 31:
                         newTopggRecord = _context.sent;
-                        _context.next = 30;
+                        console.log('5');
+                        _context.next = 35;
                         return (0, _experience.gainExp)(discordClient, message.user, 16, 'topggVote', t);
 
-                      case 30:
+                      case 35:
                         newExp = _context.sent;
-                        _context.next = 33;
+                        console.log('5');
+                        _context.next = 39;
                         return _models["default"].activity.create({
                           type: 'topggvote_s',
                           earnerId: user.id
@@ -139,9 +145,9 @@ var discordTopggVote = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 33:
+                      case 39:
                         preActivity = _context.sent;
-                        _context.next = 36;
+                        _context.next = 42;
                         return _models["default"].activity.findOne({
                           where: {
                             id: preActivity.id
@@ -154,11 +160,11 @@ var discordTopggVote = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 36:
+                      case 42:
                         finalActivity = _context.sent;
                         activity.unshift(finalActivity);
 
-                      case 38:
+                      case 44:
                       case "end":
                         return _context.stop();
                     }
@@ -175,29 +181,30 @@ var discordTopggVote = /*#__PURE__*/function () {
                   while (1) {
                     switch (_context2.prev = _context2.next) {
                       case 0:
-                        _context2.prev = 0;
-                        _context2.next = 3;
+                        console.log(err);
+                        _context2.prev = 1;
+                        _context2.next = 4;
                         return _models["default"].error.create({
                           type: 'topggvote',
                           error: "".concat(err)
                         });
 
-                      case 3:
-                        _context2.next = 8;
+                      case 4:
+                        _context2.next = 9;
                         break;
 
-                      case 5:
-                        _context2.prev = 5;
-                        _context2.t0 = _context2["catch"](0);
+                      case 6:
+                        _context2.prev = 6;
+                        _context2.t0 = _context2["catch"](1);
 
                         _logger["default"].error("Error Discord: ".concat(_context2.t0));
 
-                      case 8:
+                      case 9:
                       case "end":
                         return _context2.stop();
                     }
                   }
-                }, _callee2, null, [[0, 5]]);
+                }, _callee2, null, [[1, 6]]);
               }));
 
               return function (_x5) {

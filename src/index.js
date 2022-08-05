@@ -219,7 +219,7 @@ const conditionalCSRF = function (
   console.log(`Logged in as ${discordClient.user.tag}!`);
   discordClient.user.setPresence({
     activities: [{
-      name: `${settings.bot.command}`,
+      name: `/${settings.bot.command.slash}`,
       type: "PLAYING",
     }],
   });

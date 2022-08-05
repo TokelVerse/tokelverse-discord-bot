@@ -386,7 +386,7 @@ export const discordWelcomeMessage = (
     .setColor(settings.bot.color)
     .setTitle(`Bot`)
     .setDescription(`Welcome <@${userInfo.id}>, Welcome to Tokelverse.
-Type "${settings.bot.command} help" for bot usage info`)
+Type "/${settings.bot.command.slash} help" for bot usage info`)
     .setThumbnail(settings.bot.logo)
     .setTimestamp()
     .setFooter({
@@ -870,28 +870,28 @@ export const helpMessage = (withdraw) => {
   const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(`${`${settings.bot.name} v${pjson.version}`} Help`)
-    .setDescription(`\`${settings.bot.command}\`
+    .setDescription(`\`/${settings.bot.command.slash}\`
 Displays this message
 
-\`${settings.bot.command} help\`
+\`/${settings.bot.command.slash} help\`
 Displays this message
 
-\`${settings.bot.command} link\`
+\`/${settings.bot.command.slash} link\`
 Link a tokel address to your discord account
 
-\`${settings.bot.command} unlink\`
+\`/${settings.bot.command.slash} unlink\`
 Link a tokel address to your discord account
 
-\`${settings.bot.command} myrank\`
+\`/${settings.bot.command.slash} myrank\`
 Shows your rank
 
-\`${settings.bot.command} leaderboard\`
+\`/${settings.bot.command.slash} leaderboard\`
 Shows the leaderboard
 
-\`${settings.bot.command} mostactive\`
+\`/${settings.bot.command.slash} mostactive\`
 Shows most active users past month
 
-\`${settings.bot.command} ranks\`
+\`/${settings.bot.command.slash} ranks\`
 Shows all the ranks to earn`)
     .setTimestamp()
     .setFooter({

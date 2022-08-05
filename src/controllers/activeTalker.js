@@ -59,7 +59,7 @@ export const discordActiveTalker = async (
     if (
       filteredMessage.length > 0
       && filteredMessage[0]
-      && filteredMessage[0] !== settings.bot.command
+      && filteredMessage[0] !== settings.bot.command.normal
     ) {
       const lastSentenceArray = activeTalkerRecord.lastSentence ? activeTalkerRecord.lastSentence.split(' ') : [''];
       filteredMessage.forEach((word) => {

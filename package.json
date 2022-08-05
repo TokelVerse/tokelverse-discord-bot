@@ -1,6 +1,6 @@
 {
   "name": "tovelverse",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Bot for tokelverse discord",
   "scripts": {
     "dev": "nodemon --exec babel-node --max-old-space-size=8192 src/index.js",

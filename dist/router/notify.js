@@ -29,6 +29,7 @@ function AsyncFromSyncIterator(s) { function AsyncFromSyncIteratorContinuation(r
 
 var Topgg = require("@top-gg/sdk");
 
+(0, _dotenv.config)();
 var webhook = new Topgg.Webhook(process.env.TOPGGAUTH); // import { incomingDepositMessageHandler } from '../helpers/messageHandlers';
 
 var localhostOnly = function localhostOnly(req, res, next) {

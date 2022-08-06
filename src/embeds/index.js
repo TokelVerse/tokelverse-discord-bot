@@ -351,13 +351,13 @@ export const walletNotFoundMessage = (message, title) => {
 };
 
 export const userNotFoundMessage = (
-  message,
+  userId,
   title,
 ) => {
   const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(title)
-    .setDescription(`<@${message.author.id}>, User not found`)
+    .setDescription(`<@${userId}>, User not found`)
     .setTimestamp()
     .setFooter({
       text: `${settings.bot.name} v${pjson.version}`,

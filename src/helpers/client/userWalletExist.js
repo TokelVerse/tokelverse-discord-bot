@@ -12,11 +12,14 @@ export const userWalletExist = async (
 ) => {
   let activity;
   let userId;
-  if (message.user) {
+  if (message.user && message.user.id) {
     userId = message.user.id;
   } else if (message.author) {
     userId = message.author.id;
+  } else {
+    userId = message.user;
   }
+
   const user = await db.user.findOne({
     where: {
       user_id: `${userId}`,
@@ -48,7 +51,7 @@ export const userWalletExist = async (
     await message.reply({
       embeds: [
         userNotFoundMessage(
-          message,
+          userId,
           capitalize(functionName),
         ),
       ],

@@ -82,7 +82,11 @@ generte empty seed file
 ````
 npx sequelize-cli seed:generate --name demo-jackpot
 ````
+revert seed file
 
+````
+npx sequelize db:seed:undo --seed 20220806134648-link_roles_to_tokelnauts_nft_collection.js
+````
 
 
 ## Tokel Node Config

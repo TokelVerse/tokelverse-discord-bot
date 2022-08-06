@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.8](https://github.com/TokelVerse/tokelverse-discord-bot/compare/v0.0.7...v0.0.8) (2022-08-06)
+
+
+### Bug Fixes
+
+* **userWalletExists:** 🐛 fix issue with fetching userId ([fef7308](https://github.com/TokelVerse/tokelverse-discord-bot/commit/fef730806573509fba93d1a8cae1f318e385825f))
+
 ### [0.0.7](https://github.com/TokelVerse/tokelverse-discord-bot/compare/v0.0.6...v0.0.7) (2022-08-06)
 
 

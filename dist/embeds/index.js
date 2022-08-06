@@ -238,8 +238,8 @@ var walletNotFoundMessage = function walletNotFoundMessage(message, title) {
 
 exports.walletNotFoundMessage = walletNotFoundMessage;
 
-var userNotFoundMessage = function userNotFoundMessage(message, title) {
-  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle(title).setDescription("<@".concat(message.author.id, ">, User not found")).setTimestamp().setFooter({
+var userNotFoundMessage = function userNotFoundMessage(userId, title) {
+  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle(title).setDescription("<@".concat(userId, ">, User not found")).setTimestamp().setFooter({
     text: "".concat(_settings["default"].bot.name, " v").concat(_package["default"].version),
     iconURL: _settings["default"].bot.logo
   });

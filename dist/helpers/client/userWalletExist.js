@@ -26,10 +26,12 @@ var userWalletExist = /*#__PURE__*/function () {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            if (message.user) {
+            if (message.user && message.user.id) {
               userId = message.user.id;
             } else if (message.author) {
               userId = message.author.id;
+            } else {
+              userId = message.user;
             }
 
             _context.next = 3;
@@ -71,7 +73,7 @@ var userWalletExist = /*#__PURE__*/function () {
             activity = _context.sent;
             _context.next = 10;
             return message.reply({
-              embeds: [(0, _embeds.userNotFoundMessage)(message, capitalize(functionName))]
+              embeds: [(0, _embeds.userNotFoundMessage)(userId, capitalize(functionName))]
             });
 
           case 10:

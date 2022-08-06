@@ -21,12 +21,23 @@ import {
   generateNoButton,
   generateYesButton,
 } from '../buttons';
+import { fetchDiscordChannel } from "../helpers/client/fetchDiscordChannel";
+import { fetchDiscordUserIdFromMessageOrInteraction } from "../helpers/client/fetchDiscordUserIdFromMessageOrInteraction";
 
 export const discordUnlinkAddress = async (
+  discordClient,
   message,
   io,
 ) => {
   const activity = [];
+  const [
+    discordChannel,
+    discordUserDMChannel,
+  ] = await fetchDiscordChannel(
+    discordClient,
+    message,
+  );
+
   await db.sequelize.transaction({
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,
   }, async (t) => {
@@ -43,12 +54,14 @@ export const discordUnlinkAddress = async (
     }
     if (!user) return;
 
+    const discordUserId = user.user_id.replace('discord-', '');
+
     console.log(1);
     if (message.channel.type === ChannelType.GuildText) {
-      await message.channel.send({
+      await discordChannel.send({
         embeds: [
           warnDirectMessage(
-            message.author.id,
+            discordUserId,
             'Unlink Tokel Address',
           ),
         ],
@@ -65,10 +78,10 @@ export const discordUnlinkAddress = async (
     });
     console.log(3);
     if (!hasAddressToUnlink) {
-      await message.author.send({
+      await discordUserDMChannel.send({
         embeds: [
           noAddressToUnlink(
-            message,
+            discordUserId,
           ),
         ],
       });
@@ -78,10 +91,10 @@ export const discordUnlinkAddress = async (
     console.log(hasAddressToUnlink);
 
     if (hasAddressToUnlink) {
-      const embedMessage = await message.author.send({
+      const embedMessage = await discordUserDMChannel.send({
         embeds: [
           confirmUnlinkAddress(
-            message,
+            discordUserId,
             hasAddressToUnlink.address,
           ),
         ],
@@ -118,7 +131,7 @@ export const discordUnlinkAddress = async (
             await interaction.update({
               embeds: [
                 successUnlinkAddress(
-                  message,
+                  discordUserId,
                   unlinkedAddress.address,
                 ),
               ],
@@ -139,7 +152,7 @@ export const discordUnlinkAddress = async (
           await interaction.update({
             embeds: [
               cancelUnlinkAddress(
-                message,
+                discordUserId,
               ),
             ],
             components: [],
@@ -153,7 +166,7 @@ export const discordUnlinkAddress = async (
           await embedMessage.edit({
             embeds: [
               timeOutUnlinkAddressMessage(
-                message,
+                discordUserId,
               ),
             ],
             components: [],
@@ -193,9 +206,12 @@ export const discordUnlinkAddress = async (
     } catch (e) {
       logger.error(`Error Discord: ${e}`);
     }
-    logger.error(`Error Discord Link Requested by: ${message.author.id}-${message.author.username}#${message.author.discriminator} - ${err}`);
+    const userId = await fetchDiscordUserIdFromMessageOrInteraction(
+      message,
+    );
+
     if (err.code && err.code === 50007) {
-      await message.channel.send({
+      await discordChannel.send({
         embeds: [
           cannotSendMessageUser(
             "Unlink",
@@ -206,7 +222,7 @@ export const discordUnlinkAddress = async (
         console.log(e);
       });
     } else {
-      await message.channel.send({
+      await discordChannel.send({
         embeds: [
           discordErrorMessage(
             "Unlink",

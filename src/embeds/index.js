@@ -161,11 +161,14 @@ export const discordLimitSpamMessage = (userId, myFunctionName) => {
   return result;
 };
 
-export const cannotSendMessageUser = (title, message) => {
+export const cannotSendMessageUser = (
+  title,
+  userId,
+) => {
   const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle(title)
-    .setDescription(`<@${message.author.id}>, ${settings.bot.name} was unable to send you a direct message.\nPlease check your discord privacy settings.`)
+    .setDescription(`<@${userId}>, ${settings.bot.name} was unable to send you a direct message.\nPlease check your discord privacy settings.`)
     .setTimestamp()
     .setFooter({
       text: `${settings.bot.name} v${pjson.version}`,
@@ -413,13 +416,13 @@ export const discordBotMaintenanceMessage = () => {
 };
 
 export const successUnlinkAddress = (
-  message,
+  userId,
   address,
 ) => {
   const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Unlink Tokel Address')
-    .setDescription(`<@${message.author.id}>, successfully unlinked ${address}`)
+    .setDescription(`<@${userId}>, successfully unlinked ${address}`)
     .setTimestamp()
     .setFooter({
       text: `${settings.bot.name} v${pjson.version}`,
@@ -435,7 +438,7 @@ export const userAlreadyLinkedAnAddressMessage = (
 ) => {
   const result = new EmbedBuilder()
     .setColor(settings.bot.color)
-    .setTitle('Unlink Tokel Address')
+    .setTitle('link Tokel Address')
     .setDescription(`<@${user.user_id}>, You already linked an address.
 
 please unlink it with \`!tokelverse unlink\` before trying to link a new one 
@@ -452,12 +455,12 @@ currently linked address:
 };
 
 export const cancelUnlinkAddress = (
-  message,
+  userId,
 ) => {
   const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Unlink Tokel Address')
-    .setDescription(`<@${message.author.id}>, you canceled unlinking your address`)
+    .setDescription(`<@${userId}>, you canceled unlinking your address`)
     .setTimestamp()
     .setFooter({
       text: `${settings.bot.name} v${pjson.version}`,
@@ -468,12 +471,12 @@ export const cancelUnlinkAddress = (
 };
 
 export const timeOutUnlinkAddressMessage = (
-  message,
+  userId,
 ) => {
   const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Unlink Tokel Address')
-    .setDescription(`<@${message.author.id}>, your request to unlink a tokel address has expired`)
+    .setDescription(`<@${userId}>, your request to unlink a tokel address has expired`)
     .setTimestamp()
     .setFooter({
       text: `${settings.bot.name} v${pjson.version}`,
@@ -484,13 +487,13 @@ export const timeOutUnlinkAddressMessage = (
 };
 
 export const confirmUnlinkAddress = (
-  message,
+  userId,
   address,
 ) => {
   const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Unlink Tokel Address')
-    .setDescription(`<@${message.author.id}>, are you sure you want to unlink ${address}?`)
+    .setDescription(`<@${userId}>, are you sure you want to unlink ${address}?`)
     .setTimestamp()
     .setFooter({
       text: `${settings.bot.name} v${pjson.version}`,
@@ -501,12 +504,12 @@ export const confirmUnlinkAddress = (
 };
 
 export const noAddressToUnlink = (
-  message,
+  userId,
 ) => {
   const result = new EmbedBuilder()
     .setColor(settings.bot.color)
     .setTitle('Unlink Tokel Address')
-    .setDescription(`<@${message.author.id}>, You don't have an address to unlink`)
+    .setDescription(`<@${userId}>, You don't have an address to unlink`)
     .setTimestamp()
     .setFooter({
       text: `${settings.bot.name} v${pjson.version}`,

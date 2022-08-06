@@ -59,7 +59,7 @@ mainTipBotCommand
   )
   .addSubcommand(
     (subcommand) => subcommand
-      .setName('link')
+      .setName('unlink')
       .setDescription(`Starts tokel address unlink process`),
   );
 

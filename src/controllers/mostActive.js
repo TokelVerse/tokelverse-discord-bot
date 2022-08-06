@@ -17,6 +17,8 @@ import {
 import db from '../models';
 import logger from "../helpers/logger";
 import { userWalletExist } from "../helpers/client/userWalletExist";
+import { fetchDiscordChannel } from "../helpers/client/fetchDiscordChannel";
+import { fetchDiscordUserIdFromMessageOrInteraction } from "../helpers/client/fetchDiscordUserIdFromMessageOrInteraction";
 
 export const discordMostActive = async (
   discordClient,
@@ -25,6 +27,15 @@ export const discordMostActive = async (
   io,
 ) => {
   const activity = [];
+
+  const [
+    discordChannel,
+    discordUserDMChannel,
+  ] = await fetchDiscordChannel(
+    discordClient,
+    message,
+  );
+
   await db.sequelize.transaction({
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,
   }, async (t) => {
@@ -40,6 +51,8 @@ export const discordMostActive = async (
       activity.unshift(userActivity);
     }
     if (!user) return;
+
+    const discordUserId = user.user_id.replace('discord-', '');
 
     const allRanks = await db.rank.findAll(
       {
@@ -517,20 +530,19 @@ export const discordMostActive = async (
     const finalImage = canvas.toBuffer();
     // const attachment = new MessageAttachment(canvas.toBuffer(), 'mostActive.png');
 
-    if (message.type && message.type === InteractionType.ApplicationCommand) {
-      if (message.guildId) {
-        const discordChannel = await discordClient.channels.cache.get(message.channelId);
-        await discordChannel.send({
-          files: [
-            {
-              attachment: finalImage,
-              name: 'mostActive.png',
-            },
-          ],
-        });
-      }
-    } else {
-      await message.channel.send({
+    if (message.channel.type === ChannelType.GuildText) {
+      await discordChannel.send({
+        files: [
+          {
+            attachment: finalImage,
+            name: 'mostActive.png',
+          },
+        ],
+      });
+    }
+
+    if (message.channel.type === ChannelType.DM) {
+      await discordUserDMChannel.send({
         files: [
           {
             attachment: finalImage,
@@ -572,37 +584,16 @@ export const discordMostActive = async (
     } catch (e) {
       logger.error(`Error Discord: ${e}`);
     }
+    const userId = await fetchDiscordUserIdFromMessageOrInteraction(
+      message,
+    );
+
     if (err.code && err.code === 50007) {
-      if (message.type && message.type === InteractionType.ApplicationCommand) {
-        const discordChannel = await discordClient.channels.cache.get(message.channelId);
-        await discordChannel.send({
-          embeds: [
-            cannotSendMessageUser(
-              "MostActive",
-              message,
-            ),
-          ],
-        }).catch((e) => {
-          console.log(e);
-        });
-      } else {
-        await message.channel.send({
-          embeds: [
-            cannotSendMessageUser(
-              "MostActive",
-              message,
-            ),
-          ],
-        }).catch((e) => {
-          console.log(e);
-        });
-      }
-    } else if (message.type && message.type === InteractionType.ApplicationCommand) {
-      const discordChannel = await discordClient.channels.cache.get(message.channelId);
       await discordChannel.send({
         embeds: [
-          discordErrorMessage(
+          cannotSendMessageUser(
             "MostActive",
+            message,
           ),
         ],
       }).catch((e) => {

@@ -17,6 +17,8 @@ import {
 import db from '../models';
 import logger from "../helpers/logger";
 import { userWalletExist } from "../helpers/client/userWalletExist";
+import { fetchDiscordChannel } from "../helpers/client/fetchDiscordChannel";
+import { fetchDiscordUserIdFromMessageOrInteraction } from "../helpers/client/fetchDiscordUserIdFromMessageOrInteraction";
 
 export const discordLeaderboard = async (
   discordClient,
@@ -25,6 +27,15 @@ export const discordLeaderboard = async (
   io,
 ) => {
   const activity = [];
+
+  const [
+    discordChannel,
+    discordUserDMChannel,
+  ] = await fetchDiscordChannel(
+    discordClient,
+    message,
+  );
+
   await db.sequelize.transaction({
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,
   }, async (t) => {
@@ -40,6 +51,8 @@ export const discordLeaderboard = async (
       activity.unshift(userActivity);
     }
     if (!user) return;
+
+    const discordUserId = user.user_id.replace('discord-', '');
 
     const allRanks = await db.rank.findAll(
       {
@@ -516,20 +529,19 @@ export const discordLeaderboard = async (
     const finalImage = canvas.toBuffer();
     // const attachment = new MessageAttachment(canvas.toBuffer(), 'leaderboard.png');
 
-    if (message.type && message.type === InteractionType.ApplicationCommand) {
-      if (message.guildId) {
-        const discordChannel = await discordClient.channels.cache.get(message.channelId);
-        await discordChannel.send({
-          files: [
-            {
-              attachment: finalImage,
-              name: 'leaderboard.png',
-            },
-          ],
-        });
-      }
-    } else {
-      await message.channel.send({
+    if (message.channel.type === ChannelType.GuildText) {
+      await discordChannel.send({
+        files: [
+          {
+            attachment: finalImage,
+            name: 'leaderboard.png',
+          },
+        ],
+      });
+    }
+
+    if (message.channel.type === ChannelType.DM) {
+      await discordUserDMChannel.send({
         files: [
           {
             attachment: finalImage,
@@ -563,6 +575,10 @@ export const discordLeaderboard = async (
     activity.unshift(finalActivity);
   }).catch(async (err) => {
     console.log(err);
+    const userId = await fetchDiscordUserIdFromMessageOrInteraction(
+      message,
+    );
+
     try {
       await db.error.create({
         type: 'leaderboard',
@@ -572,43 +588,18 @@ export const discordLeaderboard = async (
       logger.error(`Error Discord: ${e}`);
     }
     if (err.code && err.code === 50007) {
-      if (message.type && message.type === InteractionType.ApplicationCommand) {
-        const discordChannel = await discordClient.channels.cache.get(message.channelId);
-        await discordChannel.send({
-          embeds: [
-            cannotSendMessageUser(
-              "Leaderboard",
-              message,
-            ),
-          ],
-        }).catch((e) => {
-          console.log(e);
-        });
-      } else {
-        await message.channel.send({
-          embeds: [
-            cannotSendMessageUser(
-              "Leaderboard",
-              message,
-            ),
-          ],
-        }).catch((e) => {
-          console.log(e);
-        });
-      }
-    } else if (message.type && message.type === InteractionType.ApplicationCommand) {
-      const discordChannel = await discordClient.channels.cache.get(message.channelId);
       await discordChannel.send({
         embeds: [
-          discordErrorMessage(
+          cannotSendMessageUser(
             "Leaderboard",
+            message,
           ),
         ],
       }).catch((e) => {
         console.log(e);
       });
     } else {
-      await message.channel.send({
+      await discordChannel.send({
         embeds: [
           discordErrorMessage(
             "Leaderboard",

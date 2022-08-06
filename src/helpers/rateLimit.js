@@ -6,18 +6,8 @@ const errorConsumer = new RateLimiterFlexible.default.RateLimiterMemory({
   duration: 15,
 });
 
-const rateLimiterHalving = new RateLimiterFlexible.default.RateLimiterMemory({
-  points: 2,
-  duration: 30,
-});
-
-const rateLimiterMining = new RateLimiterFlexible.default.RateLimiterMemory({
-  points: 2,
-  duration: 30,
-});
-
 const rateLimiterHelp = new RateLimiterFlexible.default.RateLimiterMemory({
-  points: 2,
+  points: 6,
   duration: 30,
 });
 

@@ -5,6 +5,7 @@ import {
 } from 'canvas';
 import {
   InteractionType,
+  ChannelType,
 } from "discord.js";
 import {
   cannotSendMessageUser,
@@ -13,6 +14,8 @@ import {
 import db from '../models';
 import logger from "../helpers/logger";
 import { userWalletExist } from "../helpers/client/userWalletExist";
+import { fetchDiscordChannel } from "../helpers/client/fetchDiscordChannel";
+import { fetchDiscordUserIdFromMessageOrInteraction } from "../helpers/client/fetchDiscordUserIdFromMessageOrInteraction";
 
 export const discordRanks = async (
   discordClient,
@@ -20,6 +23,15 @@ export const discordRanks = async (
   io,
 ) => {
   const activity = [];
+
+  const [
+    discordChannel,
+    discordUserDMChannel,
+  ] = await fetchDiscordChannel(
+    discordClient,
+    message,
+  );
+
   await db.sequelize.transaction({
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,
   }, async (t) => {
@@ -35,6 +47,8 @@ export const discordRanks = async (
       activity.unshift(userActivity);
     }
     if (!user) return;
+
+    const discordUserId = user.user_id.replace('discord-', '');
 
     const allRanks = await db.rank.findAll(
       {
@@ -120,20 +134,19 @@ export const discordRanks = async (
     const finalImage = canvas.toBuffer();
     // const attachment = new MessageAttachment(canvas.toBuffer(), 'ranks.png');
 
-    if (message.type && message.type === InteractionType.ApplicationCommand) {
-      if (message.guildId) {
-        const discordChannel = await discordClient.channels.cache.get(message.channelId);
-        await discordChannel.send({
-          files: [
-            {
-              attachment: finalImage,
-              name: 'ranks.png',
-            },
-          ],
-        });
-      }
-    } else {
-      await message.channel.send({
+    if (message.channel.type === ChannelType.GuildText) {
+      await discordChannel.send({
+        files: [
+          {
+            attachment: finalImage,
+            name: 'ranks.png',
+          },
+        ],
+      });
+    }
+
+    if (message.channel.type === ChannelType.DM) {
+      await discordUserDMChannel.send({
         files: [
           {
             attachment: finalImage,
@@ -174,45 +187,23 @@ export const discordRanks = async (
     } catch (e) {
       logger.error(`Error Discord: ${e}`);
     }
-    logger.error(`Error Discord Ranks Requested by: ${message.author.id}-${message.author.username}#${message.author.discriminator} - ${err}`);
+    const userId = await fetchDiscordUserIdFromMessageOrInteraction(
+      message,
+    );
+
     if (err.code && err.code === 50007) {
-      if (message.type && message.type === InteractionType.ApplicationCommand) {
-        const discordChannel = await discordClient.channels.cache.get(message.channelId);
-        await discordChannel.send({
-          embeds: [
-            cannotSendMessageUser(
-              "Ranks",
-              message,
-            ),
-          ],
-        }).catch((e) => {
-          console.log(e);
-        });
-      } else {
-        await message.channel.send({
-          embeds: [
-            cannotSendMessageUser(
-              "Ranks",
-              message,
-            ),
-          ],
-        }).catch((e) => {
-          console.log(e);
-        });
-      }
-    } else if (message.type && message.type === InteractionType.ApplicationCommand) {
-      const discordChannel = await discordClient.channels.cache.get(message.channelId);
       await discordChannel.send({
         embeds: [
-          discordErrorMessage(
+          cannotSendMessageUser(
             "Ranks",
+            message,
           ),
         ],
       }).catch((e) => {
         console.log(e);
       });
     } else {
-      await message.channel.send({
+      await discordChannel.send({
         embeds: [
           discordErrorMessage(
             "Ranks",

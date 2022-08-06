@@ -21,6 +21,8 @@ import {
 import db from '../models';
 import logger from "../helpers/logger";
 import { userWalletExist } from "../helpers/client/userWalletExist";
+import { fetchDiscordUserIdFromMessageOrInteraction } from "../helpers/client/fetchDiscordUserIdFromMessageOrInteraction";
+import { fetchDiscordChannel } from "../helpers/client/fetchDiscordChannel";
 
 export const discordMyRank = async (
   discordClient,
@@ -28,6 +30,15 @@ export const discordMyRank = async (
   io,
 ) => {
   const activity = [];
+
+  const [
+    discordChannel,
+    discordUserDMChannel,
+  ] = await fetchDiscordChannel(
+    discordClient,
+    message,
+  );
+
   await db.sequelize.transaction({
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,
   }, async (t) => {
@@ -315,37 +326,16 @@ export const discordMyRank = async (
     } catch (e) {
       logger.error(`Error Discord: ${e}`);
     }
+    const userId = await fetchDiscordUserIdFromMessageOrInteraction(
+      message,
+    );
+
     if (err.code && err.code === 50007) {
-      if (message.type && message.type === InteractionType.ApplicationCommand) {
-        const discordChannel = await discordClient.channels.cache.get(message.channelId);
-        await discordChannel.send({
-          embeds: [
-            cannotSendMessageUser(
-              "MyRank",
-              message,
-            ),
-          ],
-        }).catch((e) => {
-          console.log(e);
-        });
-      } else {
-        await message.channel.send({
-          embeds: [
-            cannotSendMessageUser(
-              "MyRank",
-              message,
-            ),
-          ],
-        }).catch((e) => {
-          console.log(e);
-        });
-      }
-    } else if (message.type && message.type === InteractionType.ApplicationCommand) {
-      const discordChannel = await discordClient.channels.cache.get(message.channelId);
       await discordChannel.send({
         embeds: [
-          discordErrorMessage(
+          cannotSendMessageUser(
             "MyRank",
+            message,
           ),
         ],
       }).catch((e) => {

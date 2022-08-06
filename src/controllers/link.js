@@ -21,12 +21,24 @@ import db from '../models';
 import logger from "../helpers/logger";
 import { userWalletExist } from "../helpers/client/userWalletExist";
 import { getInstance } from "../services/rclient";
+import { fetchDiscordChannel } from "../helpers/client/fetchDiscordChannel";
+import { fetchDiscordUserIdFromMessageOrInteraction } from "../helpers/client/fetchDiscordUserIdFromMessageOrInteraction";
 
 export const discordLinkAddress = async (
+  discordClient,
   message,
   io,
 ) => {
   const activity = [];
+
+  const [
+    discordChannel,
+    discordUserDMChannel,
+  ] = await fetchDiscordChannel(
+    discordClient,
+    message,
+  );
+
   await db.sequelize.transaction({
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,
   }, async (t) => {
@@ -42,13 +54,15 @@ export const discordLinkAddress = async (
       activity.unshift(userActivity);
     }
     if (!user) return;
-    // console.log(user.wallet);
+
+    const discordUserId = user.user_id.replace('discord-', '');
 
     if (message.channel.type === ChannelType.GuildText) {
-      await message.channel.send({
+      console.log('before warn direct message');
+      await discordChannel.send({
         embeds: [
           warnDirectMessage(
-            message.author.id,
+            discordUserId,
             'Link Tokel Address',
           ),
         ],
@@ -63,7 +77,7 @@ export const discordLinkAddress = async (
       transaction: t,
     });
     if (userAlreadyLinkedAnAddress) {
-      await message.author.send({
+      await discordUserDMChannel.send({
         embeds: [
           userAlreadyLinkedAnAddressMessage(
             user,
@@ -74,18 +88,18 @@ export const discordLinkAddress = async (
       return;
     }
 
-    await message.author.send({
+    await discordUserDMChannel.send({
       embeds: [
         enterAddressToLinkMessage(),
       ],
     });
 
     const msgFilter = (m) => {
-      const filtered = m.author.id === message.author.id;
+      const filtered = m.author.id === discordUserId;
       return filtered;
     };
 
-    await message.author.dmChannel.awaitMessages({
+    await discordUserDMChannel.awaitMessages({
       filter: msgFilter,
       max: 1,
       time: 60000,
@@ -113,7 +127,7 @@ export const discordLinkAddress = async (
           transaction: t,
         });
         if (isAlreadyOccupied) {
-          await message.author.send({
+          await discordUserDMChannel.send({
             embeds: [
               tokelLinkAddressAlreadyOccupied(
                 message,
@@ -135,7 +149,7 @@ export const discordLinkAddress = async (
             && linkedAddressDB.verified
             && linkedAddressDB.enabled
           ) {
-            await message.author.send({
+            await discordUserDMChannel.send({
               embeds: [
                 tokelLinkAddressAlreadyVerified(
                   message,
@@ -149,7 +163,7 @@ export const discordLinkAddress = async (
             && !linkedAddressDB.verified
           ) {
             console.log('4');
-            await message.author.send({
+            await discordUserDMChannel.send({
               embeds: [
                 tokelLinkAddressAlreadyBusyVerifying(
                   message,
@@ -187,7 +201,7 @@ export const discordLinkAddress = async (
             console.log(user.wallet);
             console.log(user.wallet.address);
 
-            await message.author.send({
+            await discordUserDMChannel.send({
               embeds: [
                 addedNewTokelLinkAddress(
                   message,
@@ -199,7 +213,7 @@ export const discordLinkAddress = async (
           }
         }
       } else {
-        await message.author.send({
+        await discordUserDMChannel.send({
           embeds: [
             invalidTokelLinkAddress(
               message,
@@ -209,7 +223,7 @@ export const discordLinkAddress = async (
       }
     }).catch(async (collected) => {
       console.log(collected);
-      await message.author.send({
+      await discordUserDMChannel.send({
         embeds: [
           timeOutTokelLinkAddressMessage(
             message,
@@ -249,9 +263,11 @@ export const discordLinkAddress = async (
     } catch (e) {
       logger.error(`Error Discord: ${e}`);
     }
-    logger.error(`Error Discord Link Requested by: ${message.author.id}-${message.author.username}#${message.author.discriminator} - ${err}`);
+    const userId = await fetchDiscordUserIdFromMessageOrInteraction(
+      message,
+    );
     if (err.code && err.code === 50007) {
-      await message.channel.send({
+      await discordChannel.send({
         embeds: [
           cannotSendMessageUser(
             "Link",
@@ -262,7 +278,7 @@ export const discordLinkAddress = async (
         console.log(e);
       });
     } else {
-      await message.channel.send({
+      await discordChannel.send({
         embeds: [
           discordErrorMessage(
             "Link",

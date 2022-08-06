@@ -118,7 +118,7 @@ export const discordRouter = (
   });
 
   discordClient.on('interactionCreate', async (interaction) => {
-    if (!interaction.type !== InteractionType.ApplicationCommand && !interaction.isButton()) return;
+    if (interaction.type !== InteractionType.ApplicationCommand && !interaction.isButton()) return;
     let groupTask;
     let groupTaskId;
     let channelTask;
@@ -147,87 +147,164 @@ export const discordRouter = (
       });
       if (interaction.type === InteractionType.ApplicationCommand) {
         const { commandName } = interaction;
-        if (commandName === 'help') {
+        if (commandName === settings.bot.command.slash) {
           await interaction.deferReply().catch((e) => {
             console.log(e);
           });
-          const limited = await myRateLimiter(
-            discordClient,
-            interaction,
-            'Help',
-          );
-          if (limited) {
-            await interaction.editReply('rate limited').catch((e) => {
-              console.log(e);
+          if (interaction.options.getSubcommand() === 'help') {
+            const limited = await myRateLimiter(
+              discordClient,
+              interaction,
+              'Help',
+            );
+            if (limited) {
+              await interaction.editReply('rate limited').catch((e) => {
+                console.log(e);
+              });
+              return;
+            }
+
+            await queue.add(async () => {
+              console.log(interaction);
+              const task = await discordHelp(
+                discordClient,
+                interaction,
+                io,
+              );
             });
-            return;
           }
 
-          await queue.add(async () => {
-            console.log(interaction);
-            const task = await discordHelp(
+          if (interaction.options.getSubcommand() === 'myrank') {
+            const limited = await myRateLimiter(
               discordClient,
               interaction,
-              io,
+              'Myrank',
             );
-          });
-          await interaction.editReply('\u200b').catch((e) => {
-            console.log(e);
-          });
-        }
-        if (commandName === 'myrank') {
-          await interaction.deferReply().catch((e) => {
-            console.log(e);
-          });
-          const limited = await myRateLimiter(
-            discordClient,
-            interaction,
-            'Myrank',
-          );
-          if (limited) {
-            await interaction.editReply('rate limited').catch((e) => {
-              console.log(e);
+            if (limited) {
+              await interaction.editReply('rate limited').catch((e) => {
+                console.log(e);
+              });
+              return;
+            }
+
+            await queue.add(async () => {
+              const task = await discordMyRank(
+                discordClient,
+                interaction,
+                io,
+              );
             });
-            return;
           }
 
-          await queue.add(async () => {
-            const task = await discordMyRank(
+          if (interaction.options.getSubcommand() === 'ranks') {
+            const limited = await myRateLimiter(
               discordClient,
               interaction,
-              io,
+              'Ranks',
             );
-          });
-          await interaction.editReply('\u200b').catch((e) => {
-            console.log(e);
-          });
-        }
-        if (commandName === 'ranks') {
-          await interaction.deferReply().catch((e) => {
-            console.log(e);
-          });
-          const limited = await myRateLimiter(
-            discordClient,
-            interaction,
-            'Ranks',
-          );
-          if (limited) {
-            await interaction.editReply('rate limited').catch((e) => {
-              console.log(e);
+            if (limited) {
+              await interaction.editReply('rate limited').catch((e) => {
+                console.log(e);
+              });
+              return;
+            }
+            await queue.add(async () => {
+              const task = await discordRanks(
+                discordClient,
+                interaction,
+                io,
+              );
             });
-            return;
           }
-          await queue.add(async () => {
-            const task = await discordRanks(
+
+          if (interaction.options.getSubcommand() === 'leaderboard') {
+            const limited = await myRateLimiter(
+              discordClient,
+              interaction,
+              'Leaderboard',
+            );
+            if (limited) {
+              await interaction.editReply('rate limited').catch((e) => {
+                console.log(e);
+              });
+              return;
+            }
+            const setting = await db.setting.findOne();
+            await queue.add(async () => {
+              const task = await discordLeaderboard(
+                discordClient,
+                interaction,
+                setting,
+                io,
+              );
+            });
+          }
+
+          if (interaction.options.getSubcommand() === 'mostactive') {
+            const limited = await myRateLimiter(
+              discordClient,
+              interaction,
+              'MostActive',
+            );
+            if (limited) {
+              await interaction.editReply('rate limited').catch((e) => {
+                console.log(e);
+              });
+              return;
+            }
+            const setting = await db.setting.findOne();
+            await queue.add(async () => {
+              const task = await discordMostActive(
+                discordClient,
+                interaction,
+                setting,
+                io,
+              );
+            });
+          }
+
+          if (interaction.options.getSubcommand() === 'link') {
+            const limited = await myRateLimiter(
+              discordClient,
+              interaction,
+              'Link',
+            );
+            if (limited) {
+              await interaction.editReply('rate limited').catch((e) => {
+                console.log(e);
+              });
+              return;
+            }
+            const task = await discordLinkAddress(
               discordClient,
               interaction,
               io,
             );
-          });
+          }
+
+          if (interaction.options.getSubcommand() === 'unlink') {
+            const limited = await myRateLimiter(
+              discordClient,
+              interaction,
+              'Unlink',
+            );
+            if (limited) {
+              await interaction.editReply('rate limited').catch((e) => {
+                console.log(e);
+              });
+              return;
+            }
+            const task = await discordUnlinkAddress(
+              discordClient,
+              interaction,
+              io,
+            );
+          }
           await interaction.editReply('\u200b').catch((e) => {
             console.log(e);
           });
         }
+
         // if (commandName === 'deposit') {
         //   await interaction.deferReply().catch((e) => {
         //     console.log(e);
@@ -280,64 +357,6 @@ export const discordRouter = (
         //     console.log(e);
         //   });
         // }
-
-        if (commandName === 'leaderboard') {
-          await interaction.deferReply().catch((e) => {
-            console.log(e);
-          });
-          const limited = await myRateLimiter(
-            discordClient,
-            interaction,
-            'Leaderboard',
-          );
-          if (limited) {
-            await interaction.editReply('rate limited').catch((e) => {
-              console.log(e);
-            });
-            return;
-          }
-          const setting = await db.setting.findOne();
-          await queue.add(async () => {
-            const task = await discordLeaderboard(
-              discordClient,
-              interaction,
-              setting,
-              io,
-            );
-          });
-          await interaction.editReply('\u200b').catch((e) => {
-            console.log(e);
-          });
-        }
-
-        if (commandName === 'mostactive') {
-          await interaction.deferReply().catch((e) => {
-            console.log(e);
-          });
-          const limited = await myRateLimiter(
-            discordClient,
-            interaction,
-            'MostActive',
-          );
-          if (limited) {
-            await interaction.editReply('rate limited').catch((e) => {
-              console.log(e);
-            });
-            return;
-          }
-          const setting = await db.setting.findOne();
-          await queue.add(async () => {
-            const task = await discordMostActive(
-              discordClient,
-              interaction,
-              setting,
-              io,
-            );
-          });
-          await interaction.editReply('\u200b').catch((e) => {
-            console.log(e);
-          });
-        }
       }
     }
   });
@@ -385,7 +404,7 @@ export const discordRouter = (
       });
     }
 
-    if (!message.content.startsWith(settings.bot.command) || message.author.bot) return;
+    if (!message.content.startsWith(settings.bot.command.normal) || message.author.bot) return;
     const maintenance = await isMaintenanceOrDisabled(message, 'discord');
     if (maintenance.maintenance || !maintenance.enabled) return;
     if (groupTask && groupTask.banned) {
@@ -435,7 +454,11 @@ export const discordRouter = (
       );
       if (limited) return;
       await queue.add(async () => {
-        const task = await discordHelp(message, io);
+        const task = await discordHelp(
+          discordClient,
+          message,
+          io,
+        );
       });
     }
 
@@ -448,6 +471,7 @@ export const discordRouter = (
       if (limited) return;
       await queue.add(async () => {
         const task = await discordHelp(
+          discordClient,
           message,
           io,
         );
@@ -492,6 +516,7 @@ export const discordRouter = (
       );
       if (limited) return;
       const task = await discordLinkAddress(
+        discordClient,
         message,
         io,
       );
@@ -505,6 +530,7 @@ export const discordRouter = (
       );
       if (limited) return;
       const task = await discordUnlinkAddress(
+        discordClient,
         message,
         io,
       );

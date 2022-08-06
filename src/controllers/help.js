@@ -13,12 +13,24 @@ import {
 import db from '../models';
 import logger from "../helpers/logger";
 import { userWalletExist } from "../helpers/client/userWalletExist";
+import { fetchDiscordChannel } from "../helpers/client/fetchDiscordChannel";
+import { fetchDiscordUserIdFromMessageOrInteraction } from "../helpers/client/fetchDiscordUserIdFromMessageOrInteraction";
 
 export const discordHelp = async (
+  discordClient,
   message,
   io,
 ) => {
   const activity = [];
+
+  const [
+    discordChannel,
+    discordUserDMChannel,
+  ] = await fetchDiscordChannel(
+    discordClient,
+    message,
+  );
+
   await db.sequelize.transaction({
     isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,
   }, async (t) => {
@@ -35,23 +47,25 @@ export const discordHelp = async (
     }
     if (!user) return;
 
+    const discordUserId = user.user_id.replace('discord-', '');
+
     if (message.channel.type === ChannelType.DM) {
-      await message.author.send({
+      await discordUserDMChannel.send({
         embeds: [
           helpMessage(),
         ],
       });
     }
     if (message.channel.type === ChannelType.GuildText) {
-      await message.author.send({
+      await discordUserDMChannel.send({
         embeds: [
           helpMessage(),
         ],
       });
-      await message.channel.send({
+      await discordChannel.send({
         embeds: [
           warnDirectMessage(
-            message.author.id,
+            discordUserId,
             'Help',
           ),
         ],
@@ -81,6 +95,10 @@ export const discordHelp = async (
     });
     activity.unshift(finalActivity);
   }).catch(async (err) => {
+    const userId = await fetchDiscordUserIdFromMessageOrInteraction(
+      message,
+    );
+
     try {
       await db.error.create({
         type: 'help',
@@ -89,20 +107,19 @@ export const discordHelp = async (
     } catch (e) {
       logger.error(`Error Discord: ${e}`);
     }
-    logger.error(`Error Discord Help Requested by: ${message.author.id}-${message.author.username}#${message.author.discriminator} - ${err}`);
     if (err.code && err.code === 50007) {
-      await message.channel.send({
+      await discordChannel.send({
         embeds: [
           cannotSendMessageUser(
             "Help",
-            message,
+            userId,
           ),
         ],
       }).catch((e) => {
         console.log(e);
       });
     } else {
-      await message.channel.send({
+      await discordChannel.send({
         embeds: [
           discordErrorMessage(
             "Help",

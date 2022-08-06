@@ -27,21 +27,34 @@ var _logger = _interopRequireDefault(require("../helpers/logger"));
 
 var _userWalletExist = require("../helpers/client/userWalletExist");
 
+var _fetchDiscordChannel = require("../helpers/client/fetchDiscordChannel");
+
+var _fetchDiscordUserIdFromMessageOrInteraction = require("../helpers/client/fetchDiscordUserIdFromMessageOrInteraction");
+
 /* eslint-disable import/prefer-default-export */
 var discordRanks = /*#__PURE__*/function () {
   var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(discordClient, message, io) {
-    var activity;
+    var activity, _yield$fetchDiscordCh, _yield$fetchDiscordCh2, discordChannel, discordUserDMChannel;
+
     return _regenerator["default"].wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             activity = [];
             _context3.next = 3;
+            return (0, _fetchDiscordChannel.fetchDiscordChannel)(discordClient, message);
+
+          case 3:
+            _yield$fetchDiscordCh = _context3.sent;
+            _yield$fetchDiscordCh2 = (0, _slicedToArray2["default"])(_yield$fetchDiscordCh, 2);
+            discordChannel = _yield$fetchDiscordCh2[0];
+            discordUserDMChannel = _yield$fetchDiscordCh2[1];
+            _context3.next = 9;
             return _models["default"].sequelize.transaction({
               isolationLevel: _sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
             }, /*#__PURE__*/function () {
               var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(t) {
-                var _yield$userWalletExis, _yield$userWalletExis2, user, userActivity, allRanks, canvasAddedRanksHeight, canvas, ctx, finalImage, discordChannel, preActivity, finalActivity;
+                var _yield$userWalletExis, _yield$userWalletExis2, user, userActivity, discordUserId, allRanks, canvasAddedRanksHeight, canvas, ctx, finalImage, preActivity, finalActivity;
 
                 return _regenerator["default"].wrap(function _callee$(_context) {
                   while (1) {
@@ -68,13 +81,14 @@ var discordRanks = /*#__PURE__*/function () {
                         return _context.abrupt("return");
 
                       case 9:
-                        _context.next = 11;
+                        discordUserId = user.user_id.replace('discord-', '');
+                        _context.next = 12;
                         return _models["default"].rank.findAll({
                           lock: t.LOCK.UPDATE,
                           transaction: t
                         });
 
-                      case 11:
+                      case 12:
                         allRanks = _context.sent;
                         canvasAddedRanksHeight = allRanks.length * 40 + 36.5;
                         canvas = (0, _canvas.createCanvas)(600, canvasAddedRanksHeight);
@@ -139,22 +153,12 @@ var discordRanks = /*#__PURE__*/function () {
                         ctx.stroke();
                         finalImage = canvas.toBuffer(); // const attachment = new MessageAttachment(canvas.toBuffer(), 'ranks.png');
 
-                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
-                          _context.next = 69;
-                          break;
-                        }
-
-                        if (!message.guildId) {
-                          _context.next = 67;
+                        if (!(message.channel.type === _discord.ChannelType.GuildText)) {
+                          _context.next = 64;
                           break;
                         }
 
                         _context.next = 64;
-                        return discordClient.channels.cache.get(message.channelId);
-
-                      case 64:
-                        discordChannel = _context.sent;
-                        _context.next = 67;
                         return discordChannel.send({
                           files: [{
                             attachment: finalImage,
@@ -162,21 +166,22 @@ var discordRanks = /*#__PURE__*/function () {
                           }]
                         });
 
-                      case 67:
-                        _context.next = 71;
-                        break;
+                      case 64:
+                        if (!(message.channel.type === _discord.ChannelType.DM)) {
+                          _context.next = 67;
+                          break;
+                        }
 
-                      case 69:
-                        _context.next = 71;
-                        return message.channel.send({
+                        _context.next = 67;
+                        return discordUserDMChannel.send({
                           files: [{
                             attachment: finalImage,
                             name: 'ranks.png'
                           }]
                         });
 
-                      case 71:
-                        _context.next = 73;
+                      case 67:
+                        _context.next = 69;
                         return _models["default"].activity.create({
                           type: 'ranks_s',
                           earnerId: user.id
@@ -185,9 +190,9 @@ var discordRanks = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 73:
+                      case 69:
                         preActivity = _context.sent;
-                        _context.next = 76;
+                        _context.next = 72;
                         return _models["default"].activity.findOne({
                           where: {
                             id: preActivity.id
@@ -200,11 +205,11 @@ var discordRanks = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 76:
+                      case 72:
                         finalActivity = _context.sent;
                         activity.unshift(finalActivity);
 
-                      case 78:
+                      case 74:
                       case "end":
                         return _context.stop();
                     }
@@ -217,8 +222,7 @@ var discordRanks = /*#__PURE__*/function () {
               };
             }())["catch"]( /*#__PURE__*/function () {
               var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(err) {
-                var discordChannel, _discordChannel;
-
+                var userId;
                 return _regenerator["default"].wrap(function _callee2$(_context2) {
                   while (1) {
                     switch (_context2.prev = _context2.next) {
@@ -241,77 +245,37 @@ var discordRanks = /*#__PURE__*/function () {
                         _logger["default"].error("Error Discord: ".concat(_context2.t0));
 
                       case 8:
-                        _logger["default"].error("Error Discord Ranks Requested by: ".concat(message.author.id, "-").concat(message.author.username, "#").concat(message.author.discriminator, " - ").concat(err));
+                        _context2.next = 10;
+                        return (0, _fetchDiscordUserIdFromMessageOrInteraction.fetchDiscordUserIdFromMessageOrInteraction)(message);
+
+                      case 10:
+                        userId = _context2.sent;
 
                         if (!(err.code && err.code === 50007)) {
-                          _context2.next = 22;
+                          _context2.next = 16;
                           break;
                         }
 
-                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
-                          _context2.next = 18;
-                          break;
-                        }
-
-                        _context2.next = 13;
-                        return discordClient.channels.cache.get(message.channelId);
-
-                      case 13:
-                        discordChannel = _context2.sent;
-                        _context2.next = 16;
+                        _context2.next = 14;
                         return discordChannel.send({
                           embeds: [(0, _embeds.cannotSendMessageUser)("Ranks", message)]
                         })["catch"](function (e) {
                           console.log(e);
                         });
 
-                      case 16:
-                        _context2.next = 20;
+                      case 14:
+                        _context2.next = 18;
                         break;
+
+                      case 16:
+                        _context2.next = 18;
+                        return discordChannel.send({
+                          embeds: [(0, _embeds.discordErrorMessage)("Ranks")]
+                        })["catch"](function (e) {
+                          console.log(e);
+                        });
 
                       case 18:
-                        _context2.next = 20;
-                        return message.channel.send({
-                          embeds: [(0, _embeds.cannotSendMessageUser)("Ranks", message)]
-                        })["catch"](function (e) {
-                          console.log(e);
-                        });
-
-                      case 20:
-                        _context2.next = 32;
-                        break;
-
-                      case 22:
-                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
-                          _context2.next = 30;
-                          break;
-                        }
-
-                        _context2.next = 25;
-                        return discordClient.channels.cache.get(message.channelId);
-
-                      case 25:
-                        _discordChannel = _context2.sent;
-                        _context2.next = 28;
-                        return _discordChannel.send({
-                          embeds: [(0, _embeds.discordErrorMessage)("Ranks")]
-                        })["catch"](function (e) {
-                          console.log(e);
-                        });
-
-                      case 28:
-                        _context2.next = 32;
-                        break;
-
-                      case 30:
-                        _context2.next = 32;
-                        return message.channel.send({
-                          embeds: [(0, _embeds.discordErrorMessage)("Ranks")]
-                        })["catch"](function (e) {
-                          console.log(e);
-                        });
-
-                      case 32:
                       case "end":
                         return _context2.stop();
                     }
@@ -324,14 +288,14 @@ var discordRanks = /*#__PURE__*/function () {
               };
             }());
 
-          case 3:
+          case 9:
             if (activity.length > 0) {
               io.to('admin').emit('updateActivity', {
                 activity: activity
               });
             }
 
-          case 4:
+          case 10:
           case "end":
             return _context3.stop();
         }

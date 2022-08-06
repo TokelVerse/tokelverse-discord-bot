@@ -223,7 +223,7 @@ var conditionalCSRF = function conditionalCSRF(req, res, next) {
           console.log("Logged in as ".concat(discordClient.user.tag, "!"));
           discordClient.user.setPresence({
             activities: [{
-              name: "".concat(_settings["default"].bot.command),
+              name: "/".concat(_settings["default"].bot.command.slash),
               type: "PLAYING"
             }]
           });

@@ -122,8 +122,8 @@ var discordLimitSpamMessage = function discordLimitSpamMessage(userId, myFunctio
 
 exports.discordLimitSpamMessage = discordLimitSpamMessage;
 
-var cannotSendMessageUser = function cannotSendMessageUser(title, message) {
-  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle(title).setDescription("<@".concat(message.author.id, ">, ").concat(_settings["default"].bot.name, " was unable to send you a direct message.\nPlease check your discord privacy settings.")).setTimestamp().setFooter({
+var cannotSendMessageUser = function cannotSendMessageUser(title, userId) {
+  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle(title).setDescription("<@".concat(userId, ">, ").concat(_settings["default"].bot.name, " was unable to send you a direct message.\nPlease check your discord privacy settings.")).setTimestamp().setFooter({
     text: "".concat(_settings["default"].bot.name, " v").concat(_package["default"].version),
     iconURL: _settings["default"].bot.logo
   });
@@ -259,7 +259,7 @@ var NotInDirectMessage = function NotInDirectMessage(message, title) {
 exports.NotInDirectMessage = NotInDirectMessage;
 
 var discordWelcomeMessage = function discordWelcomeMessage(userInfo) {
-  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle("Bot").setDescription("Welcome <@".concat(userInfo.id, ">, Welcome to Tokelverse.\nType \"").concat(_settings["default"].bot.command, " help\" for bot usage info")).setThumbnail(_settings["default"].bot.logo).setTimestamp().setFooter({
+  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle("Bot").setDescription("Welcome <@".concat(userInfo.id, ">, Welcome to Tokelverse.\nType \"/").concat(_settings["default"].bot.command.slash, " help\" for bot usage info")).setThumbnail(_settings["default"].bot.logo).setTimestamp().setFooter({
     text: "".concat(_settings["default"].bot.name, " v").concat(_package["default"].version),
     iconURL: _settings["default"].bot.logo
   });
@@ -278,8 +278,8 @@ var discordBotMaintenanceMessage = function discordBotMaintenanceMessage() {
 
 exports.discordBotMaintenanceMessage = discordBotMaintenanceMessage;
 
-var successUnlinkAddress = function successUnlinkAddress(message, address) {
-  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle('Unlink Tokel Address').setDescription("<@".concat(message.author.id, ">, successfully unlinked ").concat(address)).setTimestamp().setFooter({
+var successUnlinkAddress = function successUnlinkAddress(userId, address) {
+  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle('Unlink Tokel Address').setDescription("<@".concat(userId, ">, successfully unlinked ").concat(address)).setTimestamp().setFooter({
     text: "".concat(_settings["default"].bot.name, " v").concat(_package["default"].version),
     iconURL: _settings["default"].bot.logo
   });
@@ -289,7 +289,7 @@ var successUnlinkAddress = function successUnlinkAddress(message, address) {
 exports.successUnlinkAddress = successUnlinkAddress;
 
 var userAlreadyLinkedAnAddressMessage = function userAlreadyLinkedAnAddressMessage(user, address) {
-  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle('Unlink Tokel Address').setDescription("<@".concat(user.user_id, ">, You already linked an address.\n\nplease unlink it with `!tokelverse unlink` before trying to link a new one \n\ncurrently linked address: \n**").concat(address, "**")).setTimestamp().setFooter({
+  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle('link Tokel Address').setDescription("<@".concat(user.user_id, ">, You already linked an address.\n\nplease unlink it with `!tokelverse unlink` before trying to link a new one \n\ncurrently linked address: \n**").concat(address, "**")).setTimestamp().setFooter({
     text: "".concat(_settings["default"].bot.name, " v").concat(_package["default"].version),
     iconURL: _settings["default"].bot.logo
   });
@@ -298,8 +298,8 @@ var userAlreadyLinkedAnAddressMessage = function userAlreadyLinkedAnAddressMessa
 
 exports.userAlreadyLinkedAnAddressMessage = userAlreadyLinkedAnAddressMessage;
 
-var cancelUnlinkAddress = function cancelUnlinkAddress(message) {
-  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle('Unlink Tokel Address').setDescription("<@".concat(message.author.id, ">, you canceled unlinking your address")).setTimestamp().setFooter({
+var cancelUnlinkAddress = function cancelUnlinkAddress(userId) {
+  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle('Unlink Tokel Address').setDescription("<@".concat(userId, ">, you canceled unlinking your address")).setTimestamp().setFooter({
     text: "".concat(_settings["default"].bot.name, " v").concat(_package["default"].version),
     iconURL: _settings["default"].bot.logo
   });
@@ -308,8 +308,8 @@ var cancelUnlinkAddress = function cancelUnlinkAddress(message) {
 
 exports.cancelUnlinkAddress = cancelUnlinkAddress;
 
-var timeOutUnlinkAddressMessage = function timeOutUnlinkAddressMessage(message) {
-  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle('Unlink Tokel Address').setDescription("<@".concat(message.author.id, ">, your request to unlink a tokel address has expired")).setTimestamp().setFooter({
+var timeOutUnlinkAddressMessage = function timeOutUnlinkAddressMessage(userId) {
+  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle('Unlink Tokel Address').setDescription("<@".concat(userId, ">, your request to unlink a tokel address has expired")).setTimestamp().setFooter({
     text: "".concat(_settings["default"].bot.name, " v").concat(_package["default"].version),
     iconURL: _settings["default"].bot.logo
   });
@@ -318,8 +318,8 @@ var timeOutUnlinkAddressMessage = function timeOutUnlinkAddressMessage(message) 
 
 exports.timeOutUnlinkAddressMessage = timeOutUnlinkAddressMessage;
 
-var confirmUnlinkAddress = function confirmUnlinkAddress(message, address) {
-  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle('Unlink Tokel Address').setDescription("<@".concat(message.author.id, ">, are you sure you want to unlink ").concat(address, "?")).setTimestamp().setFooter({
+var confirmUnlinkAddress = function confirmUnlinkAddress(userId, address) {
+  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle('Unlink Tokel Address').setDescription("<@".concat(userId, ">, are you sure you want to unlink ").concat(address, "?")).setTimestamp().setFooter({
     text: "".concat(_settings["default"].bot.name, " v").concat(_package["default"].version),
     iconURL: _settings["default"].bot.logo
   });
@@ -328,8 +328,8 @@ var confirmUnlinkAddress = function confirmUnlinkAddress(message, address) {
 
 exports.confirmUnlinkAddress = confirmUnlinkAddress;
 
-var noAddressToUnlink = function noAddressToUnlink(message) {
-  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle('Unlink Tokel Address').setDescription("<@".concat(message.author.id, ">, You don't have an address to unlink")).setTimestamp().setFooter({
+var noAddressToUnlink = function noAddressToUnlink(userId) {
+  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle('Unlink Tokel Address').setDescription("<@".concat(userId, ">, You don't have an address to unlink")).setTimestamp().setFooter({
     text: "".concat(_settings["default"].bot.name, " v").concat(_package["default"].version),
     iconURL: _settings["default"].bot.logo
   });
@@ -545,7 +545,7 @@ var userEarnedRolesMessage = function userEarnedRolesMessage(user, roles) {
 exports.userEarnedRolesMessage = userEarnedRolesMessage;
 
 var helpMessage = function helpMessage(withdraw) {
-  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle("".concat("".concat(_settings["default"].bot.name, " v").concat(_package["default"].version), " Help")).setDescription("`".concat(_settings["default"].bot.command, "`\nDisplays this message\n\n`").concat(_settings["default"].bot.command, " help`\nDisplays this message\n\n`").concat(_settings["default"].bot.command, " link`\nLink a tokel address to your discord account\n\n`").concat(_settings["default"].bot.command, " unlink`\nLink a tokel address to your discord account\n\n`").concat(_settings["default"].bot.command, " myrank`\nShows your rank\n\n`").concat(_settings["default"].bot.command, " leaderboard`\nShows the leaderboard\n\n`").concat(_settings["default"].bot.command, " mostactive`\nShows most active users past month\n\n`").concat(_settings["default"].bot.command, " ranks`\nShows all the ranks to earn")).setTimestamp().setFooter({
+  var result = new _discord.EmbedBuilder().setColor(_settings["default"].bot.color).setTitle("".concat("".concat(_settings["default"].bot.name, " v").concat(_package["default"].version), " Help")).setDescription("`/".concat(_settings["default"].bot.command.slash, "`\nDisplays this message\n\n`/").concat(_settings["default"].bot.command.slash, " help`\nDisplays this message\n\n`/").concat(_settings["default"].bot.command.slash, " link`\nLink a tokel address to your discord account\n\n`/").concat(_settings["default"].bot.command.slash, " unlink`\nLink a tokel address to your discord account\n\n`/").concat(_settings["default"].bot.command.slash, " myrank`\nShows your rank\n\n`/").concat(_settings["default"].bot.command.slash, " leaderboard`\nShows the leaderboard\n\n`/").concat(_settings["default"].bot.command.slash, " mostactive`\nShows most active users past month\n\n`/").concat(_settings["default"].bot.command.slash, " ranks`\nShows all the ranks to earn")).setTimestamp().setFooter({
     text: "".concat(_settings["default"].bot.name, " v").concat(_package["default"].version),
     iconURL: _settings["default"].bot.logo
   });

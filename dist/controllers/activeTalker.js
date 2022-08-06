@@ -103,7 +103,7 @@ var discordActiveTalker = /*#__PURE__*/function () {
                       case 16:
                         validWordCount = 0;
 
-                        if (filteredMessage.length > 0 && filteredMessage[0] && filteredMessage[0] !== _settings["default"].bot.command) {
+                        if (filteredMessage.length > 0 && filteredMessage[0] && filteredMessage[0] !== _settings["default"].bot.command.normal) {
                           lastSentenceArray = activeTalkerRecord.lastSentence ? activeTalkerRecord.lastSentence.split(' ') : [''];
                           filteredMessage.forEach(function (word) {
                             if (word.length >= 4) {

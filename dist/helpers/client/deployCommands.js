@@ -17,12 +17,43 @@ var _discord = require("discord.js");
 
 var _rest = require("@discordjs/rest");
 
-var _v = require("discord-api-types/v10");
-
 var _models = _interopRequireDefault(require("../../models"));
 
+var _settings = _interopRequireDefault(require("../../config/settings"));
+
 (0, _dotenv.config)();
-var commands = [new _discord.SlashCommandBuilder().setName('help').setDescription('DM\'s you with a help message'), new _discord.SlashCommandBuilder().setName('myrank').setDescription('Displays the user\'s rank'), new _discord.SlashCommandBuilder().setName('ranks').setDescription('Displays all the ranks'), new _discord.SlashCommandBuilder().setName('leaderboard').setDescription('Displays the top ten leaderboard'), new _discord.SlashCommandBuilder().setName('mostactive').setDescription('Displays the top ten most active users (chatting)'), new _discord.SlashCommandBuilder().setName('balance').setDescription('Display your balance'), new _discord.SlashCommandBuilder().setName('deposit').setDescription('Displays your deposit address!'), new _discord.SlashCommandBuilder().setName('withdraw').setDescription('Starts Withdrawal process')].map(function (command) {
+var mainTipBotCommand = new _discord.SlashCommandBuilder().setName("".concat(_settings["default"].bot.command.slash)).setDescription("'Use ".concat(_settings["default"].bot.name));
+mainTipBotCommand.addSubcommand(function (subcommand) {
+  return subcommand.setName('help').setDescription("".concat(_settings["default"].bot.name, " usage info"));
+}).addSubcommand(function (subcommand) {
+  return subcommand.setName('myrank').setDescription("Displays the user's rank");
+}).addSubcommand(function (subcommand) {
+  return subcommand.setName('ranks').setDescription("Displays all the ranks");
+}).addSubcommand(function (subcommand) {
+  return subcommand.setName('leaderboard').setDescription("Displays the user's rank");
+}).addSubcommand(function (subcommand) {
+  return subcommand.setName('mostactive').setDescription("Displays the top ten most active users (chatting)");
+}) // .addSubcommand(
+//   (subcommand) => subcommand
+//     .setName('balance')
+//     .setDescription(`Display your balance`),
+// )
+// .addSubcommand(
+//   (subcommand) => subcommand
+//     .setName('deposit')
+//     .setDescription(`Displays your deposit address`),
+// )
+// .addSubcommand(
+//   (subcommand) => subcommand
+//     .setName('withdraw')
+//     .setDescription(`Starts Withdrawal process`),
+// )
+.addSubcommand(function (subcommand) {
+  return subcommand.setName('link').setDescription("Starts tokel address link process");
+}).addSubcommand(function (subcommand) {
+  return subcommand.setName('unlink').setDescription("Starts tokel address unlink process");
+});
+var commands = [mainTipBotCommand].map(function (command) {
   return command.toJSON();
 });
 
@@ -41,7 +72,7 @@ var deployCommands = /*#__PURE__*/function () {
             rest = new _rest.REST({
               version: '10'
             }).setToken(botToken);
-            rest.put(_v.Routes.applicationCommands(clientId), {
+            rest.put(_discord.Routes.applicationCommands(clientId), {
               body: commands
             }).then(function () {
               return console.log('Successfully registered application commands.');

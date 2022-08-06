@@ -31,21 +31,34 @@ var _logger = _interopRequireDefault(require("../helpers/logger"));
 
 var _userWalletExist = require("../helpers/client/userWalletExist");
 
+var _fetchDiscordChannel = require("../helpers/client/fetchDiscordChannel");
+
+var _fetchDiscordUserIdFromMessageOrInteraction = require("../helpers/client/fetchDiscordUserIdFromMessageOrInteraction");
+
 /* eslint-disable import/prefer-default-export */
 var discordMostActive = /*#__PURE__*/function () {
   var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5(discordClient, message, setting, io) {
-    var activity;
+    var activity, _yield$fetchDiscordCh, _yield$fetchDiscordCh2, discordChannel, discordUserDMChannel;
+
     return _regenerator["default"].wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
             activity = [];
             _context5.next = 3;
+            return (0, _fetchDiscordChannel.fetchDiscordChannel)(discordClient, message);
+
+          case 3:
+            _yield$fetchDiscordCh = _context5.sent;
+            _yield$fetchDiscordCh2 = (0, _slicedToArray2["default"])(_yield$fetchDiscordCh, 2);
+            discordChannel = _yield$fetchDiscordCh2[0];
+            discordUserDMChannel = _yield$fetchDiscordCh2[1];
+            _context5.next = 9;
             return _models["default"].sequelize.transaction({
               isolationLevel: _sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
             }, /*#__PURE__*/function () {
               var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(t) {
-                var _yield$userWalletExis, _yield$userWalletExis2, user, userActivity, allRanks, olderThenDate, topUsers, promises, newTopUsers, canvasAddedRanksHeight, canvas, ctx, expBarWidth, finalImage, discordChannel, preActivity, finalActivity;
+                var _yield$userWalletExis, _yield$userWalletExis2, user, userActivity, discordUserId, allRanks, olderThenDate, topUsers, promises, newTopUsers, canvasAddedRanksHeight, canvas, ctx, expBarWidth, finalImage, preActivity, finalActivity;
 
                 return _regenerator["default"].wrap(function _callee3$(_context3) {
                   while (1) {
@@ -72,16 +85,17 @@ var discordMostActive = /*#__PURE__*/function () {
                         return _context3.abrupt("return");
 
                       case 9:
-                        _context3.next = 11;
+                        discordUserId = user.user_id.replace('discord-', '');
+                        _context3.next = 12;
                         return _models["default"].rank.findAll({
                           lock: t.LOCK.UPDATE,
                           transaction: t
                         });
 
-                      case 11:
+                      case 12:
                         allRanks = _context3.sent;
                         olderThenDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-                        _context3.next = 15;
+                        _context3.next = 16;
                         return _models["default"].user.findAll({
                           order: [[_sequelize.Sequelize.literal('(SELECT SUM(count) FROM activeTalker where activeTalker.userId = user.id AND activeTalker.createdAt > date_sub(now(), interval 1 month))'), 'DESC']],
                           limit: 10,
@@ -89,7 +103,7 @@ var discordMostActive = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 15:
+                      case 16:
                         topUsers = _context3.sent;
                         promises = topUsers.map( /*#__PURE__*/function () {
                           var _ref3 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(topUser, index) {
@@ -231,10 +245,10 @@ var discordMostActive = /*#__PURE__*/function () {
                             return _ref3.apply(this, arguments);
                           };
                         }());
-                        _context3.next = 19;
+                        _context3.next = 20;
                         return Promise.all(promises);
 
-                      case 19:
+                      case 20:
                         newTopUsers = _context3.sent;
                         console.log(newTopUsers);
                         canvasAddedRanksHeight = newTopUsers.length * 300 + 36.5;
@@ -395,22 +409,12 @@ var discordMostActive = /*#__PURE__*/function () {
                         ctx.stroke();
                         finalImage = canvas.toBuffer(); // const attachment = new MessageAttachment(canvas.toBuffer(), 'mostActive.png');
 
-                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
-                          _context3.next = 71;
-                          break;
-                        }
-
-                        if (!message.guildId) {
-                          _context3.next = 69;
+                        if (!(message.channel.type === _discord.ChannelType.GuildText)) {
+                          _context3.next = 66;
                           break;
                         }
 
                         _context3.next = 66;
-                        return discordClient.channels.cache.get(message.channelId);
-
-                      case 66:
-                        discordChannel = _context3.sent;
-                        _context3.next = 69;
                         return discordChannel.send({
                           files: [{
                             attachment: finalImage,
@@ -418,21 +422,22 @@ var discordMostActive = /*#__PURE__*/function () {
                           }]
                         });
 
-                      case 69:
-                        _context3.next = 73;
-                        break;
+                      case 66:
+                        if (!(message.channel.type === _discord.ChannelType.DM)) {
+                          _context3.next = 69;
+                          break;
+                        }
 
-                      case 71:
-                        _context3.next = 73;
-                        return message.channel.send({
+                        _context3.next = 69;
+                        return discordUserDMChannel.send({
                           files: [{
                             attachment: finalImage,
                             name: 'mostActive.png'
                           }]
                         });
 
-                      case 73:
-                        _context3.next = 75;
+                      case 69:
+                        _context3.next = 71;
                         return _models["default"].activity.create({
                           type: 'mostActive_s',
                           earnerId: user.id
@@ -441,9 +446,9 @@ var discordMostActive = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 75:
+                      case 71:
                         preActivity = _context3.sent;
-                        _context3.next = 78;
+                        _context3.next = 74;
                         return _models["default"].activity.findOne({
                           where: {
                             id: preActivity.id
@@ -456,11 +461,11 @@ var discordMostActive = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 78:
+                      case 74:
                         finalActivity = _context3.sent;
                         activity.unshift(finalActivity);
 
-                      case 80:
+                      case 76:
                       case "end":
                         return _context3.stop();
                     }
@@ -473,8 +478,7 @@ var discordMostActive = /*#__PURE__*/function () {
               };
             }())["catch"]( /*#__PURE__*/function () {
               var _ref5 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4(err) {
-                var discordChannel, _discordChannel;
-
+                var userId;
                 return _regenerator["default"].wrap(function _callee4$(_context4) {
                   while (1) {
                     switch (_context4.prev = _context4.next) {
@@ -498,75 +502,37 @@ var discordMostActive = /*#__PURE__*/function () {
                         _logger["default"].error("Error Discord: ".concat(_context4.t0));
 
                       case 9:
+                        _context4.next = 11;
+                        return (0, _fetchDiscordUserIdFromMessageOrInteraction.fetchDiscordUserIdFromMessageOrInteraction)(message);
+
+                      case 11:
+                        userId = _context4.sent;
+
                         if (!(err.code && err.code === 50007)) {
-                          _context4.next = 22;
+                          _context4.next = 17;
                           break;
                         }
 
-                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
-                          _context4.next = 18;
-                          break;
-                        }
-
-                        _context4.next = 13;
-                        return discordClient.channels.cache.get(message.channelId);
-
-                      case 13:
-                        discordChannel = _context4.sent;
-                        _context4.next = 16;
+                        _context4.next = 15;
                         return discordChannel.send({
                           embeds: [(0, _embeds.cannotSendMessageUser)("MostActive", message)]
                         })["catch"](function (e) {
                           console.log(e);
                         });
 
-                      case 16:
-                        _context4.next = 20;
+                      case 15:
+                        _context4.next = 19;
                         break;
 
-                      case 18:
-                        _context4.next = 20;
-                        return message.channel.send({
-                          embeds: [(0, _embeds.cannotSendMessageUser)("MostActive", message)]
-                        })["catch"](function (e) {
-                          console.log(e);
-                        });
-
-                      case 20:
-                        _context4.next = 32;
-                        break;
-
-                      case 22:
-                        if (!(message.type && message.type === _discord.InteractionType.ApplicationCommand)) {
-                          _context4.next = 30;
-                          break;
-                        }
-
-                        _context4.next = 25;
-                        return discordClient.channels.cache.get(message.channelId);
-
-                      case 25:
-                        _discordChannel = _context4.sent;
-                        _context4.next = 28;
-                        return _discordChannel.send({
-                          embeds: [(0, _embeds.discordErrorMessage)("MostActive")]
-                        })["catch"](function (e) {
-                          console.log(e);
-                        });
-
-                      case 28:
-                        _context4.next = 32;
-                        break;
-
-                      case 30:
-                        _context4.next = 32;
+                      case 17:
+                        _context4.next = 19;
                         return message.channel.send({
                           embeds: [(0, _embeds.discordErrorMessage)("MostActive")]
                         })["catch"](function (e) {
                           console.log(e);
                         });
 
-                      case 32:
+                      case 19:
                       case "end":
                         return _context4.stop();
                     }
@@ -579,14 +545,14 @@ var discordMostActive = /*#__PURE__*/function () {
               };
             }());
 
-          case 3:
+          case 9:
             if (activity.length > 0) {
               io.to('admin').emit('updateActivity', {
                 activity: activity
               });
             }
 
-          case 4:
+          case 10:
           case "end":
             return _context5.stop();
         }

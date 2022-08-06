@@ -27,21 +27,34 @@ var _userWalletExist = require("../helpers/client/userWalletExist");
 
 var _rclient = require("../services/rclient");
 
+var _fetchDiscordChannel = require("../helpers/client/fetchDiscordChannel");
+
+var _fetchDiscordUserIdFromMessageOrInteraction = require("../helpers/client/fetchDiscordUserIdFromMessageOrInteraction");
+
 /* eslint-disable import/prefer-default-export */
 var discordLinkAddress = /*#__PURE__*/function () {
-  var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5(message, io) {
-    var activity;
+  var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5(discordClient, message, io) {
+    var activity, _yield$fetchDiscordCh, _yield$fetchDiscordCh2, discordChannel, discordUserDMChannel;
+
     return _regenerator["default"].wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
             activity = [];
             _context5.next = 3;
+            return (0, _fetchDiscordChannel.fetchDiscordChannel)(discordClient, message);
+
+          case 3:
+            _yield$fetchDiscordCh = _context5.sent;
+            _yield$fetchDiscordCh2 = (0, _slicedToArray2["default"])(_yield$fetchDiscordCh, 2);
+            discordChannel = _yield$fetchDiscordCh2[0];
+            discordUserDMChannel = _yield$fetchDiscordCh2[1];
+            _context5.next = 9;
             return _models["default"].sequelize.transaction({
               isolationLevel: _sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
             }, /*#__PURE__*/function () {
               var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(t) {
-                var _yield$userWalletExis, _yield$userWalletExis2, user, userActivity, userAlreadyLinkedAnAddress, msgFilter, preActivity, finalActivity;
+                var _yield$userWalletExis, _yield$userWalletExis2, user, userActivity, discordUserId, userAlreadyLinkedAnAddress, msgFilter, preActivity, finalActivity;
 
                 return _regenerator["default"].wrap(function _callee3$(_context3) {
                   while (1) {
@@ -68,18 +81,21 @@ var discordLinkAddress = /*#__PURE__*/function () {
                         return _context3.abrupt("return");
 
                       case 9:
+                        discordUserId = user.user_id.replace('discord-', '');
+
                         if (!(message.channel.type === _discord.ChannelType.GuildText)) {
-                          _context3.next = 12;
+                          _context3.next = 14;
                           break;
                         }
 
-                        _context3.next = 12;
-                        return message.channel.send({
-                          embeds: [(0, _embeds.warnDirectMessage)(message.author.id, 'Link Tokel Address')]
+                        console.log('before warn direct message');
+                        _context3.next = 14;
+                        return discordChannel.send({
+                          embeds: [(0, _embeds.warnDirectMessage)(discordUserId, 'Link Tokel Address')]
                         });
 
-                      case 12:
-                        _context3.next = 14;
+                      case 14:
+                        _context3.next = 16;
                         return _models["default"].linkedAddress.findOne({
                           where: {
                             userId: user.id,
@@ -89,36 +105,36 @@ var discordLinkAddress = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 14:
+                      case 16:
                         userAlreadyLinkedAnAddress = _context3.sent;
 
                         if (!userAlreadyLinkedAnAddress) {
-                          _context3.next = 19;
+                          _context3.next = 21;
                           break;
                         }
 
-                        _context3.next = 18;
-                        return message.author.send({
+                        _context3.next = 20;
+                        return discordUserDMChannel.send({
                           embeds: [(0, _embeds.userAlreadyLinkedAnAddressMessage)(user, userAlreadyLinkedAnAddress.address)]
                         });
 
-                      case 18:
+                      case 20:
                         return _context3.abrupt("return");
 
-                      case 19:
-                        _context3.next = 21;
-                        return message.author.send({
+                      case 21:
+                        _context3.next = 23;
+                        return discordUserDMChannel.send({
                           embeds: [(0, _embeds.enterAddressToLinkMessage)()]
                         });
 
-                      case 21:
+                      case 23:
                         msgFilter = function msgFilter(m) {
-                          var filtered = m.author.id === message.author.id;
+                          var filtered = m.author.id === discordUserId;
                           return filtered;
                         };
 
-                        _context3.next = 24;
-                        return message.author.dmChannel.awaitMessages({
+                        _context3.next = 26;
+                        return discordUserDMChannel.awaitMessages({
                           filter: msgFilter,
                           max: 1,
                           time: 60000,
@@ -176,7 +192,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
                                     }
 
                                     _context.next = 21;
-                                    return message.author.send({
+                                    return discordUserDMChannel.send({
                                       embeds: [(0, _embeds.tokelLinkAddressAlreadyOccupied)(message, collectedMessage.content)]
                                     });
 
@@ -204,7 +220,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
                                     }
 
                                     _context.next = 29;
-                                    return message.author.send({
+                                    return discordUserDMChannel.send({
                                       embeds: [(0, _embeds.tokelLinkAddressAlreadyVerified)(message, collectedMessage.content)]
                                     });
 
@@ -220,7 +236,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
 
                                     console.log('4');
                                     _context.next = 35;
-                                    return message.author.send({
+                                    return discordUserDMChannel.send({
                                       embeds: [(0, _embeds.tokelLinkAddressAlreadyBusyVerifying)(message, linkedAddressDB.address)]
                                     });
 
@@ -270,7 +286,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
                                     console.log(user.wallet);
                                     console.log(user.wallet.address);
                                     _context.next = 53;
-                                    return message.author.send({
+                                    return discordUserDMChannel.send({
                                       embeds: [(0, _embeds.addedNewTokelLinkAddress)(message, collectedMessage.content, user.wallet.address.address)]
                                     });
 
@@ -280,7 +296,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
 
                                   case 55:
                                     _context.next = 57;
-                                    return message.author.send({
+                                    return discordUserDMChannel.send({
                                       embeds: [(0, _embeds.invalidTokelLinkAddress)(message)]
                                     });
 
@@ -292,7 +308,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
                             }, _callee, null, [[3, 9]]);
                           }));
 
-                          return function (_x4) {
+                          return function (_x5) {
                             return _ref3.apply(this, arguments);
                           };
                         }())["catch"]( /*#__PURE__*/function () {
@@ -303,7 +319,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
                                   case 0:
                                     console.log(collected);
                                     _context2.next = 3;
-                                    return message.author.send({
+                                    return discordUserDMChannel.send({
                                       embeds: [(0, _embeds.timeOutTokelLinkAddressMessage)(message)]
                                     });
 
@@ -315,13 +331,13 @@ var discordLinkAddress = /*#__PURE__*/function () {
                             }, _callee2);
                           }));
 
-                          return function (_x5) {
+                          return function (_x6) {
                             return _ref4.apply(this, arguments);
                           };
                         }());
 
-                      case 24:
-                        _context3.next = 26;
+                      case 26:
+                        _context3.next = 28;
                         return _models["default"].activity.create({
                           type: 'link_s',
                           earnerId: user.id
@@ -330,9 +346,9 @@ var discordLinkAddress = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 26:
+                      case 28:
                         preActivity = _context3.sent;
-                        _context3.next = 29;
+                        _context3.next = 31;
                         return _models["default"].activity.findOne({
                           where: {
                             id: preActivity.id
@@ -345,11 +361,11 @@ var discordLinkAddress = /*#__PURE__*/function () {
                           transaction: t
                         });
 
-                      case 29:
+                      case 31:
                         finalActivity = _context3.sent;
                         activity.unshift(finalActivity);
 
-                      case 31:
+                      case 33:
                       case "end":
                         return _context3.stop();
                     }
@@ -357,11 +373,12 @@ var discordLinkAddress = /*#__PURE__*/function () {
                 }, _callee3);
               }));
 
-              return function (_x3) {
+              return function (_x4) {
                 return _ref2.apply(this, arguments);
               };
             }())["catch"]( /*#__PURE__*/function () {
               var _ref5 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4(err) {
+                var userId;
                 return _regenerator["default"].wrap(function _callee4$(_context4) {
                   while (1) {
                     switch (_context4.prev = _context4.next) {
@@ -384,33 +401,37 @@ var discordLinkAddress = /*#__PURE__*/function () {
                         _logger["default"].error("Error Discord: ".concat(_context4.t0));
 
                       case 8:
-                        _logger["default"].error("Error Discord Link Requested by: ".concat(message.author.id, "-").concat(message.author.username, "#").concat(message.author.discriminator, " - ").concat(err));
+                        _context4.next = 10;
+                        return (0, _fetchDiscordUserIdFromMessageOrInteraction.fetchDiscordUserIdFromMessageOrInteraction)(message);
+
+                      case 10:
+                        userId = _context4.sent;
 
                         if (!(err.code && err.code === 50007)) {
-                          _context4.next = 14;
+                          _context4.next = 16;
                           break;
                         }
 
-                        _context4.next = 12;
-                        return message.channel.send({
+                        _context4.next = 14;
+                        return discordChannel.send({
                           embeds: [(0, _embeds.cannotSendMessageUser)("Link", message)]
                         })["catch"](function (e) {
                           console.log(e);
                         });
 
-                      case 12:
-                        _context4.next = 16;
+                      case 14:
+                        _context4.next = 18;
                         break;
 
-                      case 14:
-                        _context4.next = 16;
-                        return message.channel.send({
+                      case 16:
+                        _context4.next = 18;
+                        return discordChannel.send({
                           embeds: [(0, _embeds.discordErrorMessage)("Link")]
                         })["catch"](function (e) {
                           console.log(e);
                         });
 
-                      case 16:
+                      case 18:
                       case "end":
                         return _context4.stop();
                     }
@@ -418,19 +439,19 @@ var discordLinkAddress = /*#__PURE__*/function () {
                 }, _callee4, null, [[0, 5]]);
               }));
 
-              return function (_x6) {
+              return function (_x7) {
                 return _ref5.apply(this, arguments);
               };
             }());
 
-          case 3:
+          case 9:
             if (activity.length > 0) {
               io.to('admin').emit('updateActivity', {
                 activity: activity
               });
             }
 
-          case 4:
+          case 10:
           case "end":
             return _context5.stop();
         }
@@ -438,7 +459,7 @@ var discordLinkAddress = /*#__PURE__*/function () {
     }, _callee5);
   }));
 
-  return function discordLinkAddress(_x, _x2) {
+  return function discordLinkAddress(_x, _x2, _x3) {
     return _ref.apply(this, arguments);
   };
 }();

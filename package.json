@@ -1,6 +1,6 @@
 {
   "name": "tovelverse",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Bot for tokelverse discord",
   "scripts": {
     "dev": "nodemon --exec babel-node --max-old-space-size=8192 src/index.js",
@@ -15,7 +15,7 @@
     "release:major": "npm-run-all build pre-release:major",
     "start": "NODE_ENV=production node dist/index.js",
     "lint": "eslint src",
-    "seed:prod": "sequelize db:seed:all --seeders-path dist/seeders/production", 
+    "seed:prod": "sequelize db:seed:all --seeders-path dist/seeders/production",
     "seed:dev": "sequelize db:seed:all --seeders-path src/seeders/development",
     "db:makemigrations": "./node_modules/sequelize-auto-migrations/bin/makemigration.js"
   },

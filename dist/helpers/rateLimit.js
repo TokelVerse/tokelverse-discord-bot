@@ -25,16 +25,8 @@ var errorConsumer = new RateLimiterFlexible["default"].RateLimiterMemory({
   points: 2,
   duration: 15
 });
-var rateLimiterHalving = new RateLimiterFlexible["default"].RateLimiterMemory({
-  points: 2,
-  duration: 30
-});
-var rateLimiterMining = new RateLimiterFlexible["default"].RateLimiterMemory({
-  points: 2,
-  duration: 30
-});
 var rateLimiterHelp = new RateLimiterFlexible["default"].RateLimiterMemory({
-  points: 2,
+  points: 6,
   duration: 30
 });
 var rateLimiterLink = new RateLimiterFlexible["default"].RateLimiterMemory({
